@@ -60,7 +60,7 @@ namespace WowPacketParser.Store.Objects
 
         public bool WasOriginallyOnTransport()
         {
-            return OriginalMovement.TransportGuid != null && OriginalMovement.TransportGuid != WowGuid64.Empty;
+            return OriginalMovement.TransportGuid != null && !OriginalMovement.TransportGuid.IsEmpty();
         }
 
         public int GetDefaultSpawnTime(uint difficultyID)

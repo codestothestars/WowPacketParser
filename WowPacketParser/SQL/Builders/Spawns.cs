@@ -22,7 +22,7 @@ namespace WowPacketParser.SQL.Builders
             if (!Storage.Objects.TryGetValue(@object.Movement.TransportGuid, out transport))
                 return false;
 
-            if (transport.Type == ObjectType.Player || transport.Type == ObjectType.ActivePlayer)
+            if (transport.Type != ObjectType.GameObject)
                 return false;
 
             if (SQLConnector.Enabled)
