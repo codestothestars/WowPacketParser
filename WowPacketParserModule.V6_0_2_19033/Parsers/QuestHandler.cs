@@ -750,17 +750,17 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             packet.ReadInt32("SuggestPartyMembers");
             packet.ReadInt32("MoneyToGet");
-            int int44 = packet.ReadInt32("QuestObjectiveCollectCount");
-            int int60 = packet.ReadInt32("QuestCurrencyCount");
+            int collectCount = packet.ReadInt32("QuestObjectiveCollectCount");
+            int currencyCount = packet.ReadInt32("QuestCurrencyCount");
             packet.ReadInt32("StatusFlags");
 
-            for (int i = 0; i < int44; i++)
+            for (int i = 0; i < collectCount; i++)
             {
                 packet.ReadInt32("ObjectID", i);
                 packet.ReadInt32("Amount", i);
             }
 
-            for (int i = 0; i < int60; i++)
+            for (int i = 0; i < currencyCount; i++)
             {
                 packet.ReadInt32("CurrencyID", i);
                 packet.ReadInt32("Amount", i);
@@ -1004,9 +1004,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             var quantity = packet.ReadInt32("Quantity", indexes);
 
             string bonusListIds = "";
-            for (var i = 0; i < instance.BonusListIDs.Length; i++)
-                bonusListIds += instance.BonusListIDs[i] + " ";
-            bonusListIds = bonusListIds.TrimEnd(' ');
+            if (instance.BonusListIDs != null)
+            {
+                for (var i = 0; i < instance.BonusListIDs.Length; i++)
+                    bonusListIds += instance.BonusListIDs[i] + " ";
+                bonusListIds = bonusListIds.TrimEnd(' ');
+            }
 
             Storage.PlayerChoiceResponseRewardItems.Add(new PlayerChoiceResponseRewardItemTemplate
             {
