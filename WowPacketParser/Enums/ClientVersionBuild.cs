@@ -420,6 +420,7 @@ namespace WowPacketParser.Enums
         V9_2_5_43971 = 43971,
         V9_2_5_44015 = 44015,
         V9_2_5_44061 = 44061,
+        V9_2_5_44127 = 44127,
 
         // Classic
         V1_13_2_31446 = 31446, // name reservation
