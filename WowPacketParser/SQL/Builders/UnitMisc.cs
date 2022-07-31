@@ -1165,7 +1165,7 @@ namespace WowPacketParser.SQL.Builders
                     if (entry.Any())
                     {
                         var sub = entry.Select(creature => creature.Item1.SubName).First();
-                        if (sub.Length > 0)
+                        if (sub != null && sub.Length > 0)
                             template.NpcFlag |= ProcessNpcFlags(sub);
                         else // If the SubName doesn't exist or is cached, fall back to DB method
                             template.NpcFlag |= ProcessNpcFlags(subname);
