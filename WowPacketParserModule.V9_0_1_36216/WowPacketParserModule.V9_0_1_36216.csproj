@@ -364,6 +364,7 @@
     <Compile Include="Parsers\AdventureJournalHandler.cs" />
     <Compile Include="Parsers\AreaTriggerHandler.cs" />
     <Compile Include="Parsers\AuctionHouseHandler.cs" />
+    <Compile Include="Parsers\AuthenticationHandler.cs" />
     <Compile Include="Parsers\BattlegroundHandler.cs" />
     <Compile Include="Parsers\BlackMarketHandler.cs" />
     <Compile Include="Parsers\CharacterHandler.cs" />
