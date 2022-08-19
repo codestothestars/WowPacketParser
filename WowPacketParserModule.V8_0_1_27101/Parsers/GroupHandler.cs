@@ -42,7 +42,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
                 packet.ReadByte("Subgroup", i);
                 packet.ReadByte("Flags", i);
                 packet.ReadByte("RolesAssigned", i);
-                packet.ReadByteE<Class>("Class", i);
+                if (ClientVersion.RemovedInVersion(9, 2, 7))
+                    packet.ReadByteE<Class>("Class", i);
                 if (ClientVersion.AddedInVersion(9, 2, 7, 1, 14, 3, 2, 5, 4))
                     packet.ReadByte("FactionGroup", i);
 
