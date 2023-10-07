@@ -618,7 +618,8 @@ namespace WowPacketParser.Parsing.Parsers
 
             item.AmmoType = packet.ReadInt32E<AmmoType>("Ammo Type");
 
-            item.RangedMod = packet.ReadSingle("Ranged Mod");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                item.RangedMod = packet.ReadSingle("Ranged Mod");
 
             item.TriggeredSpellIds = new int?[5];
             item.TriggeredSpellTypes = new ItemSpellTriggerType?[5];
@@ -668,7 +669,8 @@ namespace WowPacketParser.Parsing.Parsers
             item.AreaID = packet.ReadUInt32<AreaId>("Area");
 
             // In this single (?) case, map 0 means no map
-            item.MapID = packet.ReadInt32<MapId>("Map");
+            if (ClientVersion.AddedInVersion(1, 12, 0))
+                item.MapID = packet.ReadInt32<MapId>("Map");
 
             item.BagFamily = packet.ReadInt32E<BagFamilyMask>("Bag Family");
 

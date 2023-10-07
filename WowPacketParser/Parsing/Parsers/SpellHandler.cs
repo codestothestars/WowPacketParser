@@ -355,10 +355,20 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (targetFlags.HasAnyFlag(TargetFlag.Unit | TargetFlag.CorpseEnemy | TargetFlag.GameObject |
                 TargetFlag.CorpseAlly | TargetFlag.UnitMinipet))
-                packet.ReadPackedGuid("Target GUID");
+            {
+                if (ClientVersion.AddedInVersion(1, 9, 0))
+                    packet.ReadPackedGuid("Target GUID");
+                else
+                    packet.ReadGuid("Target GUID");
+            }
 
             if (targetFlags.HasAnyFlag(TargetFlag.Item | TargetFlag.TradeItem))
-                packet.ReadPackedGuid("Item Target GUID");
+            {
+                if (ClientVersion.AddedInVersion(1, 9, 0))
+                    packet.ReadPackedGuid("Item Target GUID");
+                else
+                    packet.ReadGuid("Item Target GUID");
+            }
 
             if (targetFlags.HasAnyFlag(TargetFlag.SourceLocation))
             {
