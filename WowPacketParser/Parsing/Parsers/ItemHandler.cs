@@ -231,7 +231,9 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadGuid("Item GUID");
             packet.ReadUInt32("Slot");
             packet.ReadUInt32("Duration");
-            packet.ReadGuid("Player GUID");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_11_0_5344))
+                packet.ReadGuid("Player GUID");
         }
 
         [Parser(Opcode.CMSG_BUY_BACK_ITEM)]
@@ -476,8 +478,18 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadByte("Count");
         }
 
-        [Parser(Opcode.SMSG_ENCHANTMENT_LOG)]
+        [Parser(Opcode.SMSG_ENCHANTMENT_LOG, ClientVersionBuild.Zero, ClientVersionBuild.V2_0_1_6180)]
         public static void HandleEnchantmentLog(Packet packet)
+        {
+            packet.ReadGuid("Target");
+            packet.ReadGuid("Caster");
+            packet.ReadInt32<ItemId>("Item Entry");
+            packet.ReadUInt32("Enchantment ID");
+            packet.ReadByte("ShowAffiliation");
+        }
+
+        [Parser(Opcode.SMSG_ENCHANTMENT_LOG, ClientVersionBuild.V2_0_1_6180)]
+        public static void HandleEnchantmentLogTbc(Packet packet)
         {
             packet.ReadPackedGuid("Target");
             packet.ReadPackedGuid("Caster");

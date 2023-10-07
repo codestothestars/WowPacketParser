@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using WowPacketParser.Enums.Version.V1_8_4_4878;
 using WowPacketParser.Enums.Version.V1_12_1_5875;
 using WowPacketParser.Enums.Version.V1_13_2_31446;
 using WowPacketParser.Enums.Version.V1_13_3_32790;
@@ -120,8 +121,33 @@ namespace WowPacketParser.Enums.Version
         {
             switch (build)
             {
+                case ClientVersionBuild.V1_8_0_4714:
+                case ClientVersionBuild.V1_8_0_4735:
+                case ClientVersionBuild.V1_8_1_4769:
+                case ClientVersionBuild.V1_8_2_4784:
+                case ClientVersionBuild.V1_8_3_4807:
+                case ClientVersionBuild.V1_8_4_4878:
+                    return ClientVersionBuild.V1_8_4_4878;
+                case ClientVersionBuild.V1_9_0_4851:
+                case ClientVersionBuild.V1_9_0_4869:
+                case ClientVersionBuild.V1_9_0_4937:
+                case ClientVersionBuild.V1_9_1_4983:
+                case ClientVersionBuild.V1_9_2_4996:
+                case ClientVersionBuild.V1_9_3_5059:
                 case ClientVersionBuild.V1_9_4_5086:
+                case ClientVersionBuild.V1_10_0_5140:
+                case ClientVersionBuild.V1_10_0_5195:
+                case ClientVersionBuild.V1_10_1_5230:
+                case ClientVersionBuild.V1_10_2_5302:
+                case ClientVersionBuild.V1_11_0_5344:
+                case ClientVersionBuild.V1_11_0_5428:
+                case ClientVersionBuild.V1_11_1_5462:
+                case ClientVersionBuild.V1_11_2_5464:
+                case ClientVersionBuild.V1_12_0_5496:
+                case ClientVersionBuild.V1_12_0_5595:
                 case ClientVersionBuild.V1_12_1_5875:
+                case ClientVersionBuild.V1_12_2_6005:
+                case ClientVersionBuild.V1_12_3_6141:
                     return ClientVersionBuild.V1_12_1_5875;
                 case ClientVersionBuild.V2_0_1_6180:
                 case ClientVersionBuild.V2_0_3_6299:
@@ -746,7 +772,8 @@ namespace WowPacketParser.Enums.Version
         {
             switch (GetOpcodeDefiningBuild(build))
             {
-                case ClientVersionBuild.V1_9_4_5086:
+                case ClientVersionBuild.V1_8_4_4878:
+                    return Opcodes_1_8_4.Opcodes(direction);
                 case ClientVersionBuild.V1_12_1_5875:
                     return Opcodes_1_12_1.Opcodes(direction);
                 case ClientVersionBuild.V2_4_3_8606:

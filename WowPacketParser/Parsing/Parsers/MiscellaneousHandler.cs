@@ -366,7 +366,9 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleClientPing(Packet packet)
         {
             packet.ReadInt32("Ping");
-            packet.ReadInt32("Ping Count");
+
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadInt32("Ping Count");
         }
 
         [Parser(Opcode.SMSG_PONG)]

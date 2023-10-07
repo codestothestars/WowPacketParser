@@ -297,7 +297,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_MONSTER_MOVE_TRANSPORT)]
         public static void HandleMonsterMove(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ? packet.ReadPackedGuid("GUID") : packet.ReadGuid("GUID");
             Unit obj = null;
             ServerSideMovement monsterMove = null;
             if (Storage.Objects != null && Storage.Objects.ContainsKey(guid))
@@ -773,13 +773,15 @@ namespace WowPacketParser.Parsing.Parsers
             if (packet.Direction == Direction.ServerToClient)
             {
                 var guid = packet.ReadPackedGuid("Guid");
-                packet.ReadInt32("Movement Counter");
+                if (ClientVersion.AddedInVersion(1, 10, 0))
+                    packet.ReadInt32("Movement Counter");
                 ReadMovementInfo(packet, guid);
             }
             else
             {
                 packet.ReadGuid("Guid");
-                packet.ReadInt32("Movement Counter");
+                if (ClientVersion.AddedInVersion(1, 10, 0))
+                    packet.ReadInt32("Movement Counter");
                 packet.ReadUInt32("Time");
             }
         }
@@ -1795,7 +1797,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceWalkSpeedChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Walk;
             speedUpdate.SpeedRate = packet.ReadSingle("New Speed") / MovementInfo.DEFAULT_WALK_SPEED;
@@ -1806,7 +1809,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceRunSpeedChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 packet.ReadByte("Unk Byte");
@@ -1821,7 +1825,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceRunBackSpeedChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.RunBack;
             speedUpdate.SpeedRate = packet.ReadSingle("New Speed") / MovementInfo.DEFAULT_RUN_BACK_SPEED;
@@ -1832,7 +1837,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceSwimSpeedChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Swim;
             speedUpdate.SpeedRate = packet.ReadSingle("New Speed") / MovementInfo.DEFAULT_SWIM_SPEED;
@@ -1843,7 +1849,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceSwimBackSpeedChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.SwimBack;
             speedUpdate.SpeedRate = packet.ReadSingle("New Speed") / MovementInfo.DEFAULT_SWIM_BACK_SPEED;
@@ -1854,7 +1861,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleForceTurnRateChange(Packet packet)
         {
             WowGuid guid = packet.ReadPackedGuid("Guid");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Turn;
             speedUpdate.SpeedRate = packet.ReadSingle("New Speed") / MovementInfo.DEFAULT_TURN_RATE;
@@ -1907,7 +1915,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleSpeedChangeMessage(Packet packet)
         {
             var guid = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? packet.ReadPackedGuid("Guid") : packet.ReadGuid("Guid");
-            packet.ReadInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadInt32("Movement Counter");
 
             ReadMovementInfo(packet, guid);
 
@@ -1961,8 +1970,13 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_MOVE_SET_NORMAL_FALL, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
         public static void HandleSetMovementMessages(Packet packet)
         {
-            packet.ReadPackedGuid("Guid");
-            packet.ReadInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadPackedGuid("Guid");
+            else
+                packet.ReadGuid("Guid");
+
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadInt32("Movement Counter");
         }
 
         [Parser(Opcode.CMSG_MOVE_WATER_WALK_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
@@ -1978,7 +1992,8 @@ namespace WowPacketParser.Parsing.Parsers
             else
                 guid = packet.ReadPackedGuid("Guid");
 
-            packet.ReadInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadInt32("Movement Counter");
             ReadMovementInfo(packet, guid);
             packet.ReadInt32("Apply");
         }
@@ -1996,7 +2011,8 @@ namespace WowPacketParser.Parsing.Parsers
             else
                 guid = packet.ReadPackedGuid("Guid");
 
-            packet.ReadInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadInt32("Movement Counter");
 
             ReadMovementInfo(packet, guid);
         }
@@ -2259,7 +2275,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleMoveKnockBack(Packet packet)
         {
             packet.ReadPackedGuid("GUID");
-            packet.ReadUInt32("Movement Counter");
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadUInt32("Movement Counter");
             packet.ReadSingle("X direction");
             packet.ReadSingle("Y direction");
             packet.ReadSingle("Horizontal Speed");

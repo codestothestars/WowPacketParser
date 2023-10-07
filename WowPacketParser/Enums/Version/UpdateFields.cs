@@ -192,9 +192,26 @@ namespace WowPacketParser.Enums.Version
         {
             switch (build)
             {
+                case ClientVersionBuild.V1_8_0_4714:
+                case ClientVersionBuild.V1_8_0_4735:
+                case ClientVersionBuild.V1_8_1_4769:
+                case ClientVersionBuild.V1_8_2_4784:
+                case ClientVersionBuild.V1_8_3_4807:
+                case ClientVersionBuild.V1_8_4_4878:
+                    return "V1_8_4_4878";
+                case ClientVersionBuild.V1_9_0_4851:
+                case ClientVersionBuild.V1_9_0_4869:
+                case ClientVersionBuild.V1_9_0_4937:
+                case ClientVersionBuild.V1_9_1_4983:
+                case ClientVersionBuild.V1_9_2_4996:
+                case ClientVersionBuild.V1_9_3_5059:
                 case ClientVersionBuild.V1_9_4_5086:
                     return "V1_9_4_5086";
+                case ClientVersionBuild.V1_12_0_5496:
+                case ClientVersionBuild.V1_12_0_5595:
                 case ClientVersionBuild.V1_12_1_5875:
+                case ClientVersionBuild.V1_12_2_6005:
+                case ClientVersionBuild.V1_12_3_6141:
                     return "V1_12_1_5875";
                 case ClientVersionBuild.V2_0_1_6180:
                 case ClientVersionBuild.V2_0_3_6299:
