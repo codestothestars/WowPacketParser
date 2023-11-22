@@ -2286,10 +2286,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_TIME_SKIPPED)]
         public static void HandleMoveTimeSkippedMsg(Packet packet)
         {
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056))
-                packet.ReadPackedGuid("Guid");
-            else
-                packet.ReadGuid("Guid");
+            packet.ReadPackedGuid("Guid");
             packet.ReadUInt32("Time");
         }
 
@@ -2321,7 +2318,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_MOVE_SPLINE_UNSET_FLYING, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
         public static void HandleSplineMovementMessages(Packet packet)
         {
-            packet.ReadPackedGuid("GUID");
+            WowGuid guid = packet.ReadPackedGuid("GUID");
+
+            // its there in a 1.10 sniff yet i dont see it being read in client
+            if (ClientVersion.RemovedInVersion(1, 11, 0))
+                ReadMovementInfo(packet, guid);
         }
 
         [Parser(Opcode.SMSG_MOVE_SPLINE_SET_WALK_BACK_SPEED, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]

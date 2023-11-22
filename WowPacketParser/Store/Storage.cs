@@ -2627,6 +2627,9 @@ namespace WowPacketParser.Store
         public static readonly DataBag<SpellCastData> SpellCastGo = new DataBag<SpellCastData>(Settings.SqlTables.spell_cast_go);
         public static readonly DataBag<SpellUniqueCaster> SpellUniqueCasters = new DataBag<SpellUniqueCaster>(Settings.SqlTables.spell_unique_caster);
         public static readonly DataBag<CreatureSpellImmunity> CreatureSpellImmunity = new DataBag<CreatureSpellImmunity>(Settings.SqlTables.creature_spell_immunity);
+        public static readonly DataBag<CreatureNotImmuneDispel> CreatureNotImmuneDispels = new DataBag<CreatureNotImmuneDispel>(Settings.SqlTables.creature_spell_not_immune_dispel);
+        public static readonly DataBag<CreatureNotImmuneMechanic> CreatureNotImmuneMechanics = new DataBag<CreatureNotImmuneMechanic>(Settings.SqlTables.creature_spell_not_immune_mechanic);
+        public static readonly DataBag<CreatureNotImmuneSchool> CreatureNotImmuneSchools = new DataBag<CreatureNotImmuneSchool>(Settings.SqlTables.creature_spell_not_immune_school);
 
         public static readonly Dictionary<uint /*creature*/, Dictionary<uint /*spell*/, List<double /*delay*/>>> CreatureInitialSpellTimers = new Dictionary<uint, Dictionary<uint, List<double>>>();
         private static void StoreCreatureInitialSpellTimer(uint creatureId, uint spellId, uint delay)
@@ -2752,6 +2755,65 @@ namespace WowPacketParser.Store
                             SniffId = packet.SniffId,
                         };
                         Storage.CreatureSpellImmunity.Add(immunity);
+                    }
+                }
+            }
+
+            if (castData.HitTargetsList != null &&
+                (Settings.SqlTables.creature_spell_not_immune_dispel ||
+                Settings.SqlTables.creature_spell_not_immune_mechanic ||
+                Settings.SqlTables.creature_spell_not_immune_school))
+            {
+                CSVStorage.SpellTemplate spellEntry = CSVStorage.GetSpellTemplate(castData.SpellID);
+                if (spellEntry != null &&
+                   !spellEntry.HasAttribute(SpellAtribute.SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY) &&
+                   !spellEntry.HasAttribute(SpellAtributeEx.SPELL_ATTR1_DISPEL_AURAS_ON_IMMUNITY) &&
+                   !spellEntry.HasAttribute(SpellAtributeEx3.SPELL_ATTR3_IGNORE_CASTER_AND_TARGET_RESTRICTIONS))
+                {
+                    foreach (var target in castData.HitTargetsList)
+                    {
+                        if (target == castData.CasterGuid)
+                            continue;
+                        if (target == castData.CasterUnitGuid)
+                            continue;
+                        if (target.GetHighType() != HighGuidType.Creature)
+                            continue;
+
+                        if (spellEntry.Dispel != 0)
+                        {
+                            CreatureNotImmuneDispel immunity = new CreatureNotImmuneDispel
+                            {
+                                Entry = Storage.GetCurrentObjectEntry(target),
+                                Dispel = spellEntry.Dispel,
+                                SpellID = castData.SpellID,
+                                SniffId = packet.SniffId,
+                            };
+                            Storage.CreatureNotImmuneDispels.Add(immunity);
+                        }
+
+                        if (spellEntry.Mechanic != 0)
+                        {
+                            CreatureNotImmuneMechanic immunity = new CreatureNotImmuneMechanic
+                            {
+                                Entry = Storage.GetCurrentObjectEntry(target),
+                                Mechanic = spellEntry.Mechanic,
+                                SpellID = castData.SpellID,
+                                SniffId = packet.SniffId,
+                            };
+                            Storage.CreatureNotImmuneMechanics.Add(immunity);
+                        }
+
+                        if (!spellEntry.HasAttribute(SpellAtributeEx2.SPELL_ATTR2_NO_SCHOOL_IMMUNITIES))
+                        {
+                            CreatureNotImmuneSchool immunity = new CreatureNotImmuneSchool
+                            {
+                                Entry = Storage.GetCurrentObjectEntry(target),
+                                School = spellEntry.School,
+                                SpellID = castData.SpellID,
+                                SniffId = packet.SniffId,
+                            };
+                            Storage.CreatureNotImmuneSchools.Add(immunity);
+                        }
                     }
                 }
             }

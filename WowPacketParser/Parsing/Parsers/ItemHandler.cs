@@ -215,11 +215,13 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadUInt32("Created");
             packet.ReadUInt32("Show in chat");
             packet.ReadByte("Slot");
-            packet.ReadInt32("Item Slot");
+            if (ClientVersion.AddedInVersion(1, 11, 0))
+                packet.ReadInt32("Item Slot");
             packet.ReadUInt32<ItemId>("Entry");
             packet.ReadInt32("Suffix Factor");
             packet.ReadInt32("Random Property ID");
-            packet.ReadUInt32("Count");
+            if (ClientVersion.AddedInVersion(1, 11, 0))
+                packet.ReadUInt32("Count");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 packet.ReadUInt32("Count of Items in inventory");

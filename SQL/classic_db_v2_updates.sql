@@ -1473,3 +1473,30 @@ CREATE TABLE IF NOT EXISTS `gameobject_visibility_distance` (
 ALTER TABLE `sniff_file`
 	CHANGE COLUMN `name` `name` VARCHAR(128) NOT NULL COLLATE 'utf8_unicode_ci' AFTER `author`,
 	ADD UNIQUE INDEX `name` (`name`);
+
+DROP TABLE IF EXISTS `creature_spell_not_immune_dispel`;
+CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_dispel` (
+  `entry` int(10) unsigned NOT NULL,
+  `dispel` int(10) unsigned NOT NULL,
+  `spell_id` int(10) unsigned NOT NULL,
+  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`entry`,`dispel`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
+
+DROP TABLE IF EXISTS `creature_spell_not_immune_mechanic`;
+CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_mechanic` (
+  `entry` int(10) unsigned NOT NULL,
+  `mechanic` int(10) unsigned NOT NULL,
+  `spell_id` int(10) unsigned NOT NULL,
+  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`entry`,`mechanic`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
+
+DROP TABLE IF EXISTS `creature_spell_not_immune_school`;
+CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_school` (
+  `entry` int(10) unsigned NOT NULL,
+  `school` int(10) unsigned NOT NULL,
+  `spell_id` int(10) unsigned NOT NULL,
+  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`entry`,`school`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';

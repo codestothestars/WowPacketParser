@@ -1611,6 +1611,57 @@ namespace WowPacketParser.SQL.Builders
         }
 
         [BuilderMethod]
+        public static string CreatureSpellNotImmuneDispel()
+        {
+            if (Storage.CreatureNotImmuneDispels.IsEmpty())
+                return string.Empty;
+
+            if (!Settings.SqlTables.creature_spell_not_immune_dispel)
+                return string.Empty;
+
+            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneDispels, false, true);
+
+            // not used anywhere else so empty to free up memory
+            Storage.CreatureNotImmuneDispels.Clear();
+
+            return result;
+        }
+
+        [BuilderMethod]
+        public static string CreatureSpellNotImmuneMechanic()
+        {
+            if (Storage.CreatureNotImmuneMechanics.IsEmpty())
+                return string.Empty;
+
+            if (!Settings.SqlTables.creature_spell_not_immune_mechanic)
+                return string.Empty;
+
+            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneMechanics, false, true);
+
+            // not used anywhere else so empty to free up memory
+            Storage.CreatureNotImmuneMechanics.Clear();
+
+            return result;
+        }
+
+        [BuilderMethod]
+        public static string CreatureSpellNotImmuneSchool()
+        {
+            if (Storage.CreatureNotImmuneSchools.IsEmpty())
+                return string.Empty;
+
+            if (!Settings.SqlTables.creature_spell_not_immune_school)
+                return string.Empty;
+
+            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneSchools, false, true);
+
+            // not used anywhere else so empty to free up memory
+            Storage.CreatureNotImmuneSchools.Clear();
+
+            return result;
+        }
+
+        [BuilderMethod]
         public static string CreatureRespawnTime()
         {
             if (Storage.CreatureRespawnTimes.IsEmpty())
