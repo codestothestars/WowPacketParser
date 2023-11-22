@@ -64,6 +64,8 @@ namespace WowPacketParser.Store
 
         // Units, GameObjects, Players, Items
         public static readonly StoreDictionary<WowGuid, WoWObject> Objects = new StoreDictionary<WowGuid, WoWObject>(new List<SQLOutput>());
+        public static readonly List<WowGuid> CurrentlyVisibleObjects = new List<WowGuid>();
+
         public static void StoreNewObject(WowGuid guid, WoWObject obj, ObjectCreateType type, Packet packet)
         {
             obj.OriginalMovement = obj.Movement != null ? obj.Movement.CopyFromMe() : null;
@@ -289,6 +291,22 @@ namespace WowPacketParser.Store
                 guid.GetObjectType() != ObjectType.ActivePlayer)
                 return;
 
+            WoWObject obj;
+            if (Storage.Objects.TryGetValue(guid, out obj))
+            {
+                if (obj.LastCreateTime != null)
+                {
+                    if (obj.LastCreateTime < time)
+                        obj.TotalObservedTime += (uint)(time - obj.LastCreateTime).TotalMilliseconds;
+                    else
+                        Console.WriteLine("Error: Object destroy time is before the previous create time.");
+                }
+                else
+                    Console.WriteLine("Error: Object is being destroyed but create time is not set.");
+            }
+
+            CurrentlyVisibleObjects.Remove(guid);
+
             if (guid.GetObjectType() == ObjectType.Unit && !Settings.SqlTables.creature_destroy_time)
                 return;
 
@@ -353,6 +371,8 @@ namespace WowPacketParser.Store
                 guid.GetObjectType() != ObjectType.Player &&
                 guid.GetObjectType() != ObjectType.ActivePlayer)
                 return;
+
+            CurrentlyVisibleObjects.Add(guid);
 
             if (((guid.GetHighType() == HighGuidType.Creature && Settings.SqlTables.creature_visibility_distance) ||
                 (guid.GetHighType() == HighGuidType.GameObject && Settings.SqlTables.gameobject_visibility_distance)) &&
@@ -428,6 +448,8 @@ namespace WowPacketParser.Store
                 guid.GetObjectType() != ObjectType.Player &&
                 guid.GetObjectType() != ObjectType.ActivePlayer)
                 return;
+
+            CurrentlyVisibleObjects.Add(guid);
 
             if (guid.GetObjectType() == ObjectType.Unit && !Settings.SqlTables.creature_create2_time)
                 return;
@@ -3013,6 +3035,26 @@ namespace WowPacketParser.Store
             MailTemplates.Add(mailTemplate);
         }
 
+        public static void AddObservationTime(DateTime lastPacketTime)
+        {
+            foreach (var guid in CurrentlyVisibleObjects)
+            {
+                WoWObject obj;
+                if (Objects.TryGetValue(guid, out obj))
+                {
+                    if (obj.LastCreateTime != null)
+                    {
+                        if (obj.LastCreateTime < lastPacketTime)
+                            obj.TotalObservedTime += (uint)(lastPacketTime - obj.LastCreateTime).TotalMilliseconds;
+                        else
+                            Console.WriteLine("Error: Sniff end time is before the previous create time.");
+                    }
+                    else
+                        Console.WriteLine("Error: Sniff has ended but object create time is not set.");
+                }
+            }
+        }
+
         // Called every time processing a sniff file finishes,
         // and a new one is about to be loaded and parsed.
         public static void ClearTemporaryData()
@@ -3026,6 +3068,7 @@ namespace WowPacketParser.Store
         // Called from SMSG_NEW_WORLD
         public static void ClearDataOnMapChange()
         {
+            CurrentlyVisibleObjects.Clear();
             HasCurrentPlayerMovedSinceEnterWorld = false;
             CurrentTaxiNode = 0;
             LastCreatureCastGo.Clear();

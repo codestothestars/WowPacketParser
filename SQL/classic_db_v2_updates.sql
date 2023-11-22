@@ -1500,3 +1500,9 @@ CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_school` (
   `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`entry`,`school`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
+
+ALTER TABLE `creature`
+	ADD COLUMN `observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`;
+
+ALTER TABLE `gameobject`
+	ADD COLUMN `observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`;

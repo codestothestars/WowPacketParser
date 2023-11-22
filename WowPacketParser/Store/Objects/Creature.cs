@@ -18,6 +18,9 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("id")]
         public uint? ID;
 
+        [DBFieldName("observation_time")]
+        public uint? ObservationTime;
+
         [DBFieldName("map", false, false, true)]
         public uint? Map;
 

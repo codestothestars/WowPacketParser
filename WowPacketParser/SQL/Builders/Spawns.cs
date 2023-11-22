@@ -102,6 +102,7 @@ namespace WowPacketParser.SQL.Builders
                 row.Data.GUID = "@CGUID+" + creature.DbGuid;
                 row.Data.OriginalID = unit.Key.GetEntry();
                 row.Data.ID = entry;
+                row.Data.ObservationTime = creature.TotalObservedTime;
 
                 bool badTransport = false;
                 if (!creature.WasOriginallyOnTransport() || Settings.SaveTransports)
@@ -1062,6 +1063,7 @@ namespace WowPacketParser.SQL.Builders
                 row.Data.GUID = "@OGUID+" + go.DbGuid;
                 row.Data.OriginalID = gameobject.Key.GetEntry();
                 row.Data.ID = entry;
+                row.Data.ObservationTime = go.TotalObservedTime;
 
                 if (!go.WasOriginallyOnTransport() || Settings.SaveTransports)
                     row.Data.Map = go.Map;
