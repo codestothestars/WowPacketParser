@@ -214,7 +214,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
 
             packet.WriteGuid("Guid", guid);
 
-            Storage.AddObservationTime(packet.Time);
+            Storage.AddObservationTimeBeforeCleanup(packet.Time);
             Storage.ClearTemporaryData();
             LogoutTime logoutTime = new LogoutTime()
             {

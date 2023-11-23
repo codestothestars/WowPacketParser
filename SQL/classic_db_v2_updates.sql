@@ -1506,3 +1506,11 @@ ALTER TABLE `creature`
 
 ALTER TABLE `gameobject`
 	ADD COLUMN `observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`;
+
+ALTER TABLE `creature`
+	CHANGE COLUMN `observation_time` `total_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`,
+	ADD COLUMN `longest_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'longest uninterrupted period of time in ms the object was visible for' AFTER `total_observation_time`;
+
+ALTER TABLE `gameobject`
+	CHANGE COLUMN `observation_time` `total_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`,
+	ADD COLUMN `longest_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'longest uninterrupted period of time in ms the object was visible for' AFTER `total_observation_time`;

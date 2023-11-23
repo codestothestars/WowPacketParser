@@ -291,20 +291,8 @@ namespace WowPacketParser.Store
                 guid.GetObjectType() != ObjectType.ActivePlayer)
                 return;
 
-            WoWObject obj;
-            if (Storage.Objects.TryGetValue(guid, out obj))
-            {
-                if (obj.LastCreateTime != null)
-                {
-                    if (obj.LastCreateTime < time)
-                        obj.TotalObservedTime += (uint)(time - obj.LastCreateTime).TotalMilliseconds;
-                    else
-                        Console.WriteLine("Error: Object destroy time is before the previous create time.");
-                }
-                else
-                    Console.WriteLine("Error: Object is being destroyed but create time is not set.");
-            }
 
+            UpdateObjectObservationTime(guid, time);
             CurrentlyVisibleObjects.Remove(guid);
 
             if (guid.GetObjectType() == ObjectType.Unit && !Settings.SqlTables.creature_destroy_time)
@@ -3035,24 +3023,32 @@ namespace WowPacketParser.Store
             MailTemplates.Add(mailTemplate);
         }
 
-        public static void AddObservationTime(DateTime lastPacketTime)
+        private static void UpdateObjectObservationTime(WowGuid guid, DateTime endTime)
         {
-            foreach (var guid in CurrentlyVisibleObjects)
+            WoWObject obj;
+            if (Objects.TryGetValue(guid, out obj))
             {
-                WoWObject obj;
-                if (Objects.TryGetValue(guid, out obj))
+                if (obj.LastCreateTime != null)
                 {
-                    if (obj.LastCreateTime != null)
+                    if (obj.LastCreateTime < endTime)
                     {
-                        if (obj.LastCreateTime < lastPacketTime)
-                            obj.TotalObservedTime += (uint)(lastPacketTime - obj.LastCreateTime).TotalMilliseconds;
-                        else
-                            Console.WriteLine("Error: Sniff end time is before the previous create time.");
+                        uint observationTime = (uint)(endTime - obj.LastCreateTime).TotalMilliseconds;
+                        obj.TotalObservedTime += observationTime;
+                        if (obj.LongestObservedTime < observationTime)
+                            obj.LongestObservedTime = observationTime;
                     }
                     else
-                        Console.WriteLine("Error: Sniff has ended but object create time is not set.");
+                        Console.WriteLine("Error: End of observation time is before the previous create time.");
                 }
+                else
+                    Console.WriteLine("Error: Object no longer visible but create time is not set.");
             }
+        }
+
+        public static void AddObservationTimeBeforeCleanup(DateTime lastPacketTime)
+        {
+            foreach (var guid in CurrentlyVisibleObjects)
+                UpdateObjectObservationTime(guid, lastPacketTime);
         }
 
         // Called every time processing a sniff file finishes,

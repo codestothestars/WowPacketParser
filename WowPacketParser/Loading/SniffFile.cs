@@ -276,7 +276,7 @@ namespace WowPacketParser.Loading
 
                     if (Settings.SQLOutputFlag != 0 || HotfixSettings.Instance.ShouldLog())
                     {
-                        Storage.AddObservationTime(lastPacketTime);
+                        Storage.AddObservationTimeBeforeCleanup(lastPacketTime);
                         WriteSQLs();
                     }
 

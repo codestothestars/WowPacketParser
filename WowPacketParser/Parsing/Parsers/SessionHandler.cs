@@ -460,7 +460,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_LOGOUT_COMPLETE)]
         public static void HandleLogoutComplete(Packet packet)
         {
-            Storage.AddObservationTime(packet.Time);
+            Storage.AddObservationTimeBeforeCleanup(packet.Time);
             Storage.ClearTemporaryData();
             LogoutTime logoutTime = new LogoutTime()
             {
