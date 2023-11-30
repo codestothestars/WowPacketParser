@@ -218,9 +218,6 @@ namespace WowPacketParser.Misc
             public static readonly bool creature_pet_remaining_cooldown = Conf.GetBoolean("creature_pet_remaining_cooldown", false);
             public static readonly bool creature_respawn_time = Conf.GetBoolean("creature_respawn_time", false);
             public static readonly bool creature_spell_immunity = Conf.GetBoolean("creature_spell_immunity", false);
-            public static readonly bool creature_spell_not_immune_dispel = Conf.GetBoolean("creature_spell_not_immune_dispel", false);
-            public static readonly bool creature_spell_not_immune_mechanic = Conf.GetBoolean("creature_spell_not_immune_mechanic", false);
-            public static readonly bool creature_spell_not_immune_school = Conf.GetBoolean("creature_spell_not_immune_school", false);
             public static readonly bool creature_spell_timers = Conf.GetBoolean("creature_spell_timers", false);
             public static readonly bool creature_stats = Conf.GetBoolean("creature_stats", false);
             public static readonly bool creature_template = Conf.GetBoolean("creature_template", false);
@@ -232,6 +229,7 @@ namespace WowPacketParser.Misc
             public static readonly bool creature_unique_equipment = Conf.GetBoolean("creature_unique_equipment", false);
             public static readonly bool creature_unique_faction = Conf.GetBoolean("creature_unique_faction", false);
             public static readonly bool creature_unique_gossip = Conf.GetBoolean("creature_unique_gossip", false);
+            public static readonly bool creature_unique_spell_hit = Conf.GetBoolean("creature_unique_spell_hit", false);
             public static readonly bool creature_unique_text = Conf.GetBoolean("creature_unique_text", false);
             public static readonly bool creature_visibility_distance = Conf.GetBoolean("creature_visibility_distance", false);
             public static readonly bool gameobject_addon = Conf.GetBoolean("gameobject_addon", false);

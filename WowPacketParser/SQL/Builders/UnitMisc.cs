@@ -1611,56 +1611,22 @@ namespace WowPacketParser.SQL.Builders
         }
 
         [BuilderMethod]
-        public static string CreatureSpellNotImmuneDispel()
+        public static string CreatureUniqueSpellHits()
         {
-            if (Storage.CreatureNotImmuneDispels.IsEmpty())
+            if (Storage.CreatureUniqueSpellHits.IsEmpty())
                 return string.Empty;
 
-            if (!Settings.SqlTables.creature_spell_not_immune_dispel)
+            if (!Settings.SqlTables.creature_unique_spell_hit)
                 return string.Empty;
 
-            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneDispels, false, true);
+            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureUniqueSpellHits, false, true);
 
             // not used anywhere else so empty to free up memory
-            Storage.CreatureNotImmuneDispels.Clear();
+            Storage.CreatureUniqueSpellHits.Clear();
 
             return result;
         }
-
-        [BuilderMethod]
-        public static string CreatureSpellNotImmuneMechanic()
-        {
-            if (Storage.CreatureNotImmuneMechanics.IsEmpty())
-                return string.Empty;
-
-            if (!Settings.SqlTables.creature_spell_not_immune_mechanic)
-                return string.Empty;
-
-            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneMechanics, false, true);
-
-            // not used anywhere else so empty to free up memory
-            Storage.CreatureNotImmuneMechanics.Clear();
-
-            return result;
-        }
-
-        [BuilderMethod]
-        public static string CreatureSpellNotImmuneSchool()
-        {
-            if (Storage.CreatureNotImmuneSchools.IsEmpty())
-                return string.Empty;
-
-            if (!Settings.SqlTables.creature_spell_not_immune_school)
-                return string.Empty;
-
-            string result = SQLUtil.MakeInsertWithSniffIdList(Storage.CreatureNotImmuneSchools, false, true);
-
-            // not used anywhere else so empty to free up memory
-            Storage.CreatureNotImmuneSchools.Clear();
-
-            return result;
-        }
-
+        
         [BuilderMethod]
         public static string CreatureRespawnTime()
         {

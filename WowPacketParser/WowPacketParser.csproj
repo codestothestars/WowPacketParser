@@ -91,15 +91,6 @@
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellAttributes.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellAttributesEx.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellAttributesEx2.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellAttributesEx3.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellDispel.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellMechanic.csv" />
-    <EmbeddedResource Include="CSV\Data\V1_12_1_5875\SpellSchool.csv" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="DB2FileReaderLib">
       <HintPath>..\packages\DB2FileReaderLib.1.0.0.0\lib\DB2FileReaderLib.dll</HintPath>
     </Reference>
@@ -177,7 +168,6 @@
     <Compile Include="DBC\Structures\Legion\SpellEffectEntry.cs" />
     <Compile Include="DBC\Structures\Legion\SpellEntry.cs" />
     <Compile Include="DBC\Structures\Shadowlands\PhaseEntry.cs" />
-    <Compile Include="CSV\CSVStorage.cs" />
     <Compile Include="Enums\AccountDataType.cs" />
     <Compile Include="Enums\ActionButtonType.cs" />
     <Compile Include="Enums\AddressType.cs" />

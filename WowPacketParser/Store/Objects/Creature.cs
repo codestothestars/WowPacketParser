@@ -1246,45 +1246,16 @@ namespace WowPacketParser.Store.Objects
         public uint SpellID;
     }
 
-    [DBTableName("creature_spell_not_immune_dispel")]
-    public sealed class CreatureNotImmuneDispel : ITableWithSniffIdList
+    [DBTableName("creature_unique_spell_hit")]
+    public sealed class CreatureUniqueSpellHit : ITableWithSniffIdList
     {
         [DBFieldName("entry", true)]
         public uint Entry;
 
-        [DBFieldName("dispel", true)]
-        public uint Dispel;
-
-        [DBFieldName("spell_id")]
+        [DBFieldName("spell_id", true)]
         public uint SpellID;
     }
-
-    [DBTableName("creature_spell_not_immune_mechanic")]
-    public sealed class CreatureNotImmuneMechanic : ITableWithSniffIdList
-    {
-        [DBFieldName("entry", true)]
-        public uint Entry;
-
-        [DBFieldName("mechanic", true)]
-        public uint Mechanic;
-
-        [DBFieldName("spell_id")]
-        public uint SpellID;
-    }
-
-    [DBTableName("creature_spell_not_immune_school")]
-    public sealed class CreatureNotImmuneSchool : ITableWithSniffIdList
-    {
-        [DBFieldName("entry", true)]
-        public uint Entry;
-
-        [DBFieldName("school", true)]
-        public uint School;
-
-        [DBFieldName("spell_id")]
-        public uint SpellID;
-    }
-
+    
     [DBTableName("creature_respawn_time")]
     public sealed class CreatureRespawnTime : IDataModel
     {

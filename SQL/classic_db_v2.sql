@@ -840,45 +840,6 @@ CREATE TABLE IF NOT EXISTS `creature_spell_immunity` (
 -- Data exporting was unselected.
 
 
--- Dumping structure for table sniffs_new_test.creature_spell_not_immune_dispel
-DROP TABLE IF EXISTS `creature_spell_not_immune_dispel`;
-CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_dispel` (
-  `entry` int(10) unsigned NOT NULL,
-  `dispel` int(10) unsigned NOT NULL,
-  `spell_id` int(10) unsigned NOT NULL,
-  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
-  PRIMARY KEY (`entry`,`dispel`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
-
--- Data exporting was unselected.
-
-
--- Dumping structure for table sniffs_new_test.creature_spell_not_immune_mechanic
-DROP TABLE IF EXISTS `creature_spell_not_immune_mechanic`;
-CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_mechanic` (
-  `entry` int(10) unsigned NOT NULL,
-  `mechanic` int(10) unsigned NOT NULL,
-  `spell_id` int(10) unsigned NOT NULL,
-  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
-  PRIMARY KEY (`entry`,`mechanic`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
-
--- Data exporting was unselected.
-
-
--- Dumping structure for table sniffs_new_test.creature_spell_not_immune_school
-DROP TABLE IF EXISTS `creature_spell_not_immune_school`;
-CREATE TABLE IF NOT EXISTS `creature_spell_not_immune_school` (
-  `entry` int(10) unsigned NOT NULL,
-  `school` int(10) unsigned NOT NULL,
-  `spell_id` int(10) unsigned NOT NULL,
-  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
-  PRIMARY KEY (`entry`,`school`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were not immune to\r\nfrom SMSG_SPELL_GO';
-
--- Data exporting was unselected.
-
-
 -- Dumping structure for table sniffs_new_test.creature_spell_timers
 DROP TABLE IF EXISTS `creature_spell_timers`;
 CREATE TABLE IF NOT EXISTS `creature_spell_timers` (
@@ -1186,6 +1147,18 @@ CREATE TABLE IF NOT EXISTS `creature_unique_gossip` (
   `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`entry`,`gossip_menu_id`,`is_default`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='all unique gossip menu ids used for given creature id';
+
+-- Data exporting was unselected.
+
+
+-- Dumping structure for table sniffs_new_test.creature_unique_spell_hit
+DROP TABLE IF EXISTS `creature_unique_spell_hit`;
+CREATE TABLE IF NOT EXISTS `creature_unique_spell_hit` (
+  `entry` int(10) unsigned NOT NULL,
+  `spell_id` int(10) unsigned NOT NULL,
+  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`entry`,`spell_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were hit by';
 
 -- Data exporting was unselected.
 
@@ -2792,17 +2765,17 @@ CREATE TABLE IF NOT EXISTS `points_of_interest` (
 -- Dumping structure for table sniffs_new_test.quest_details
 DROP TABLE IF EXISTS `quest_details`;
 CREATE TABLE IF NOT EXISTS `quest_details` (
-  `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Emote1` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote2` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote3` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote4` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay1` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay2` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay3` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay4` int(10) unsigned NOT NULL DEFAULT '0',
-  `VerifiedBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sniff_build` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `emote_id1` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id2` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id3` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id4` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_delay1` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay2` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay3` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay4` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`entry`,`sniff_build`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Data exporting was unselected.
@@ -2889,18 +2862,18 @@ CREATE TABLE IF NOT EXISTS `quest_objectives_locale` (
 -- Dumping structure for table sniffs_new_test.quest_offer_reward
 DROP TABLE IF EXISTS `quest_offer_reward`;
 CREATE TABLE IF NOT EXISTS `quest_offer_reward` (
-  `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Emote1` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote2` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote3` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Emote4` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay1` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay2` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay3` int(10) unsigned NOT NULL DEFAULT '0',
-  `EmoteDelay4` int(10) unsigned NOT NULL DEFAULT '0',
-  `RewardText` text COLLATE latin1_general_ci,
-  `VerifiedBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sniff_build` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `emote_id1` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id2` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id3` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_id4` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `emote_delay1` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay2` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay3` int(10) unsigned NOT NULL DEFAULT '0',
+  `emote_delay4` int(10) unsigned NOT NULL DEFAULT '0',
+  `reward_text` text COLLATE latin1_general_ci,
+  PRIMARY KEY (`entry`,`sniff_build`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Data exporting was unselected.
@@ -2922,11 +2895,11 @@ CREATE TABLE IF NOT EXISTS `quest_offer_reward_locale` (
 -- Dumping structure for table sniffs_new_test.quest_request_items
 DROP TABLE IF EXISTS `quest_request_items`;
 CREATE TABLE IF NOT EXISTS `quest_request_items` (
-  `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Emote` smallint(5) unsigned DEFAULT NULL,
-  `CompletionText` text COLLATE latin1_general_ci,
-  `VerifiedBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `sniff_build` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `emote_id` smallint(5) unsigned DEFAULT NULL,
+  `completion_text` text COLLATE latin1_general_ci,
+  PRIMARY KEY (`entry`,`sniff_build`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Data exporting was unselected.

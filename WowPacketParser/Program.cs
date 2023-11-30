@@ -83,7 +83,6 @@ namespace WowPacketParser
                     ClientVersion.SetVersion(Settings.ClientBuild);
 
                 ClientLocale.SetLocale(Settings.ClientLocale.ToString());
-                CSVStorage.LoadAll();
 
                 // needs to be before processing
                 currentSniffFile = Path.GetFileName(file);

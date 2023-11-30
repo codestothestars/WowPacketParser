@@ -1514,3 +1514,52 @@ ALTER TABLE `creature`
 ALTER TABLE `gameobject`
 	CHANGE COLUMN `observation_time` `total_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'accumulated time in ms between create and destroy packets' AFTER `id`,
 	ADD COLUMN `longest_observation_time` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'longest uninterrupted period of time in ms the object was visible for' AFTER `total_observation_time`;
+
+ALTER TABLE `quest_details`
+	CHANGE COLUMN `ID` `entry` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' FIRST,
+	CHANGE COLUMN `VerifiedBuild` `sniff_build` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' AFTER `entry`,
+	CHANGE COLUMN `Emote1` `emote_id1` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `sniff_build`,
+	CHANGE COLUMN `Emote2` `emote_id2` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id1`,
+	CHANGE COLUMN `Emote3` `emote_id3` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id2`,
+	CHANGE COLUMN `Emote4` `emote_id4` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id3`,
+	CHANGE COLUMN `EmoteDelay1` `emote_delay1` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id4`,
+	CHANGE COLUMN `EmoteDelay2` `emote_delay2` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay1`,
+	CHANGE COLUMN `EmoteDelay3` `emote_delay3` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay2`,
+	CHANGE COLUMN `EmoteDelay4` `emote_delay4` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay3`,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`entry`, `sniff_build`);
+
+ALTER TABLE `quest_offer_reward`
+	CHANGE COLUMN `ID` `entry` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' FIRST,
+	CHANGE COLUMN `VerifiedBuild` `sniff_build` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' AFTER `entry`,
+	CHANGE COLUMN `Emote1` `emote_id1` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `sniff_build`,
+	CHANGE COLUMN `Emote2` `emote_id2` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id1`,
+	CHANGE COLUMN `Emote3` `emote_id3` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id2`,
+	CHANGE COLUMN `Emote4` `emote_id4` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id3`,
+	CHANGE COLUMN `EmoteDelay1` `emote_delay1` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_id4`,
+	CHANGE COLUMN `EmoteDelay2` `emote_delay2` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay1`,
+	CHANGE COLUMN `EmoteDelay3` `emote_delay3` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay2`,
+	CHANGE COLUMN `EmoteDelay4` `emote_delay4` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `emote_delay3`,
+	CHANGE COLUMN `RewardText` `reward_text` TEXT NULL COLLATE 'latin1_general_ci' AFTER `emote_delay4`,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`entry`, `sniff_build`);
+
+ALTER TABLE `quest_request_items`
+	CHANGE COLUMN `ID` `entry` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' FIRST,
+	CHANGE COLUMN `VerifiedBuild` `sniff_build` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' AFTER `entry`,
+	CHANGE COLUMN `Emote` `emote_id` SMALLINT(5) UNSIGNED NULL DEFAULT NULL AFTER `sniff_build`,
+	CHANGE COLUMN `CompletionText` `completion_text` TEXT NULL COLLATE 'latin1_general_ci' AFTER `emote_id`,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`entry`, `sniff_build`);
+
+DROP TABLE `creature_spell_not_immune_dispel`;
+DROP TABLE `creature_spell_not_immune_mechanic`;
+DROP TABLE `creature_spell_not_immune_school`;
+
+DROP TABLE IF EXISTS `creature_unique_spell_hit`;
+CREATE TABLE IF NOT EXISTS `creature_unique_spell_hit` (
+  `entry` int(10) unsigned NOT NULL,
+  `spell_id` int(10) unsigned NOT NULL,
+  `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
+  PRIMARY KEY (`entry`,`spell_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were hit by';
