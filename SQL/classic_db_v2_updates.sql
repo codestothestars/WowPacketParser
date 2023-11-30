@@ -1563,3 +1563,15 @@ CREATE TABLE IF NOT EXISTS `creature_unique_spell_hit` (
   `sniff_id_list` text COLLATE latin1_general_ci NOT NULL,
   PRIMARY KEY (`entry`,`spell_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC COMMENT='spells that creatures were hit by';
+
+ALTER TABLE `quest_template`
+	CHANGE COLUMN `VerifiedBuild` `SniffBuild` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' AFTER `ID`;
+
+ALTER TABLE `quest_template`
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`ID`, `SniffBuild`);
+
+ALTER TABLE `quest_objectives`
+	CHANGE COLUMN `VerifiedBuild` `SniffBuild` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0' AFTER `ID`,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`ID`, `SniffBuild`);

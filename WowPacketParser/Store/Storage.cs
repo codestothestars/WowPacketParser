@@ -291,7 +291,6 @@ namespace WowPacketParser.Store
                 guid.GetObjectType() != ObjectType.ActivePlayer)
                 return;
 
-
             UpdateObjectObservationTime(guid, time);
             CurrentlyVisibleObjects.Remove(guid);
 

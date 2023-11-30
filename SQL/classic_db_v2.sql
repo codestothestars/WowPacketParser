@@ -2827,6 +2827,7 @@ CREATE TABLE IF NOT EXISTS `quest_greeting_locale` (
 DROP TABLE IF EXISTS `quest_objectives`;
 CREATE TABLE IF NOT EXISTS `quest_objectives` (
   `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `SniffBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `QuestID` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `StorageIndex` tinyint(3) NOT NULL DEFAULT '0',
@@ -2837,8 +2838,7 @@ CREATE TABLE IF NOT EXISTS `quest_objectives` (
   `Flags2` int(10) unsigned NOT NULL DEFAULT '0',
   `ProgressBarWeight` float NOT NULL DEFAULT '0',
   `Description` text COLLATE latin1_general_ci,
-  `VerifiedBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`,`SniffBuild`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Data exporting was unselected.
@@ -2935,6 +2935,7 @@ CREATE TABLE IF NOT EXISTS `quest_starter` (
 DROP TABLE IF EXISTS `quest_template`;
 CREATE TABLE IF NOT EXISTS `quest_template` (
   `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `SniffBuild` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `QuestType` tinyint(3) unsigned NOT NULL DEFAULT '2',
   `QuestLevel` smallint(3) NOT NULL DEFAULT '1',
   `ScalingFactionGroup` int(11) NOT NULL DEFAULT '1',
@@ -3085,8 +3086,7 @@ CREATE TABLE IF NOT EXISTS `quest_template` (
   `PortraitTurnInName` text COLLATE latin1_general_ci,
   `AcceptedSoundKitID` int(10) unsigned DEFAULT NULL,
   `CompleteSoundKitID` int(10) unsigned DEFAULT NULL,
-  `VerifiedBuild` mediumint(8) unsigned DEFAULT '0',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`,`SniffBuild`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='Quest System';
 
 -- Data exporting was unselected.
