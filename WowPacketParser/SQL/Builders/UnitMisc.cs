@@ -1505,7 +1505,7 @@ namespace WowPacketParser.SQL.Builders
             foreach (var unit in units)
             {
                 var npc = unit.Value;
-                if (npc.UnitData.InteractSpellID == null || npc.UnitData.InteractSpellID == 0)
+                if (npc.UnitData.InteractSpellID == 0)
                     continue;
 
                 if (Settings.AreaFilters.Length > 0)
