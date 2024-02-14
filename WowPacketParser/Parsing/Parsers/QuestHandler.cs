@@ -840,20 +840,9 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadUInt32("Delay");
             packet.ReadUInt32("Emote");
 
-            var count = packet.ReadByte("Count");
+            var count = packet.ReadByte("GossipQuestsCount");
             for (var i = 0; i < count; i++)
-            {
-                packet.ReadUInt32<QuestId>("Quest ID", i);
-                packet.ReadUInt32("Quest Icon", i);
-                packet.ReadInt32("Quest Level", i);
-                packet.ReadUInt32E<QuestFlags>("Quest Flags", i);
-                if (ClientVersion.AddedInVersion(ClientVersionBuild.V5_1_0_16309))
-                    packet.ReadUInt32E<QuestFlagsEx>("Quest Flags 2", i);
-
-                packet.ReadBool("Change icon", i);
-                packet.ReadCString("Title", i);
-            }
-
+                NpcHandler.ReadGossipQuestTextData(packet, i, "GossipQuests");
         }
 
         [Parser(Opcode.CMSG_QUEST_GIVER_QUERY_QUEST)]
@@ -1210,7 +1199,8 @@ namespace WowPacketParser.Parsing.Parsers
             int delay = requestItems.EmoteDelay = packet.ReadInt32("EmoteDelay");
             int emote = requestItems.EmoteType = packet.ReadInt32("EmoteType");
 
-            AddQuestEnder(questgiverGUID, (uint)id);            packet.ReadUInt32("Close Window on Cancel");
+            AddQuestEnder(questgiverGUID, (uint)id);
+            packet.ReadUInt32("Close Window on Cancel");
             requestItems.QuestFlags = (uint)packet.ReadUInt32E<QuestFlags>("Quest Flags");
             requestItems.QuestFlags2 = (uint)packet.ReadUInt32E<QuestFlagsEx>("Quest Flags 2");
             requestItems.SuggestedPartyMembers = (int)packet.ReadUInt32("Suggested Players");
@@ -1300,12 +1290,12 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadUInt32("Suggested Players");
 
             uint count1 = packet.ReadUInt32("Emote Count");
-            uint?[] emoteIDs = {0, 0, 0, 0};
+            int?[] emoteIDs = {0, 0, 0, 0};
             uint?[] emoteDelays = {0, 0, 0, 0};
             for (int i = 0; i < count1; i++)
             {
                 emoteDelays[i] = packet.ReadUInt32("Emote Delay", i);
-                emoteIDs[i] = (uint)packet.ReadUInt32E<EmoteType>("Emote Id", i);
+                emoteIDs[i] = (int)packet.ReadInt32E<EmoteType>("Emote Id", i);
             }
             offerReward.Emote = emoteIDs;
             offerReward.EmoteDelay = emoteDelays;

@@ -33,7 +33,9 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             gossipMessageOption.OptionIcon = (int) gossipOption.OptionIcon;
             gossipOption.BoxCoded = gossipMessageOption.BoxCoded = packet.ReadByte("OptionFlags", idx) != 0;
             gossipOption.BoxMoney = gossipMessageOption.BoxCost = (uint)packet.ReadInt32("OptionCost", idx);
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_2_0_42423))
+            if (ClientVersion.AddedInVersion(ClientBranch.Retail, ClientVersionBuild.V9_2_0_42423) ||
+                ClientVersion.AddedInVersion(ClientBranch.Classic, ClientVersionBuild.V1_14_1_40666) ||
+                ClientVersion.AddedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812))
                 gossipOption.Language = packet.ReadUInt32E<Language>("Language", idx);
 
             packet.ResetBitReader();
@@ -84,7 +86,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             packet.ResetBitReader();
 
-            packet.ReadBit("Repeatable");
+            packet.ReadBit("Repeatable", idx);
 
             uint questTitleLen = packet.ReadBits(9);
 
@@ -257,18 +259,19 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             int menuId = packet.ReadInt32("GossipID");
             gossip.MenuID = packetGossip.MenuId = (uint)menuId;
 
-            packet.ReadInt32("FriendshipFactionID");
+            int friendshipFactionID = packet.ReadInt32("FriendshipFactionID");
+            CoreParsers.NpcHandler.AddGossipAddon(packetGossip.MenuId, friendshipFactionID, guid, packet.TimeSpan);
 
             gossip.TextID = packetGossip.TextId = (uint)packet.ReadInt32("TextID");
 
-            int int44 = packet.ReadInt32("GossipOptions");
-            int int60 = packet.ReadInt32("GossipText");
+            int optionsCount = packet.ReadInt32("GossipOptionsCount");
+            int questsCount = packet.ReadInt32("GossipQuestsCount");
 
-            for (int i = 0; i < int44; ++i)
+            for (int i = 0; i < optionsCount; ++i)
                 packetGossip.Options.Add(ReadGossipOptionsData((uint)menuId, guid, packet, i, "GossipOptions"));
 
-            for (int i = 0; i < int60; ++i)
-                packetGossip.Quests.Add(ReadGossipQuestTextData(packet, i, "GossipQuestText"));
+            for (int i = 0; i < questsCount; ++i)
+                packetGossip.Quests.Add(ReadGossipQuestTextData(packet, i, "GossipQuests"));
 
             if (guid.GetObjectType() == ObjectType.Unit)
             {

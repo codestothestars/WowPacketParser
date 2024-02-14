@@ -41,7 +41,7 @@ namespace WowPacketParser.Parsing.Parsers
                         var guid = packet.ReadPackedGuid("GUID", i);
                         var updateValues = new UpdateValues(){Legacy = new()};
                         ReadValuesUpdateBlock(packet, updateValues.Legacy, guid, i);
-                        updateObject.Updated.Add(new UpdateObject{Guid = guid, Values = updateValues, Text = partWriter.Text});
+                        updateObject.Updated.Add(new UpdateObject{Guid = guid, Values = updateValues, TextStartOffset = partWriter.StartOffset, TextLength = partWriter.Length, Text = partWriter.Text});
                         break;
                     }
                     case "Movement":
@@ -59,6 +59,8 @@ namespace WowPacketParser.Parsing.Parsers
                         var createObject = new CreateObject() { Guid = guid, Values = new() {Legacy = new()}, CreateType = createType };
                         ReadCreateObjectBlock(packet, createObject, guid, map, i);
                         createObject.Text = partWriter.Text;
+                        createObject.TextStartOffset = partWriter.StartOffset;
+                        createObject.TextLength = partWriter.Length;
                         updateObject.Created.Add(createObject);
                         break;
                     }
@@ -162,7 +164,7 @@ namespace WowPacketParser.Parsing.Parsers
             {
                 var partWriter = new StringBuilderProtoPart(packet.Writer);
                 var guid = packet.ReadPackedGuid("Object GUID", index, j);
-                packet.Holder.UpdateObject.Destroyed.Add(new DestroyedObject(){Guid = guid, Text = partWriter.Text});
+                packet.Holder.UpdateObject.Destroyed.Add(new DestroyedObject(){Guid = guid, TextStartOffset = partWriter.StartOffset, TextLength = partWriter.Length, Text = partWriter.Text});
             }
         }
 
@@ -2967,7 +2969,7 @@ namespace WowPacketParser.Parsing.Parsers
                     }
 
                     packet.ReadInt32("Spline Time", index);
-                    packet.ReadInt32("Spline Full Time", index);
+                    var moveTime = packet.ReadInt32("Spline Full Time", index);
                     packet.ReadInt32("Spline ID", index);
 
                     if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_0_9767))
@@ -2978,14 +2980,31 @@ namespace WowPacketParser.Parsing.Parsers
                         packet.ReadInt32("Spline Start Time", index);
                     }
 
+                    double distance = 0;
+                    Vector3? start = null;
+
                     var splineCount = packet.ReadInt32();
                     for (var i = 0; i < splineCount; i++)
-                        packet.ReadVector3("Spline Waypoint", index, i);
+                    {
+                        var vec = packet.ReadVector3("Spline Waypoint", index, i);
+                        if (start != null)
+                            distance += Vector3.GetDistance(start.Value, vec);
+                        start = vec;
+                    }
 
                     if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_8_9464))
                         packet.ReadByteE<SplineMode>("Spline Mode", index);
 
-                    packet.ReadVector3("Spline Endpoint", index);
+                    var end = packet.ReadVector3("Spline Endpoint", index);
+                    if (end.X != 0 || end.Y != 0 || end.Z != 0)
+                    {
+                        if (start == null)
+                            start = moveInfo.Position;
+                        distance += Vector3.GetDistance(start.Value, end);
+                    }
+
+                    packet.WriteLine($"[{index}] Computed Spline Distance: " + distance.ToString());
+                    packet.WriteLine($"[{index}] Computed Spline Speed: " + ((distance / moveTime) * 1000).ToString());
                 }
             }
             else // !UpdateFlag.Living
@@ -3068,16 +3087,24 @@ namespace WowPacketParser.Parsing.Parsers
             using (var packet2 = packet.Inflate(packet.ReadInt32()))
             {
                 HandleUpdateObject(packet2);
+                packet.Holder.UpdateObject = packet2.Holder.UpdateObject;
             }
         }
 
         [Parser(Opcode.SMSG_DESTROY_OBJECT)]
         public static void HandleDestroyObject(Packet packet)
         {
-            packet.ReadGuid("GUID");
+            var guid = packet.ReadGuid("GUID");
 
             if (packet.CanRead())
                 packet.ReadBool("Despawn Animation");
+            
+            var update = packet.Holder.UpdateObject = new();
+            update.Destroyed.Add(new DestroyedObject()
+            {
+                Guid = guid,
+                Text = packet.Writer.ToString()
+            });
         }
 
         [Parser(Opcode.CMSG_OBJECT_UPDATE_FAILED, ClientVersionBuild.Zero, ClientVersionBuild.V5_1_0_16309)] // 4.3.4

@@ -12,11 +12,15 @@ option csharp_namespace = "WowPacketParser.Proto";
 
 message PacketsVersion {
   uint64 version = 1;
+  uint64 gameVersion = 2;
+  uint32 dumpType = 3;
 }
 
 message Packets {
   uint64 version = 1;
-  repeated PacketHolder packets = 2;
+  uint64 gameVersion = 2;
+  uint32 dumpType = 3;
+  repeated PacketHolder packets = 4;
 }
 
 message PacketBase {
@@ -24,6 +28,8 @@ message PacketBase {
   string opcode = 2;
   google.protobuf.Timestamp time = 3;
   string stringData = 4;
+  google.protobuf.Int64Value textStartOffset = 5;
+  google.protobuf.Int32Value textLength = 6;
 }
 
 message PacketHolder {
@@ -69,6 +75,10 @@ message PacketHolder {
       PacketClientUseGameObject clientUseGameObject = 39;
       PacketGossipPoi gossipPoi = 40;
       PacketGameObjectCustomAnim gameObjectCustomAnim = 41;
+      PacketSpellCastFailed spellCastFailed = 42;
+      PacketSpellFailure spellFailure = 43;
+      PacketLoginSetTimeSpeed loginSetTimeSpeed = 44;
+      PacketAuraUpdateAll auraUpdateAll = 45;
   }
 }
 
@@ -287,6 +297,11 @@ message PacketAuraUpdateEntry {
 }
 
 message PacketAuraUpdate {
+  UniversalGuid unit = 1;
+  repeated PacketAuraUpdateEntry updates = 2;
+}
+
+message PacketAuraUpdateAll {
   UniversalGuid unit = 1;
   repeated PacketAuraUpdateEntry updates = 2;
 }
@@ -679,18 +694,24 @@ message CreateObject {
   optional StationaryPositionData stationary = 6;
   optional VehicleCreate vehicle = 7;
   optional Quat rotation = 8;
-  optional string text = 9;
+  google.protobuf.Int32Value textStartOffset = 9;
+  google.protobuf.Int32Value textLength = 10;
+  optional string text = 11;
 }
 
 message UpdateObject {
   UniversalGuid guid = 1;
   UpdateValues values = 2;
-  optional string text = 3;
+  google.protobuf.Int32Value textStartOffset = 3;
+  google.protobuf.Int32Value textLength = 4;
+  optional string text = 5;
 }
 
 message DestroyedObject {
   UniversalGuid guid = 1;
-  optional string text = 2;
+  google.protobuf.Int32Value textStartOffset = 2;
+  google.protobuf.Int32Value textLength = 3;
+  optional string text = 4;
 }
 
 message PacketUpdateObject {
@@ -828,4 +849,27 @@ enum PacketQuestStatusFlags {
   NoRequestOnComplete = 0x20;
   QuestStatusUnk64 = 0x40;
   QuestStatusUnk128 = 0x80;
+}
+
+message PacketSpellCastFailed {
+  optional UniversalGuid castGuid = 1;
+  uint32 spell = 2;
+  google.protobuf.UInt32Value castId = 3;
+  bool success = 4;
+}
+
+message PacketSpellFailure {
+  optional UniversalGuid castGuid = 1;
+  uint32 spell = 2;
+  google.protobuf.UInt32Value castId = 3;
+  bool success = 4;
+  UniversalGuid caster = 5;
+}
+
+message PacketLoginSetTimeSpeed {
+  google.protobuf.Timestamp serverTime = 1;
+  google.protobuf.Timestamp gameTime = 2;
+  float newSpeed = 3;
+  int32 serverTimeHolidayOffset = 4;
+  int32 gameTimeHolidayOffset = 5;
 }

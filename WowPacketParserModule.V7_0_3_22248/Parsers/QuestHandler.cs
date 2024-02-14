@@ -67,29 +67,6 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             packet.ReadBit("IsBoostSpell", idx);
         }
 
-        public static void ReadGossipText(Packet packet, params object[] indexes)
-        {
-            packet.ReadInt32("QuestID", indexes);
-            packet.ReadInt32("QuestType", indexes);
-            packet.ReadInt32("QuestLevel", indexes);
-
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V7_3_5_25848))
-                packet.ReadInt32("QuestMaxScalingLevel", indexes);
-
-            for (int i = 0; i < 2; i++)
-                packet.ReadUInt32("QuestFlags", indexes, i);
-
-            packet.ResetBitReader();
-
-            packet.ReadBit("Repeatable", indexes);
-
-            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V7_2_0_23826))
-                packet.ReadBit("IsQuestIgnored", indexes);
-
-            var guestTitleLen = packet.ReadBits(9);
-            packet.ReadWoWString("QuestTitle", guestTitleLen, indexes);
-        }
-
         [HasSniffData]
         [Parser(Opcode.SMSG_QUERY_QUEST_INFO_RESPONSE)]
         public static void HandleQuestQueryResponse(Packet packet)
@@ -336,11 +313,11 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             int emotesCount = packet.ReadInt32("EmotesCount");
 
             // QuestDescEmote
-            questOfferReward.Emote = new uint?[] { 0, 0, 0, 0 };
+            questOfferReward.Emote = new int?[] { 0, 0, 0, 0 };
             questOfferReward.EmoteDelay = new uint?[] { 0, 0, 0, 0 };
             for (int i = 0; i < emotesCount; i++)
             {
-                questOfferReward.Emote[i] = (uint)packet.ReadInt32("Type");
+                questOfferReward.Emote[i] = packet.ReadInt32("Type");
                 questOfferReward.EmoteDelay[i] = packet.ReadUInt32("Delay");
             }
 
@@ -587,12 +564,12 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 GreetEmoteType = packet.ReadUInt32("GreetEmoteType")
             };
 
-            uint gossipTextCount = packet.ReadUInt32("GossipTextCount");
+            uint questsCount = packet.ReadUInt32("GossipQuestsCount");
             packet.ResetBitReader();
             uint greetingLen = packet.ReadBits(11);
 
-            for (int i = 0; i < gossipTextCount; i++)
-                ReadGossipText(packet, i);
+            for (int i = 0; i < questsCount; i++)
+                NpcHandler.ReadGossipQuestTextData(packet, i, "GossipQuests");
 
             questGreeting.Greeting = packet.ReadWoWString("Greeting", greetingLen);
 

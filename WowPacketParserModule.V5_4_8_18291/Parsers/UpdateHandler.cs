@@ -31,7 +31,14 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
 
             packet.ParseBitStream(guid, 0, 4, 7, 2, 6, 3, 1, 5);
 
-            packet.WriteGuid("GUID", guid);
+            var destroyed = packet.WriteGuid("GUID", guid);
+            
+            var update = packet.Holder.UpdateObject = new();
+            update.Destroyed.Add(new DestroyedObject()
+            {
+                Guid = destroyed,
+                Text = packet.Writer.ToString()
+            });
         }
 
         [HasSniffData] // in ReadCreateObjectBlock
@@ -55,7 +62,7 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
                         var guid = packet.ReadPackedGuid("GUID", i);
                         var updateValues = new UpdateValues(){Legacy = new()};
                         CoreParsers.UpdateHandler.ReadValuesUpdateBlock(packet, updateValues.Legacy, guid, i);
-                        updateObject.Updated.Add(new UpdateObject{ Guid = guid, Values = updateValues, Text = partWriter.Text });
+                        updateObject.Updated.Add(new UpdateObject{ Guid = guid, Values = updateValues, TextStartOffset = partWriter.StartOffset, TextLength = partWriter.Length, Text = partWriter.Text });
                         break;
                     }
                     case UpdateTypeCataclysm.CreateObject1:
@@ -65,6 +72,8 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
                         var createObject = new CreateObject() { Guid = guid, Values = new(){Legacy = new()}, CreateType = type.ToCreateObjectType() };
                         ReadCreateObjectBlock(packet, createObject, guid, map, i);
                         createObject.Text = partWriter.Text;
+                        createObject.TextStartOffset = partWriter.StartOffset;
+                        createObject.TextLength = partWriter.Length;
                         updateObject.Created.Add(createObject);
                         break;
                     }
@@ -296,7 +305,7 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
                 bit644 = packet.ReadBit();
                 bit560 = packet.ReadBit();
 
-                if (bit664)
+                if (bit644)
                 {
                     bits25C = packet.ReadBits(21); //604
                     bits26C = packet.ReadBits(21); //624

@@ -22,7 +22,9 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             MovementInfo info = new();
             info.MoverGuid = packet.ReadPackedGuid128("MoverGUID", idx);
 
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_2_0_42423))
+            if (ClientVersion.AddedInVersion(ClientBranch.Retail, ClientVersionBuild.V9_2_0_42423) ||
+                ClientVersion.AddedInVersion(ClientBranch.Classic, ClientVersionBuild.V1_14_1_40666) ||
+                ClientVersion.AddedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812))
             {
                 info.Flags = (uint)packet.ReadUInt32E<MovementFlag>("MovementFlags", idx);
                 info.Flags2 = (uint)packet.ReadUInt32E<MovementFlag2>("MovementFlags2", idx);
@@ -45,7 +47,9 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
 
             packet.ResetBitReader();
 
-            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V9_2_0_42423))
+            if (ClientVersion.RemovedInVersion(ClientBranch.Retail, ClientVersionBuild.V9_2_0_42423) ||
+                ClientVersion.RemovedInVersion(ClientBranch.Classic, ClientVersionBuild.V1_14_1_40666) ||
+                ClientVersion.RemovedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812))
             {
                 info.Flags = (uint)packet.ReadBitsE<MovementFlag>("MovementFlags", 30, idx);
                 info.Flags2 = (uint)packet.ReadBitsE<MovementFlag2>("MovementFlags2", 18, idx);
@@ -56,7 +60,10 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             packet.ReadBit("HasSpline", idx);
             packet.ReadBit("HeightChangeFailed", idx);
             packet.ReadBit("RemoteTimeValid", idx);
-            var hasInertia = ClientVersion.AddedInVersion(ClientVersionBuild.V9_2_0_42423) && packet.ReadBit("HasInertia", idx);
+            var hasInertia = (ClientVersion.AddedInVersion(ClientBranch.Retail, ClientVersionBuild.V9_2_0_42423) ||
+                              ClientVersion.AddedInVersion(ClientBranch.Classic, ClientVersionBuild.V1_14_1_40666) ||
+                              ClientVersion.AddedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812)) &&
+                              packet.ReadBit("HasInertia", idx);
 
             if (hasTransport)
                 info.Transport = V6_0_2_19033.Parsers.MovementHandler.ReadTransportData(packet, idx, "TransportData");
@@ -133,11 +140,6 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             packet.ReadUInt32("SpellVisualID", indexes);
             packet.ReadUInt32("ProgressCurveID", indexes);
             packet.ReadUInt32("ParabolicCurveID", indexes);
-        }
-
-        public static double GetDistance(Vector3 start, Vector3 end)
-        {
-            return Math.Sqrt(Math.Pow((start.X - end.X), 2) + Math.Pow((start.Y - end.Y), 2) + Math.Pow((start.Z - end.Z), 2));
         }
 
         public static void ReadMovementSpline(Packet packet, Vector3 pos, params object[] indexes)
@@ -237,16 +239,16 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 double distance = 0;
                 if (packedDeltasCount > 0)
                 {
-                    distance = GetDistance(pos, trueWaypoints[0]);
+                    distance = Vector3.GetDistance(pos, trueWaypoints[0]);
                     for (var i = 1; i < packedDeltasCount; ++i)
-                        distance += GetDistance(trueWaypoints[i - 1], trueWaypoints[i]);
-                    distance += GetDistance(trueWaypoints[(int)(packedDeltasCount - 1)], endpos);
+                        distance += Vector3.GetDistance(trueWaypoints[i - 1], trueWaypoints[i]);
+                    distance += Vector3.GetDistance(trueWaypoints[(int)(packedDeltasCount - 1)], endpos);
                 }
                 else
-                    distance = GetDistance(pos, endpos);
+                    distance = Vector3.GetDistance(pos, endpos);
 
-                packet.WriteLine("(MovementMonsterSpline) Distance: " + distance.ToString());
-                packet.WriteLine("(MovementMonsterSpline) Speed: " + (distance / moveTime * 1000).ToString());
+                packet.WriteLine("(MovementMonsterSpline) Computed Distance: " + distance.ToString());
+                packet.WriteLine("(MovementMonsterSpline) Computed Speed: " + ((distance / moveTime) * 1000).ToString());
             }
         }
 
