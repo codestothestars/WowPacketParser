@@ -5,11 +5,14 @@ using WowPacketParser.Store.Objects.UpdateFields;
 
 namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
 {
-    public class ObjectData : IMutableObjectData
+    public class ObjectData : IObjectData
     {
-        public System.Nullable<int> EntryID { get; set; }
-        public System.Nullable<uint> DynamicFlags { get; set; }
-        public System.Nullable<float> Scale { get; set; }
+        public int EntryID { get; set; }
+        public uint TypeID { get; set; }
+        public uint DynamicFlags { get; set; }
+        public float Scale { get; set; }
+
+        public IObjectData Clone() { return (IObjectData)MemberwiseClone(); }
     }
 }
 

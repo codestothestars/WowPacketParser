@@ -8,7 +8,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
     public class QuestSession : IQuestSession
     {
         public WowGuid Owner { get; set; }
-        public System.Nullable<ulong>[] QuestCompleted { get; } = new System.Nullable<ulong>[875];
+        public ulong[] QuestCompleted { get; } = new ulong[875];
     }
 }
 

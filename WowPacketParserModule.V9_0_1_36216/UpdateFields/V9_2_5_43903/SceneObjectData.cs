@@ -7,10 +7,10 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
 {
     public class SceneObjectData : ISceneObjectData
     {
-        public System.Nullable<int> ScriptPackageID { get; set; }
-        public System.Nullable<uint> RndSeedVal { get; set; }
+        public int ScriptPackageID { get; set; }
+        public uint RndSeedVal { get; set; }
         public WowGuid CreatedBy { get; set; }
-        public System.Nullable<uint> SceneType { get; set; }
+        public uint SceneType { get; set; }
     }
 }
 

@@ -7,7 +7,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
 {
     public class AzeriteEmpoweredItemData : IAzeriteEmpoweredItemData
     {
-        public System.Nullable<int>[] Selections { get; } = new System.Nullable<int>[5];
+        public int[] Selections { get; } = new int[5];
     }
 }
 

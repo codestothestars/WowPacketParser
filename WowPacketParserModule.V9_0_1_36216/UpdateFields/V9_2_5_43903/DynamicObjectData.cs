@@ -8,11 +8,12 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
     public class DynamicObjectData : IDynamicObjectData
     {
         public WowGuid Caster { get; set; }
-        public System.Nullable<byte> Type { get; set; }
+        public byte Type { get; set; }
         public ISpellCastVisual SpellVisual { get; set; }
-        public System.Nullable<int> SpellID { get; set; }
-        public System.Nullable<float> Radius { get; set; }
-        public System.Nullable<uint> CastTime { get; set; }
+        public int SpellXSpellVisualID => ((SpellCastVisual)SpellVisual).SpellXSpellVisualID;
+        public int SpellID { get; set; }
+        public float Radius { get; set; }
+        public uint CastTime { get; set; }
     }
 }
 
