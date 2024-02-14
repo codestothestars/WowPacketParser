@@ -438,7 +438,6 @@
     <Compile Include="Enums\Version\V1_14_0_40237\UpdateFields.cs" />
     <Compile Include="Enums\Version\V1_14_1_40688\Opcodes.cs" />
     <Compile Include="Enums\Version\V1_14_1_40688\UpdateFields.cs" />
-    <Compile Include="Enums\Version\V1_15_1_53181\Opcodes.cs" />
     <Compile Include="Enums\Version\V2_4_3_8606\Opcodes.cs" />
     <Compile Include="Enums\Version\V2_4_3_8606\UpdateFields.cs" />
     <Compile Include="Enums\Version\V2_5_1_38835\UpdateFields.cs" />
@@ -450,7 +449,6 @@
     <Compile Include="Enums\Version\V2_5_4_42581\Opcodes.cs" />
     <Compile Include="Enums\Version\V3_4_0_43659\Opcodes.cs" />
     <Compile Include="Enums\Version\V3_4_1_47014\Opcodes.cs" />
-    <Compile Include="Enums\Version\V3_4_3_51666\Opcodes.cs" />
     <Compile Include="Enums\Version\V3_0_9_9551\UpdateFields.cs" />
     <Compile Include="Enums\Version\V4_1_0_13914\UpdateFields.cs" />
     <Compile Include="Enums\Version\V5_0_5_16048\Opcodes.cs" />
