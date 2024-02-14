@@ -10,38 +10,71 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_7_45114
         public WowGuid DuelArbiter { get; set; }
         public WowGuid WowAccount { get; set; }
         public WowGuid LootTargetGUID { get; set; }
-        public System.Nullable<uint> PlayerFlags { get; set; }
-        public System.Nullable<uint> PlayerFlagsEx { get; set; }
-        public System.Nullable<uint> GuildRankID { get; set; }
-        public System.Nullable<uint> GuildDeleteDate { get; set; }
-        public System.Nullable<int> GuildLevel { get; set; }
-        public System.Nullable<byte> PartyType { get; set; }
-        public System.Nullable<byte> NativeSex { get; set; }
-        public System.Nullable<byte> Inebriation { get; set; }
-        public System.Nullable<byte> PvpTitle { get; set; }
-        public System.Nullable<byte> ArenaFaction { get; set; }
-        public System.Nullable<uint> DuelTeam { get; set; }
-        public System.Nullable<int> GuildTimeStamp { get; set; }
+        public uint PlayerBytes1 { get; set; }
+        public uint PlayerBytes2 { get; set; }
+        public byte PvPRank { get; set; }
+        public uint PlayerFlags { get; set; }
+        public uint PlayerFlagsEx { get; set; }
+        public uint GuildRankID { get; set; }
+        public uint GuildDeleteDate { get; set; }
+        public int GuildLevel { get; set; }
+        public byte PartyType { get; set; }
+        public byte NativeSex { get; set; }
+        public byte Inebriation { get; set; }
+        public byte PvpTitle { get; set; }
+        public byte ArenaFaction { get; set; }
+        public uint DuelTeam { get; set; }
+        public int GuildTimeStamp { get; set; }
         public IQuestLog[] QuestLog { get; } = new IQuestLog[125];
-        public IVisibleItem[] VisibleItems { get; } = new IVisibleItem[19];
-        public System.Nullable<int> PlayerTitle { get; set; }
-        public System.Nullable<int> FakeInebriation { get; set; }
-        public System.Nullable<uint> VirtualPlayerRealm { get; set; }
-        public System.Nullable<uint> CurrentSpecID { get; set; }
-        public System.Nullable<int> TaxiMountAnimKitID { get; set; }
-        public System.Nullable<float>[] AvgItemLevel { get; } = new System.Nullable<float>[6];
-        public System.Nullable<byte> CurrentBattlePetBreedQuality { get; set; }
-        public System.Nullable<int> HonorLevel { get; set; }
-        public System.Nullable<int> Field_B0 { get; set; }
-        public System.Nullable<int> Field_B4 { get; set; }
+        public IVisibleItem[] VisibleItems { get; set; } = new IVisibleItem[19];
+        public int PlayerTitle { get; set; }
+        public int FakeInebriation { get; set; }
+        public uint VirtualPlayerRealm { get; set; }
+        public uint CurrentSpecID { get; set; }
+        public int TaxiMountAnimKitID { get; set; }
+        public float[] AvgItemLevel { get; } = new float[6];
+        public byte CurrentBattlePetBreedQuality { get; set; }
+        public int HonorLevel { get; set; }
+        public int Field_B0 { get; set; }
+        public int Field_B4 { get; set; }
         public ICTROptions CtrOptions { get; set; }
-        public System.Nullable<int> CovenantID { get; set; }
-        public System.Nullable<int> SoulbindID { get; set; }
+        public int CovenantID { get; set; }
+        public int SoulbindID { get; set; }
         public DynamicUpdateField<IChrCustomizationChoice> Customizations { get; } = new DynamicUpdateField<IChrCustomizationChoice>();
         public DynamicUpdateField<IQuestLog> QuestSessionQuestLog { get; } = new DynamicUpdateField<IQuestLog>();
         public DynamicUpdateField<IArenaCooldown> ArenaCooldowns { get; } = new DynamicUpdateField<IArenaCooldown>();
-        public System.Nullable<bool> HasQuestSession { get; set; }
-        public System.Nullable<bool> HasLevelLink { get; set; }
+        public bool HasQuestSession { get; set; }
+        public bool HasLevelLink { get; set; }
+
+        public ChrCustomizationChoice[] GetCustomizations()
+        {
+            ChrCustomizationChoice[] data = new ChrCustomizationChoice[Customizations.Count];
+            for (var i = 0; i < Customizations.Count; ++i)
+            {
+                if (Customizations.UpdateMask.Count > i && Customizations.UpdateMask[i])
+                {
+                    ChrCustomizationChoice custom = Customizations[i] as ChrCustomizationChoice;
+                    if (custom != null)
+                    {
+                        data[i] = custom;
+                    }
+                    else
+                        data[i] = new ChrCustomizationChoice();
+                }
+                else
+                    data[i] = new ChrCustomizationChoice();
+            }
+            return data;
+        }
+
+        public IPlayerData Clone()
+        {
+            PlayerData copy = (PlayerData)MemberwiseClone();
+            copy.VisibleItems = new IVisibleItem[19];
+            for (int i = 0; i < 19; i++)
+                copy.VisibleItems[i] = VisibleItems[i].Clone();
+            return copy;
+        }
     }
 }
 

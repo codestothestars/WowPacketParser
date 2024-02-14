@@ -7,10 +7,10 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_7_45114
 {
     public class ScaleCurve : IScaleCurve
     {
-        public System.Nullable<uint> StartTimeOffset { get; set; }
+        public uint StartTimeOffset { get; set; }
         public Vector2[] Points { get; } = new Vector2[2];
-        public System.Nullable<uint> ParameterCurve { get; set; }
-        public System.Nullable<bool> OverrideActive { get; set; }
+        public uint ParameterCurve { get; set; }
+        public bool OverrideActive { get; set; }
     }
 }
 

@@ -7,25 +7,25 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_7_45114
 {
     public class ItemData : IItemData
     {
-        public System.Nullable<int>[] BonusListIDs { get; set; }
+        public int[] BonusListIDs { get; set; }
         public WowGuid Owner { get; set; }
         public WowGuid ContainedIn { get; set; }
         public WowGuid Creator { get; set; }
         public WowGuid GiftCreator { get; set; }
-        public System.Nullable<uint> StackCount { get; set; }
-        public System.Nullable<uint> Expiration { get; set; }
-        public System.Nullable<int>[] SpellCharges { get; } = new System.Nullable<int>[5];
-        public System.Nullable<uint> DynamicFlags { get; set; }
+        public uint StackCount { get; set; }
+        public uint Expiration { get; set; }
+        public int[] SpellCharges { get; } = new int[5];
+        public uint DynamicFlags { get; set; }
         public IItemEnchantment[] Enchantment { get; } = new IItemEnchantment[13];
-        public System.Nullable<uint> Durability { get; set; }
-        public System.Nullable<uint> MaxDurability { get; set; }
-        public System.Nullable<uint> CreatePlayedTime { get; set; }
-        public System.Nullable<int> Context { get; set; }
-        public System.Nullable<long> CreateTime { get; set; }
-        public System.Nullable<ulong> ArtifactXP { get; set; }
-        public System.Nullable<byte> ItemAppearanceModID { get; set; }
-        public System.Nullable<uint> DynamicFlags2 { get; set; }
-        public System.Nullable<ushort> DEBUGItemLevel { get; set; }
+        public uint Durability { get; set; }
+        public uint MaxDurability { get; set; }
+        public uint CreatePlayedTime { get; set; }
+        public int Context { get; set; }
+        public long CreateTime { get; set; }
+        public ulong ArtifactXP { get; set; }
+        public byte ItemAppearanceModID { get; set; }
+        public uint DynamicFlags2 { get; set; }
+        public ushort DEBUGItemLevel { get; set; }
         public DynamicUpdateField<IArtifactPower> ArtifactPowers { get; } = new DynamicUpdateField<IArtifactPower>();
         public DynamicUpdateField<ISocketedGem> Gems { get; } = new DynamicUpdateField<ISocketedGem>();
         public IItemModList Modifiers { get; set; }

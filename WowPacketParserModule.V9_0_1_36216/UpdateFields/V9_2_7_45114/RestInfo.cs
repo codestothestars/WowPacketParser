@@ -7,8 +7,8 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_7_45114
 {
     public class RestInfo : IRestInfo
     {
-        public System.Nullable<uint> Threshold { get; set; }
-        public System.Nullable<byte> StateID { get; set; }
+        public uint Threshold { get; set; }
+        public byte StateID { get; set; }
     }
 }
 
