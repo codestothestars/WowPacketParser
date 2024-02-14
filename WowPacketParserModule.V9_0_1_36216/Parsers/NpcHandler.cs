@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using WowPacketParser.Enums;
 using WowPacketParser.Misc;
 using WowPacketParser.Parsing;
@@ -118,6 +119,66 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         {
             packet.ReadPackedGuid128("NpcGUID");
             packet.ReadInt32("UiMapID");
+        }
+
+        [HasSniffData]
+        [Parser(Opcode.SMSG_GOSSIP_MESSAGE, ClientVersionBuild.V9_2_5_43903)]
+        public static void HandleNpcGossip(Packet packet)
+        {
+            GossipMenu gossip = new GossipMenu();
+
+            WowGuid guid = packet.ReadPackedGuid128("GossipGUID");
+
+            gossip.ObjectType = guid.GetObjectType();
+            gossip.ObjectEntry = guid.GetEntry();
+
+            int menuId = packet.ReadInt32("GossipID");
+            gossip.Entry = (uint)menuId;
+
+            packet.ReadInt32("FriendshipFactionID");
+
+            gossip.BroadcastTextID = (uint)packet.ReadInt32("BroadcastTextID");
+
+            int optionCount = packet.ReadInt32("GossipOptionsCount");
+            int questCount = packet.ReadInt32("GossipQuestsCount");
+
+            for (int i = 0; i < optionCount; ++i)
+                V6_0_2_19033.Parsers.NpcHandler.ReadGossipOptionsData((uint)menuId, packet, i, "GossipOptions");
+
+            for (int i = 0; i < questCount; ++i)
+                V7_0_3_22248.Parsers.NpcHandler.ReadGossipQuestTextData(packet, i, "GossipQuests");
+
+            Storage.StoreCreatureGossip(guid, (uint)menuId, packet);
+            Storage.Gossips.Add(gossip, packet.TimeSpan);
+            CoreParsers.NpcHandler.CanBeDefaultGossipMenu = false;
+            var lastGossipOption = CoreParsers.NpcHandler.LastGossipOption;
+            var tempGossipOptionPOI = CoreParsers.NpcHandler.TempGossipOptionPOI;
+
+            if (lastGossipOption.HasSelection)
+            {
+                if ((packet.TimeSpan - lastGossipOption.TimeSpan).Duration() <= TimeSpan.FromMilliseconds(2500))
+                {
+                    Storage.GossipMenuOptionActions.Add(new GossipMenuOptionAction { MenuId = lastGossipOption.MenuId, OptionIndex = lastGossipOption.OptionIndex, ActionMenuId = gossip.Entry, ActionPoiId = lastGossipOption.ActionPoiId }, packet.TimeSpan);
+
+                    //keep temp data (for case SMSG_GOSSIP_POI is delayed)
+                    tempGossipOptionPOI.Guid = lastGossipOption.Guid;
+                    tempGossipOptionPOI.MenuId = lastGossipOption.MenuId;
+                    tempGossipOptionPOI.OptionIndex = lastGossipOption.OptionIndex;
+                    tempGossipOptionPOI.ActionMenuId = gossip.Entry;
+                    tempGossipOptionPOI.TimeSpan = lastGossipOption.TimeSpan;
+
+                    // clear lastgossip so no faulty linkings appear
+                    lastGossipOption.Reset();
+                }
+                else
+                {
+                    lastGossipOption.Reset();
+                    tempGossipOptionPOI.Reset();
+
+                }
+            }
+
+            packet.AddSniffData(StoreNameType.Gossip, menuId, guid.GetEntry().ToString(CultureInfo.InvariantCulture));
         }
     }
 }
