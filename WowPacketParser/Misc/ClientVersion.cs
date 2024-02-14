@@ -1200,7 +1200,8 @@ namespace WowPacketParser.Misc
 
             Opcodes.InitializeOpcodeDictionary();
 
-            if (GetVersionDefiningBuild(prevBuild) != GetVersionDefiningBuild(Build))
+            if (GetVersionDefiningBuild(prevBuild) != GetVersionDefiningBuild(Build) ||
+                Opcodes.GetOpcodeDefiningBuild(prevBuild) != Opcodes.GetOpcodeDefiningBuild(Build))
             {
                 _expansion = GetExpansion(version);
                 Handler.ResetHandlers();
