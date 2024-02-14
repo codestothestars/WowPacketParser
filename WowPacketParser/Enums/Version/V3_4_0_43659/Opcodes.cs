@@ -2,7 +2,7 @@
 
 namespace WowPacketParser.Enums.Version.V3_4_0_43659
 {
-    public static class Opcodes_3_4_0
+    public static class Opcodes_3_4_0_Beta
     {
         public static BiDictionary<Opcode, int> Opcodes(Direction direction)
         {
