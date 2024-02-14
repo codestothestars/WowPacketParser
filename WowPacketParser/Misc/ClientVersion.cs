@@ -1407,11 +1407,8 @@ namespace WowPacketParser.Misc
             if (IsClassicVanillaClientVersionBuild(Build) || IsClassicSeasonOfMasteryClientVersionBuild(Build))
                 return AddedInVersion(classicExpansion, classicMajor, classicMinor);
 
-            if (IsBurningCrusadeClassicClientVersionBuild(Build))
+            if (IsBurningCrusadeClassicClientVersionBuild(Build) || IsWrathOfTheLichKingClassicClientVersionBuild(Build))
                 return AddedInVersion(tbcExpansion, tbcMajor, tbcMinor);
-
-            if (IsWrathOfTheLichKingClassicClientVersionBuild(Build))
-                return true;
 
             return AddedInVersion(retailExpansion, retailMajor, retailMinor);
         }

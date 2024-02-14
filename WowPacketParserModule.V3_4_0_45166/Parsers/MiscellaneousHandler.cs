@@ -275,6 +275,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                     packet.ReadByte("UnknownByte", "Unk340", i);
             }
 
+            packet.ResetBitReader();
             V8_0_1_27101.Parsers.MiscellaneousHandler.ReadVoiceChatManagerSettings(packet, "VoiceChatManagerSettings");
 
             if (hasEuropaTicketSystemStatus)

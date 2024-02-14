@@ -8,7 +8,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
     {
         public const int FactionCount = 443;
 
-        [Parser(Opcode.SMSG_INITIALIZE_FACTIONS)]
+        [Parser(Opcode.SMSG_INITIALIZE_FACTIONS, ClientVersionBuild.V3_4_3_51126)]
         public static void HandleInitializeFactions(Packet packet)
         {
             for (var i = 0; i < FactionCount; i++)
