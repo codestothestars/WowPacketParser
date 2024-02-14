@@ -22,10 +22,10 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("CreatureDisplayInfoId", TargetedDbExpansion.Shadowlands)]
         public uint? CreatureDisplayInfoId;
 
-        [DBFieldName("NoActorObject", TargetedDatabase.Shadowlands)]
+        [DBFieldName("NoActorObject", TargetedDbExpansion.Shadowlands)]
         public bool? NoActorObject;
 
-        [DBFieldName("ActivePlayerObject", TargetedDatabase.Shadowlands)]
+        [DBFieldName("ActivePlayerObject", TargetedDbExpansion.Shadowlands)]
         public bool? ActivePlayerObject;
 
         public WowGuid Guid;
