@@ -17,7 +17,7 @@ namespace WowPacketParser.Store.Objects
 
         [DBFieldName("emote_id", 4, DbType = (TargetedDbType.WPP))]
         [DBFieldName("Emote", 4, DbType = (TargetedDbType.TRINITY))]
-        public uint?[] Emote;
+        public int?[] Emote;
 
         [DBFieldName("emote_delay", 4, DbType = (TargetedDbType.WPP))]
         [DBFieldName("EmoteDelay", 4, DbType = (TargetedDbType.TRINITY))]
