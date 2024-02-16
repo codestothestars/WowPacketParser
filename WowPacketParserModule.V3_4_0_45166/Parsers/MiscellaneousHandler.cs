@@ -432,5 +432,12 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             if (hasInstanceGroupSize)
                 packet.ReadUInt32("InstanceGroupSize");
         }
+
+        [Parser(Opcode.SMSG_GAME_TIME_SET)]
+        public static void HandleGametimeSet(Packet packet)
+        {
+            // client just reads 16 bytes, wtf are they for?
+            packet.ReadBytes("Unk", 16);
+        }
     }
 }
