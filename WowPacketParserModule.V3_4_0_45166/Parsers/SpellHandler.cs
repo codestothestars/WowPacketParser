@@ -296,5 +296,42 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             for (var i = 0; i < spellCount; ++i)
                 ReadLearnedSpellInfo(packet, "ClientLearnedSpellData", i);
         }
+
+        [Parser(Opcode.SMSG_SHOW_TRADE_SKILL_RESPONSE)]
+        public static void HandleShowTradeSkillResponse(Packet packet)
+        {
+            packet.ReadPackedGuid128("PlayerGUID");
+
+            packet.ReadInt32<SpellId>("SpellID");
+
+            var int4 = packet.ReadInt32("SkillLineCount");
+            var int20 = packet.ReadInt32("SkillRankCount");
+            var int36 = packet.ReadInt32("SkillMaxRankCount");
+            var int52 = packet.ReadInt32("KnownAbilitySpellCount");
+            var int68 = packet.ReadInt32("UnknownCount1");
+            var int84 = packet.ReadInt32("UnknownCount2");
+            var int100 = packet.ReadInt32("UnknownCount3");
+
+            for (int i = 0; i < int4; i++)
+                packet.ReadInt32("SkillLineIDs", i);
+
+            for (int i = 0; i < int20; i++)
+                packet.ReadInt32("SkillRanks", i);
+
+            for (int i = 0; i < int36; i++)
+                packet.ReadInt32("SkillMaxRanks", i);
+
+            for (int i = 0; i < int52; i++)
+                packet.ReadInt32("KnownAbilitySpellIDs", i);
+
+            for (int i = 0; i < int68; i++)
+                packet.ReadInt32("Unknown1", i);
+
+            for (int i = 0; i < int84; i++)
+                packet.ReadInt32("Unknown2", i);
+
+            for (int i = 0; i < int100; i++)
+                packet.ReadInt32("Unknown3", i);
+        }
     }
 }
