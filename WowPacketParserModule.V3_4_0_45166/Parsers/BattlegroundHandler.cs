@@ -134,5 +134,13 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             for (int i = 0; i < statisticsCount; i++)
                 ReadPvPMatchPlayerStatistics(packet, "Statistics", i);
         }
+
+        [Parser(Opcode.SMSG_ARENA_CROWD_CONTROL_SPELL_RESULT)]
+        public static void HandleArenaCrowdControlSpellResult(Packet packet)
+        {
+            packet.ReadPackedGuid128("PlayerGuid");
+            packet.ReadInt32("CrowdControlSpellID");
+            packet.ReadInt32("CrowdControlItemID");
+        }
     }
 }

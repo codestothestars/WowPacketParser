@@ -16,7 +16,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             else
                 packet.ReadTime("Time", idx);
 
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_2_5_43903))
+            if (ClientVersion.AddedInVersion(9, 2, 5, 1, 14, 3, 2, 5, 4))
             {
                 packet.ResetBitReader();
                 packet.ReadBit("Unknown925", idx);
