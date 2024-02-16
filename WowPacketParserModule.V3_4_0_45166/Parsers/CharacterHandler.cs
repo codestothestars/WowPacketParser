@@ -171,5 +171,38 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadInt32("NumNewTalents");
             packet.ReadInt32("NumNewPvpTalentSlots");
         }
+
+        [Parser(Opcode.SMSG_INSPECT_RESULT)]
+        public static void HandleInspectResult(Packet packet)
+        {
+            WowPacketParserModule.V2_5_1_38835.Parsers.CharacterHandler.ReadPlayerModelDisplayInfo(packet, "DisplayInfo");
+            packet.ReadInt32("Unk");
+            packet.ReadInt32("ItemLevel");
+            packet.ReadByte("LifetimeMaxRank");
+            packet.ReadUInt16("TodayHK");
+            packet.ReadUInt16("YesterdayHK");
+            packet.ReadUInt32("LifetimeHK");
+            packet.ReadUInt32("HonorLevel");
+
+            SpellHandler.ReadTalentInfoUpdate(packet);
+
+            packet.ReadByte("Unk2");
+
+            packet.ResetBitReader();
+            var hasGuildData = packet.ReadBit("HasGuildData");
+            var hasAzeriteLevel = packet.ReadBit("HasAzeriteLevel");
+
+            for (int i = 0; i < 6; i++)
+                WowPacketParserModule.V9_0_1_36216.Parsers.CharacterHandler.ReadPVPBracketData(packet, i, "PVPBracketData");
+
+            if (hasGuildData)
+            {
+                packet.ReadPackedGuid128("GuildGUID");
+                packet.ReadInt32("NumGuildMembers");
+                packet.ReadInt32("GuildAchievementPoints");
+            }
+            if (hasAzeriteLevel)
+                packet.ReadInt32("AzeriteLevel");
+        }
     }
 }
