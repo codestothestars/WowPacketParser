@@ -29,23 +29,24 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             };
 
             gossipOption.OptionID = gossipMessageOption.OptionIndex = (uint)packet.ReadInt32("OptionID", idx);
-            gossipOption.OptionIcon = (GossipOptionIcon?)packet.ReadByte("OptionNPC", idx);
-            gossipMessageOption.OptionIcon = (int) gossipOption.OptionIcon;
+            gossipOption.OptionNpc = (GossipOptionNpc?)packet.ReadByte("OptionNPC", idx);
+            gossipMessageOption.OptionNpc = (int) gossipOption.OptionNpc;
             gossipOption.BoxCoded = gossipMessageOption.BoxCoded = packet.ReadByte("OptionFlags", idx) != 0;
             gossipOption.BoxMoney = gossipMessageOption.BoxCost = (uint)packet.ReadInt32("OptionCost", idx);
             if (ClientVersion.AddedInVersion(ClientBranch.Retail, ClientVersionBuild.V9_2_0_42423) ||
                 ClientVersion.AddedInVersion(ClientBranch.Classic, ClientVersionBuild.V1_14_1_40666) ||
-                ClientVersion.AddedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812))
+                ClientVersion.AddedInVersion(ClientBranch.TBC, ClientVersionBuild.V2_5_3_41812) ||
+                ClientVersion.AddedInVersion(ClientBranch.WotLK, ClientVersionBuild.V3_4_0_45166))
                 gossipOption.Language = packet.ReadUInt32E<Language>("Language", idx);
 
             packet.ResetBitReader();
             uint textLen = packet.ReadBits(12);
             uint confirmLen = packet.ReadBits(12);
             bool hasSpellId = false;
-            if (ClientVersion.AddedInVersion(ClientType.Shadowlands))
+            if (ClientVersion.AddedInVersion(ClientType.Shadowlands) || ClientVersion.IsWotLKClientVersionBuild(ClientVersion.Build))
             {
                 packet.ReadBits("Status", 2, idx);
-                if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_0_2_36639))
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_0_2_36639) || ClientVersion.IsWotLKClientVersionBuild(ClientVersion.Build))
                     hasSpellId = packet.ReadBit();
 
                 uint rewardsCount = packet.ReadUInt32();
@@ -68,7 +69,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 packet.ReadInt32("SpellID", idx);
 
             gossipOption.FillBroadcastTextIDs();
-            gossipOption.FillOptionType(npcGuid);
+
+            if (Settings.TargetedDatabase < TargetedDatabase.Shadowlands)
+                gossipOption.FillOptionType(npcGuid);
+
             Storage.GossipMenuOptions.Add((gossipOption.MenuID, gossipOption.OptionID), gossipOption, packet.TimeSpan);
 
             return gossipMessageOption;
