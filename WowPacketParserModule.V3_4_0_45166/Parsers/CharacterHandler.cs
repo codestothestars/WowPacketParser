@@ -88,8 +88,12 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadBit("BoostInProgress", idx);
             packet.ReadBits("UnkWod61x", 5, idx);
             packet.ReadBits("Unk", 2, idx);
-            packet.ReadBit("RpeResetAvailable", idx);
-            packet.ReadBit("RpeResetQuestClearAvailable", idx);
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_3_51126))
+            {
+                packet.ReadBit("RpeResetAvailable", idx);
+                packet.ReadBit("RpeResetQuestClearAvailable", idx);
+            }
 
             for (var j = 0; j < mailSenderLengths.Length; ++j)
                 mailSenderLengths[j] = packet.ReadBits(6);
@@ -123,7 +127,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadBit("IsLocked");
         }
 
-        [Parser(Opcode.SMSG_ENUM_CHARACTERS_RESULT, ClientVersionBuild.V3_4_3_51505)]
+        [Parser(Opcode.SMSG_ENUM_CHARACTERS_RESULT, ClientVersionBuild.V3_4_1_47720)]
         public static void HandleEnumCharactersResult(Packet packet)
         {
             packet.ReadBit("Success");

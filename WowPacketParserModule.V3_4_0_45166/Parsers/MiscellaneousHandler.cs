@@ -59,10 +59,13 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadInt32("ActiveClassTrialBoostType");
             packet.ReadInt32("MinimumExpansionLevel");
             packet.ReadInt32("MaximumExpansionLevel");
-            packet.ReadInt32("GameRuleUnknown1");
+            packet.ReadInt32("ActiveSeason");
             var gameRuleValuesCount = packet.ReadUInt32("GameRuleValuesCount");
             packet.ReadInt16("MaxPlayerNameQueriesPerPacket");
             packet.ReadInt16("PlayerNameQueryTelemetryInterval");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720))
+                packet.ReadUInt32("PlayerNameQueryInterval");
 
             if (launchETA)
                 packet.ReadPackedTime("LaunchETA");
@@ -191,6 +194,9 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadInt16("MaxPlayerNameQueriesPerPacket");
             packet.ReadInt16("PlayerNameQueryTelemetryInterval");
 
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720))
+                packet.ReadUInt32("PlayerNameQueryInterval");
+
             for (var i = 0; i < gameRuleValuesCount; ++i)
                 ReadGameRuleValuePair(packet, "GameRuleValues");
 
@@ -235,34 +241,37 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadBit("ChatDisabledByDefault");
             packet.ReadBit("ChatDisabledByPlayer");
             packet.ReadBit("LFGListCustomRequiresAuthenticator");
-            packet.ReadBit("BattlegroundsEnabled");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720))
+                packet.ReadBit("AddonsDisabled");
+            packet.ReadBit("WarGamesEnabled");
             var unknown = packet.ReadBit("Unk340");
 
             {
                 packet.ResetBitReader();
-                packet.ReadBit("ToastsDisabled");
-                packet.ReadSingle("ToastDuration");
-                packet.ReadSingle("DelayDuration");
-                packet.ReadSingle("QueueMultiplier");
-                packet.ReadSingle("PlayerMultiplier");
-                packet.ReadSingle("PlayerFriendValue");
-                packet.ReadSingle("PlayerGuildValue");
-                packet.ReadSingle("ThrottleInitialThreshold");
-                packet.ReadSingle("ThrottleDecayTime");
-                packet.ReadSingle("ThrottlePrioritySpike");
-                packet.ReadSingle("ThrottleMinThreshold");
-                packet.ReadSingle("ThrottlePvPPriorityNormal");
-                packet.ReadSingle("ThrottlePvPPriorityLow");
-                packet.ReadSingle("ThrottlePvPHonorThreshold");
-                packet.ReadSingle("ThrottleLfgListPriorityDefault");
-                packet.ReadSingle("ThrottleLfgListPriorityAbove");
-                packet.ReadSingle("ThrottleLfgListPriorityBelow");
-                packet.ReadSingle("ThrottleLfgListIlvlScalingAbove");
-                packet.ReadSingle("ThrottleLfgListIlvlScalingBelow");
-                packet.ReadSingle("ThrottleRfPriorityAbove");
-                packet.ReadSingle("ThrottleRfIlvlScalingAbove");
-                packet.ReadSingle("ThrottleDfMaxItemLevel");
-                packet.ReadSingle("ThrottleDfBestPriority");
+                packet.ReadBit("ToastsDisabled", "QuickJoinConfig");
+                packet.ReadSingle("ToastDuration", "QuickJoinConfig");
+                packet.ReadSingle("DelayDuration", "QuickJoinConfig");
+                packet.ReadSingle("QueueMultiplier", "QuickJoinConfig");
+                packet.ReadSingle("PlayerMultiplier", "QuickJoinConfig");
+                packet.ReadSingle("PlayerFriendValue", "QuickJoinConfig");
+                packet.ReadSingle("PlayerGuildValue", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleInitialThreshold", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleDecayTime", "QuickJoinConfig");
+                packet.ReadSingle("ThrottlePrioritySpike", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleMinThreshold", "QuickJoinConfig");
+                packet.ReadSingle("ThrottlePvPPriorityNormal", "QuickJoinConfig");
+                packet.ReadSingle("ThrottlePvPPriorityLow", "QuickJoinConfig");
+                packet.ReadSingle("ThrottlePvPHonorThreshold", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleLfgListPriorityDefault", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleLfgListPriorityAbove", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleLfgListPriorityBelow", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleLfgListIlvlScalingAbove", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleLfgListIlvlScalingBelow", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleRfPriorityAbove", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleRfIlvlScalingAbove", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleDfMaxItemLevel", "QuickJoinConfig");
+                packet.ReadSingle("ThrottleDfBestPriority", "QuickJoinConfig");
             }
 
             if (hasSessionAlert)
