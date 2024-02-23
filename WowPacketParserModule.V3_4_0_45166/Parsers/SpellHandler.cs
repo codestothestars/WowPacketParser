@@ -62,7 +62,6 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             for (var j = 0; j < optionalCurrenciesCount; ++j)
                 ReadOptionalCurrency(packet, idx, "OptionalCurrency", j);
 
-
             packet.ResetBitReader();
             packet.ReadBits("SendCastFlags", 5, idx);
             var hasMoveUpdate = packet.ReadBit("HasMoveUpdate", idx);
@@ -123,7 +122,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             var hasAmmoDisplayId = packet.ReadBit("HasAmmoDisplayId", idx);
             var hasAmmoInventoryType = packet.ReadBit("HasAmmoInventoryType", idx);
 
-            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V3_4_1_47014))
+            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V3_4_2_49979))
             {
                 for (var i = 0; i < missStatusCount; ++i)
                 {
@@ -147,7 +146,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                 dbdata.AddMissTarget(missTarget);
             }
 
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47014))
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_2_49979))
             {
                 for (var i = 0; i < missStatusCount; ++i)
                 {
@@ -155,7 +154,6 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                     dbdata.AddMissReason(reason);
                 }
             }
-                
 
             for (var i = 0; i < remainingPowerCount; ++i)
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellPowerData(packet, idx, "RemainingPower", i);

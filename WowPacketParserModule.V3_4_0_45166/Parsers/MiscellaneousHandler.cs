@@ -448,5 +448,86 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             // client just reads 16 bytes, wtf are they for?
             packet.ReadBytes("Unk", 16);
         }
+
+        public static void ReadUIEventToast(Packet packet, params object[] args)
+        {
+            packet.ReadInt32("UiEventToastID", args);
+            packet.ReadInt32("Asset", args);
+        }
+
+        [Parser(Opcode.SMSG_SET_CURRENCY, ClientVersionBuild.V3_4_1_47720)]
+        public static void HandleSetCurrency(Packet packet)
+        {
+            packet.ReadInt32("Type");
+            packet.ReadInt32("Quantity");
+            packet.ReadUInt32("Flags");
+            uint toastCount = packet.ReadUInt32("UiEventToastCount");
+            for (var i = 0; i < toastCount; i++)
+                ReadUIEventToast(packet, "UiEventToast", i);
+
+            var hasWeeklyQuantity = packet.ReadBit("HasWeeklyQuantity");
+            var hasTrackedQuantity = packet.ReadBit("HasTrackedQuantity");
+            var hasMaxQuantity = packet.ReadBit("HasMaxQuantity");
+            var hasTotalEarned = packet.ReadBit("HasTotalEarned");
+            packet.ReadBit("SuppressChatLog");
+            var hasQuantityChange = packet.ReadBit("HasQuantityChange");
+            var hasQuantityLostSource = packet.ReadBit("HasQuantityLostSource");
+            var hasQuantityGainSource = packet.ReadBit("HasQuantityGainSource");
+            var hasFirstCraftOperationID = packet.ReadBit("HasFirstCraftOperationID");
+            var hasHasNextRechargeTime = packet.ReadBit("HasNextRechargeTime");
+            var hasRechargeCycleStartTime = false;
+            if (ClientVersion.AddedInVersion(10, 1, 0, 1, 15, 0, 3, 4, 2))
+                hasRechargeCycleStartTime = packet.ReadBit("HasRechargeCycleStartTime");
+
+            if (hasWeeklyQuantity)
+                packet.ReadInt32("WeeklyQuantity");
+
+            if (hasTrackedQuantity)
+                packet.ReadInt32("TrackedQuantity");
+
+            if (hasMaxQuantity)
+                packet.ReadInt32("MaxQuantity");
+
+            if (hasTotalEarned)
+                packet.ReadInt32("TotalEarned");
+
+            if (hasQuantityChange)
+                packet.ReadInt32("QuantityChange");
+
+            if (hasQuantityLostSource)
+                packet.ReadInt32("QuantityLostSource");
+
+            if (hasQuantityGainSource)
+                packet.ReadInt32("QuantityGainSource");
+
+            if (hasFirstCraftOperationID)
+                packet.ReadUInt32("FirstCraftOperationID");
+
+            if (hasHasNextRechargeTime)
+                packet.ReadTime64("NextRechargeTime");
+
+            if (hasRechargeCycleStartTime)
+                packet.ReadTime64("RechargeCycleStartTime");
+        }
+
+        [Parser(Opcode.SMSG_SUMMON_REQUEST)]
+        public static void HandleSummonRequest(Packet packet)
+        {
+            packet.ReadPackedGuid128("SummonerGUID");
+            packet.ReadUInt32("SummonerVirtualRealmAddress");
+            packet.ReadInt32<AreaId>("AreaID");
+            packet.ReadByte("Unknown");
+            packet.ReadBit("ConfirmSummon_NC");
+        }
+
+        [Parser(Opcode.SMSG_ENCOUNTER_END)]
+        public static void HandleEncounterStop(Packet packet)
+        {
+            packet.ReadInt32("EncounterID");
+            packet.ReadInt32<DifficultyId>("DifficultyID");
+            packet.ReadInt32("GroupSize");
+            packet.ReadUInt32("Unknown");
+            packet.ReadBit("Success");
+        }
     }
 }

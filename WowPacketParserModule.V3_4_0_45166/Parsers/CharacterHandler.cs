@@ -176,11 +176,49 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadInt32("NumNewPvpTalentSlots");
         }
 
+        public static void ReadTraitEntry(Packet packet, params object[] indexes)
+        {
+            packet.ReadInt32("TraitNodeID", indexes);
+            packet.ReadInt32("TraitNodeEntryID", indexes);
+            packet.ReadInt32("Rank", indexes);
+            packet.ReadInt32("GrantedRanks", indexes);
+        }
+
+        public static void ReadTraitConfig(Packet packet, params object[] indexes)
+        {
+            packet.ReadInt32("ID", indexes);
+            var type = packet.ReadInt32("Type", indexes);
+            var entries = packet.ReadUInt32();
+
+            switch (type)
+            {
+                case 1:
+                    packet.ReadInt32("ChrSpecializationID", indexes);
+                    packet.ReadInt32("CombatConfigFlags", indexes);
+                    packet.ReadInt32("LocalIdentifier", indexes);
+                    break;
+                case 2:
+                    packet.ReadInt32("SkillLineID", indexes);
+                    break;
+                case 3:
+                    packet.ReadInt32("TraitSystemID", indexes);
+                    break;
+            }
+
+            for (var i = 0u; i < entries; ++i)
+                ReadTraitEntry(packet, indexes, "TraitEntry", i);
+
+            var nameLength = packet.ReadBits(9);
+            packet.ResetBitReader();
+
+            packet.ReadWoWString("Name", nameLength, indexes);
+        }
+
         [Parser(Opcode.SMSG_INSPECT_RESULT)]
         public static void HandleInspectResult(Packet packet)
         {
             WowPacketParserModule.V2_5_1_38835.Parsers.CharacterHandler.ReadPlayerModelDisplayInfo(packet, "DisplayInfo");
-            packet.ReadInt32("Unk");
+            packet.ReadUInt32("Unk");
             packet.ReadInt32("ItemLevel");
             packet.ReadByte("LifetimeMaxRank");
             packet.ReadUInt16("TodayHK");
@@ -196,7 +234,8 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             var hasGuildData = packet.ReadBit("HasGuildData");
             var hasAzeriteLevel = packet.ReadBit("HasAzeriteLevel");
 
-            for (int i = 0; i < 6; i++)
+            int count = ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720) ? 7 : 6;
+            for (int i = 0; i < count; i++)
                 WowPacketParserModule.V9_0_1_36216.Parsers.CharacterHandler.ReadPVPBracketData(packet, i, "PVPBracketData");
 
             if (hasGuildData)
@@ -207,6 +246,14 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             }
             if (hasAzeriteLevel)
                 packet.ReadInt32("AzeriteLevel");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720))
+            {
+                packet.ReadInt32("Level", "TraitInspectData");
+                packet.ReadInt32("ChrSpecializationID", "TraitInspectData");
+                packet.ResetBitReader();
+                ReadTraitConfig(packet, "TraitInspectData", "Traits");
+            }
         }
     }
 }

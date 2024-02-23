@@ -13,15 +13,17 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             var criteriaId = packet.ReadInt32<CriteriaId>("CriteriaID", indexes);
             var quantity = packet.ReadUInt64("Quantity", indexes);
             packet.ReadPackedGuid128("PlayerGUID", indexes);
-            packet.ReadUInt32("Unused343", indexes);
-            packet.ReadUInt32("Flags", indexes);
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_3_51505))
+                packet.ReadUInt32("Unused343", indexes);
             packet.ReadPackedTime("CurrentTime", indexes);
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_3_51505))
+                packet.ReadUInt32("Flags", indexes);
             packet.ReadTime64("ElapsedTime", indexes);
             packet.ReadTime64("CreationTime", indexes);
 
             packet.ResetBitReader();
             var hasRafAcceptanceID = packet.ReadBit("HasRafAcceptanceID", indexes);
-            if (hasRafAcceptanceID)
+            if (hasRafAcceptanceID && ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_3_51505))
                 packet.ReadUInt64("RafAcceptanceID", indexes);
 
             if (Settings.UseDBC)
@@ -69,6 +71,13 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                 if (DBC.Criteria.ContainsKey(criteriaId))
                     if (DBC.Criteria[criteriaId].Type == 46)
                         CoreParsers.AchievementHandler.FactionReputationStore[DBC.Criteria[criteriaId].Asset] = quantity;
+        }
+
+        [Parser(Opcode.SMSG_RESPOND_INSPECT_ACHIEVEMENTS, ClientVersionBuild.V3_4_1_47720)]
+        public static void HandleRespondInspectAchievements(Packet packet)
+        {
+            packet.ReadPackedGuid128("Player");
+            ReadAllAchievements(packet, "Data");
         }
     }
 }

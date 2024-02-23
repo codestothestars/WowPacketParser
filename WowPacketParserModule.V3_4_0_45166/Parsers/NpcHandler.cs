@@ -200,7 +200,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.AddSniffData(StoreNameType.Gossip, menuId, guid.GetEntry().ToString(CultureInfo.InvariantCulture));
         }
 
-        [Parser(Opcode.SMSG_VENDOR_INVENTORY, ClientVersionBuild.V3_4_3_51505)]
+        [Parser(Opcode.SMSG_VENDOR_INVENTORY, ClientVersionBuild.V3_4_1_47720)]
         public static void HandleVendorInventory(Packet packet)
         {
             uint entry = packet.ReadPackedGuid128("VendorGUID").GetEntry();
@@ -222,7 +222,9 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                 int buyCount = packet.ReadInt32("StackCount", i);
                 int maxCount = packet.ReadInt32("Quantity", i);
                 vendor.ExtendedCost = packet.ReadUInt32("ExtendedCostID", i);
-                vendor.PlayerConditionID = packet.ReadUInt32("PlayerConditionFailed", i);
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_2_49979))
+                    vendor.PlayerConditionID = packet.ReadUInt32("PlayerConditionFailed", i);
+                
                 packet.ReadBit("Locked", i);
                 vendor.IgnoreFiltering = packet.ReadBit("DoNotFilterOnVendor", i);
                 packet.ReadBit("Refundable", i);

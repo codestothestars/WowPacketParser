@@ -26,5 +26,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("reward_text", DbType = (TargetedDbType.WPP))]
         [DBFieldName("RewardText", DbType = (TargetedDbType.TRINITY))]
         public string RewardText;
+
+        // just because we need it returned from ReadQuestGiverOfferRewardData in 10.x/3.4.x
+        public WowGuid QuestGiverGuid;
     }
 }
