@@ -10,8 +10,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         {
             packet.ResetBitReader();
 
-            var nameLength = (int)packet.ReadBits(10);
-            var versionLength = (int)packet.ReadBits(10);
+            var nameLength = (int)packet.ReadBits("NameLength", 10);
+            var versionLength = (int)packet.ReadBits("VersionLength", 10);
             packet.ReadBit("Loaded", indexes);
             packet.ReadBit("Disabled", indexes);
             if (nameLength > 1)
