@@ -48,6 +48,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
                     return (byte)((UpdateFields.GetValue<PlayerField, uint>(PlayerField.PLAYER_BYTES_2) >> 24) & 0xFF);
 
                 if (ClientVersion.IsClassicSeasonOfMasteryClientVersionBuild(ClientVersion.Build) ||
+                    ClientVersion.IsClassicSeasonOfDiscoveryClientVersionBuild(ClientVersion.Build) ||
                     ClientVersion.IsBurningCrusadeClassicClientVersionBuild(ClientVersion.Build) ||
                     ClientVersion.IsWrathOfTheLichKingClassicClientVersionBuild(ClientVersion.Build))
                     return (byte)((UpdateFields.GetValue<PlayerField, uint>(PlayerField.PLAYER_BYTES_2) >> 16) & 0xFF);
@@ -176,6 +177,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
                     return (byte)((UpdateFields.GetValue<PlayerField, uint>(PlayerField.PLAYER_BYTES_2) >> 24) & 0xFF);
 
                 if (ClientVersion.IsClassicSeasonOfMasteryClientVersionBuild(ClientVersion.Build) ||
+                    ClientVersion.IsClassicSeasonOfDiscoveryClientVersionBuild(ClientVersion.Build) ||
                     ClientVersion.IsBurningCrusadeClassicClientVersionBuild(ClientVersion.Build) ||
                     ClientVersion.IsWrathOfTheLichKingClassicClientVersionBuild(ClientVersion.Build))
                     return (byte)((UpdateFields.GetValue<PlayerField, uint>(PlayerField.PLAYER_BYTES_2) >> 16) & 0xFF);

@@ -551,6 +551,12 @@ namespace WowPacketParser.Enums
         V1_14_3_49229 = 49229, // live
         V1_14_3_49821 = 49821, // live
 
+        V1_15_1_53009 = 53009, // ptr
+        V1_15_1_53181 = 53181, // both live and ptr
+        V1_15_1_53247 = 53247, // both live and ptr
+        V1_15_1_53495 = 53495, // both live and ptr
+        V1_15_1_53623 = 53623, // both live and ptr
+
         // TBC Classic
         V2_5_1_38598 = 38598, // ptr
         V2_5_1_38644 = 38644,

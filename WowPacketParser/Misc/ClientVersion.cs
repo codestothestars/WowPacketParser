@@ -1157,6 +1157,12 @@ namespace WowPacketParser.Misc
                 case ClientVersionBuild.V3_4_3_51831:
                 case ClientVersionBuild.V3_4_3_51943:
                 case ClientVersionBuild.V3_4_3_52237:
+                // sod
+                case ClientVersionBuild.V1_15_1_53009:
+                case ClientVersionBuild.V1_15_1_53181:
+                case ClientVersionBuild.V1_15_1_53247:
+                case ClientVersionBuild.V1_15_1_53495:
+                case ClientVersionBuild.V1_15_1_53623:
                     return ClientVersionBuild.V3_4_0_45166;
                 case ClientVersionBuild.BattleNetV37165:
                     return ClientVersionBuild.BattleNetV37165;
@@ -1210,6 +1216,8 @@ namespace WowPacketParser.Misc
                 return ClientType.Classic;
             if (IsClassicSeasonOfMasteryClientVersionBuild(build))
                 return ClientType.ClassicSoM;
+            if (IsClassicSeasonOfDiscoveryClientVersionBuild(build))
+                return ClientType.ClassicSoD;
             if (IsBurningCrusadeClassicClientVersionBuild(build))
                 return ClientType.BurningCrusadeClassic;
             if (IsWrathOfTheLichKingClassicClientVersionBuild(build))
@@ -1394,21 +1402,18 @@ namespace WowPacketParser.Misc
 
         public static bool AddedInClassicVersion(byte classicExpansion, byte classicMajor, byte classicMinor, byte tbcExpansion, byte tbcMajor, byte tbcMinor)
         {
-            if (IsClassicVanillaClientVersionBuild(Build) || IsClassicSeasonOfMasteryClientVersionBuild(Build))
+            if (IsClassicVanillaClientVersionBuild(Build) || IsClassicSeasonOfMasteryClientVersionBuild(Build) || IsClassicSeasonOfDiscoveryClientVersionBuild(Build))
                 return AddedInVersion(classicExpansion, classicMajor, classicMinor);
 
-            if (IsBurningCrusadeClassicClientVersionBuild(Build))
+            if (IsBurningCrusadeClassicClientVersionBuild(Build) || IsWrathOfTheLichKingClassicClientVersionBuild(Build))
                 return AddedInVersion(tbcExpansion, tbcMajor, tbcMinor);
-
-            if (IsWrathOfTheLichKingClassicClientVersionBuild(Build))
-                return true;
 
             return false;
         }
 
         public static bool AddedInVersion(byte retailExpansion, byte retailMajor, byte retailMinor, byte classicExpansion, byte classicMajor, byte classicMinor, byte tbcExpansion, byte tbcMajor, byte tbcMinor)
         {
-            if (IsClassicVanillaClientVersionBuild(Build) || IsClassicSeasonOfMasteryClientVersionBuild(Build))
+            if (IsClassicVanillaClientVersionBuild(Build) || IsClassicSeasonOfMasteryClientVersionBuild(Build) || IsClassicSeasonOfDiscoveryClientVersionBuild(Build))
                 return AddedInVersion(classicExpansion, classicMajor, classicMinor);
 
             if (IsBurningCrusadeClassicClientVersionBuild(Build) || IsWrathOfTheLichKingClassicClientVersionBuild(Build))
@@ -1434,6 +1439,7 @@ namespace WowPacketParser.Misc
         {
             return IsClassicVanillaClientVersionBuild(build) ||
                    IsClassicSeasonOfMasteryClientVersionBuild(build) ||
+                   IsClassicSeasonOfDiscoveryClientVersionBuild(build) ||
                    IsBurningCrusadeClassicClientVersionBuild(build) ||
                    IsWrathOfTheLichKingClassicClientVersionBuild(build);
         }
@@ -1635,6 +1641,23 @@ namespace WowPacketParser.Misc
                 case ClientVersionBuild.V1_14_3_48611:
                 case ClientVersionBuild.V1_14_3_49229:
                 case ClientVersionBuild.V1_14_3_49821:
+                {
+                    return true;
+                }
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsClassicSeasonOfDiscoveryClientVersionBuild(ClientVersionBuild build)
+        {
+            switch (build)
+            {
+                case ClientVersionBuild.V1_15_1_53009:
+                case ClientVersionBuild.V1_15_1_53181:
+                case ClientVersionBuild.V1_15_1_53247:
+                case ClientVersionBuild.V1_15_1_53495:
+                case ClientVersionBuild.V1_15_1_53623:
                 {
                     return true;
                 }
@@ -1945,7 +1968,8 @@ namespace WowPacketParser.Misc
                     if (AddedInVersion(2, 5, 3))
                         return 7;
                 }
-                else if (IsWrathOfTheLichKingClassicClientVersionBuild(Build))
+                else if (IsWrathOfTheLichKingClassicClientVersionBuild(Build) ||
+                         IsClassicSeasonOfDiscoveryClientVersionBuild(Build))
                     return 7;
 
                 return 6;
@@ -1979,7 +2003,8 @@ namespace WowPacketParser.Misc
                 if (AddedInVersion(2, 5, 3))
                     return 13;
             }
-            else if (IsWrathOfTheLichKingClassicClientVersionBuild(Build))
+            else if (IsWrathOfTheLichKingClassicClientVersionBuild(Build) ||
+                     IsClassicSeasonOfDiscoveryClientVersionBuild(Build))
             {
                 return 13;
             }

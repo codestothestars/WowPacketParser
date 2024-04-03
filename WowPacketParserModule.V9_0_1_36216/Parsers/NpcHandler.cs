@@ -29,6 +29,9 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
 
             gossipPOI.ID = packet.ReadInt32("ID");
 
+            if (ClientVersion.AddedInVersion(10, 0, 7, 1, 15, 0, 3, 4, 3))
+                gossipPOI.Flags = (uint)packet.ReadInt32("Flags");
+
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V9_1_0_39185))
             {
                 Vector3 pos = packet.ReadVector3("Coordinates");
@@ -50,7 +53,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
                 gossipPOI.WMOGroupID = packet.ReadInt32("WMOGroupID");
 
             packet.ResetBitReader();
-            gossipPOI.Flags = packet.ReadBits("Flags", 14);
+            if (ClientVersion.RemovedInVersion(10, 0, 7, 1, 15, 0, 3, 4, 3))
+                gossipPOI.Flags = packet.ReadBits("Flags", 14);
             uint bit84 = packet.ReadBits(6);
             gossipPOI.Name = packet.ReadWoWString("Name", bit84);
 
