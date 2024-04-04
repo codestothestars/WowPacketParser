@@ -212,22 +212,22 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             int optionsCount = packet.ReadInt32("GossipOptionsCount");
             int questsCount = packet.ReadInt32("GossipQuestsCount");
 
+            bool hasNpcTextID = false;
             bool hasBroadcastTextID = false;
-            bool hasBroadcastTextID2 = false;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47014))
             {
+                hasNpcTextID = packet.ReadBit("HasNpcTextID");
                 hasBroadcastTextID = packet.ReadBit("HasBroadcastTextID");
-                hasBroadcastTextID2 = packet.ReadBit("HasBroadcastTextID2");
             }
 
             for (int i = 0; i < optionsCount; ++i)
                 ReadGossipOptionsData((uint)menuId, guid, packet, i, "GossipOptions");
 
+            if (hasNpcTextID)
+                gossip.TextID = (uint)packet.ReadInt32("TextID");
+
             if (hasBroadcastTextID)
                 gossip.BroadcastTextID = (uint)packet.ReadInt32("BroadcastTextID");
-
-            if (hasBroadcastTextID2)
-                gossip.BroadcastTextID = (uint)packet.ReadInt32("BroadcastTextID2");
 
             for (int i = 0; i < questsCount; ++i)
                 ReadGossipQuestTextData(packet, i, "GossipQuests");
