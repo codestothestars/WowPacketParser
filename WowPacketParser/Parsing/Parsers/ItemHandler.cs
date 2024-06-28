@@ -570,9 +570,12 @@ namespace WowPacketParser.Parsing.Parsers
 
             item.RequiredCityRank = packet.ReadUInt32("Required City Rank");
 
-            item.RequiredRepFaction = packet.ReadUInt32("Required Rep Faction");
+            if (ClientVersion.AddedInVersion(1, 7, 0))
+            {
+                item.RequiredRepFaction = packet.ReadUInt32("Required Rep Faction");
 
-            item.RequiredRepValue = packet.ReadUInt32("Required Rep Value");
+                item.RequiredRepValue = packet.ReadUInt32("Required Rep Value");
+            }
 
             item.MaxCount = packet.ReadInt32("Max Count");
 
@@ -674,7 +677,8 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(1, 12, 0))
                 item.MapID = packet.ReadInt32<MapId>("Map");
 
-            item.BagFamily = packet.ReadInt32E<BagFamilyMask>("Bag Family");
+            if (ClientVersion.AddedInVersion(1, 11, 0))
+                item.BagFamily = packet.ReadInt32E<BagFamilyMask>("Bag Family");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
             {

@@ -775,16 +775,23 @@ namespace WowPacketParser.Parsing.Parsers
         {
             if (packet.Direction == Direction.ServerToClient)
             {
-                var guid = packet.ReadPackedGuid("Guid");
+                var guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid();
+
                 if (ClientVersion.AddedInVersion(1, 10, 0))
                     packet.ReadInt32("Movement Counter");
+
                 ReadMovementInfo(packet, guid);
             }
             else
             {
                 packet.ReadGuid("Guid");
+
                 if (ClientVersion.AddedInVersion(1, 10, 0))
                     packet.ReadInt32("Movement Counter");
+
                 packet.ReadUInt32("Time");
             }
         }
@@ -1598,7 +1605,7 @@ namespace WowPacketParser.Parsing.Parsers
             WowGuid moverGuid;
             if ((ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ||
                 packet.Direction == Direction.ServerToClient) && ClientVersion.Build != ClientVersionBuild.V4_2_2_14545)
-                moverGuid = packet.ReadPackedGuid("Guid");
+                moverGuid = ClientVersion.AddedInVersion(1, 9, 0) ? packet.ReadPackedGuid("Guid") : packet.ReadGuid("Guid");
             else
                 moverGuid = Storage.CurrentActivePlayer != null ? Storage.CurrentActivePlayer : WowGuid64.Empty;
 
@@ -1699,7 +1706,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_WALK_SPEED)]
         public static void HandleMovementSetWalkSpeed(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Walk;
@@ -1710,7 +1721,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_RUN_SPEED, ClientVersionBuild.Zero, ClientVersionBuild.V4_2_2_14545)]
         public static void HandleMovementSetRunSpeed(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Run;
@@ -1721,7 +1736,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_RUN_BACK_SPEED)]
         public static void HandleMovementSetRunBackSpeed(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                             packet.ReadPackedGuid("Guid")
+                             :
+                             packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.RunBack;
@@ -1732,7 +1751,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_SWIM_SPEED)]
         public static void HandleMovementSetSwimSpeed(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Swim;
@@ -1743,7 +1766,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_SWIM_BACK_SPEED)]
         public static void HandleMovementSetSwimBackSpeed(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.SwimBack;
@@ -1754,7 +1781,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.MSG_MOVE_SET_TURN_RATE)]
         public static void HandleMovementSetTurnRate(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("GUID");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             ReadMovementInfo(packet, guid);
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Turn;
@@ -1799,7 +1830,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_WALK_SPEED_CHANGE)]
         public static void HandleForceWalkSpeedChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
@@ -1811,7 +1846,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_RUN_SPEED_CHANGE)]
         public static void HandleForceRunSpeedChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
 
@@ -1827,7 +1866,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_RUN_BACK_SPEED_CHANGE)]
         public static void HandleForceRunBackSpeedChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
@@ -1839,7 +1882,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_SWIM_SPEED_CHANGE)]
         public static void HandleForceSwimSpeedChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
@@ -1851,7 +1898,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_SWIM_BACK_SPEED_CHANGE)]
         public static void HandleForceSwimBackSpeedChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
@@ -1863,7 +1914,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FORCE_TURN_RATE_CHANGE)]
         public static void HandleForceTurnRateChange(Packet packet)
         {
-            WowGuid guid = packet.ReadPackedGuid("Guid");
+            WowGuid guid = ClientVersion.AddedInVersion(1, 9, 0) ?
+                            packet.ReadPackedGuid("Guid")
+                            :
+                            packet.ReadGuid("Guid");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();

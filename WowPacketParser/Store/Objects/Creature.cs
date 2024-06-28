@@ -12,16 +12,16 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("guid", true, true)]
         public string GUID;
 
-        [DBFieldName("original_id")]
+        [DBFieldName("original_id", DbType = (TargetedDbType.WPP))]
         public uint? OriginalID;
 
         [DBFieldName("id")]
         public uint? ID;
 
-        [DBFieldName("total_observation_time")]
+        [DBFieldName("total_observation_time", DbType = (TargetedDbType.WPP))]
         public uint? TotalObservationTime;
 
-        [DBFieldName("longest_observation_time")]
+        [DBFieldName("longest_observation_time", DbType = (TargetedDbType.WPP))]
         public uint? LongestObservationTime;
 
         [DBFieldName("map", false, false, true)]
