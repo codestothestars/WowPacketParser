@@ -3361,9 +3361,12 @@ namespace WowPacketParser.SQL.Builders
                 result.Append(movementSql.Build());
                 result.AppendLine();
 
-                var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(playerServerMovementSplineRows, false, false, "player_movement_server_spline");
-                result.Append(movementSplineSql.Build());
-                result.AppendLine();
+                if (Settings.TargetedDbType == TargetedDbType.WPP)
+                {
+                    var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(playerServerMovementSplineRows, false, false, "player_movement_server_spline");
+                    result.Append(movementSplineSql.Build());
+                    result.AppendLine();
+                }
             }
 
             if (Settings.SqlTables.player_attack_log && playerAttackLogRows.Count != 0)

@@ -355,7 +355,7 @@ namespace WowPacketParser.Store.Objects
         public string TargetType;
     }
 
-    [DBTableName("creature_movement_server_spline")]
+    [DBTableName("creature_movement_server_spline", TargetedDbType.WPP)]
     public sealed class ServerSideMovementSpline : IDataModel
     {
         [DBFieldName("guid", true, true)]

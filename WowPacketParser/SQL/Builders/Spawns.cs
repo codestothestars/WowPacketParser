@@ -951,10 +951,13 @@ namespace WowPacketParser.SQL.Builders
                 result.Append(movementSql.Build());
                 result.AppendLine();
 
-                // creature_movement_server_spline
-                var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(movementSplineRows, false);
-                result.Append(movementSplineSql.Build());
-                result.AppendLine();
+                if (Settings.TargetedDbType == TargetedDbType.WPP)
+                {
+                    // creature_movement_server_spline
+                    var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(movementSplineRows, false);
+                    result.Append(movementSplineSql.Build());
+                    result.AppendLine();
+                }
             }
 
             if (Settings.SqlTables.creature_movement_server_combat && movementCombatRows.Count != 0)
@@ -964,10 +967,13 @@ namespace WowPacketParser.SQL.Builders
                 result.Append(movementSql.Build());
                 result.AppendLine();
 
-                // creature_movement_server_combat_spline
-                var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(movementCombatSplineRows, false, false, "creature_movement_server_combat_spline");
-                result.Append(movementSplineSql.Build());
-                result.AppendLine();
+                if (Settings.TargetedDbType == TargetedDbType.WPP)
+                {
+                    // creature_movement_server_combat_spline
+                    var movementSplineSql = new SQLInsert<ServerSideMovementSpline>(movementCombatSplineRows, false, false, "creature_movement_server_combat_spline");
+                    result.Append(movementSplineSql.Build());
+                    result.AppendLine();
+                }
             }
 
             if (Settings.SqlTables.creature_pet_name && petNameRows.Count != 0)
