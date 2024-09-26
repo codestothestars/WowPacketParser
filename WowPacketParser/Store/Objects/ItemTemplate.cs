@@ -16,85 +16,85 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("subclass")]
         public uint? SubClass;
 
-        [DBFieldName("SoundOverrideSubclass")]
+        [DBFieldName("sound_override_subclass", TargetedDbExpansion.TheBurningCrusade)]
         public int? SoundOverrideSubclass;
 
         [DBFieldName("name")]
         public string Name;
 
-        [DBFieldName("displayid")]
+        [DBFieldName("display_id")]
         public uint? DisplayID;
 
-        [DBFieldName("Quality")]
+        [DBFieldName("quality")]
         public ItemQuality? Quality;
 
-        [DBFieldName("Flags")]
+        [DBFieldName("flags")]
         public ItemProtoFlags? Flags;
 
-        [DBFieldName("FlagsExtra")]
+        [DBFieldName("flags2", TargetedDbExpansion.WrathOfTheLichKing)]
         public ItemFlagExtra? FlagsExtra;
 
-        [DBFieldName("Unk430_1", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("unk_430_1", TargetedDbExpansion.Cataclysm)]
         public float? Unk430_1;
 
-        [DBFieldName("Unk430_2", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("unk_430_2", TargetedDbExpansion.Cataclysm)]
         public float? Unk430_2;
 
-        [DBFieldName("BuyCount")]
+        [DBFieldName("buy_count", TargetedDbExpansion.Cataclysm)]
         public uint? BuyCount;
 
-        [DBFieldName("BuyPrice")]
+        [DBFieldName("buy_price")]
         public long? BuyPrice;
 
-        [DBFieldName("SellPrice")]
+        [DBFieldName("sell_price")]
         public uint? SellPrice;
 
-        [DBFieldName("InventoryType")]
+        [DBFieldName("inventory_type")]
         public InventoryType? InventoryType;
 
-        [DBFieldName("AllowableClass")]
+        [DBFieldName("allowable_class")]
         public ClassMask? AllowedClasses;
 
-        [DBFieldName("AllowableRace")]
+        [DBFieldName("allowable_race")]
         public RaceMask? AllowedRaces;
 
-        [DBFieldName("ItemLevel")]
+        [DBFieldName("item_level")]
         public uint? ItemLevel;
 
-        [DBFieldName("RequiredLevel")]
+        [DBFieldName("required_level")]
         public uint? RequiredLevel;
 
-        [DBFieldName("RequiredSkill")]
+        [DBFieldName("required_skill")]
         public uint? RequiredSkillId;
 
-        [DBFieldName("RequiredSkillRank")]
+        [DBFieldName("required_skill_rank")]
         public uint? RequiredSkillLevel;
 
-        [DBFieldName("requiredspell")]
+        [DBFieldName("required_spell")]
         public uint? RequiredSpell;
 
-        [DBFieldName("requiredhonorrank")]
+        [DBFieldName("required_honor_rank")]
         public uint? RequiredHonorRank;
 
-        [DBFieldName("RequiredCityRank")]
+        [DBFieldName("required_city_rank")]
         public uint? RequiredCityRank;
 
-        [DBFieldName("RequiredReputationFaction")]
+        [DBFieldName("required_reputation_faction", false, false, true)]
         public uint? RequiredRepFaction;
 
-        [DBFieldName("RequiredReputationRank")]
+        [DBFieldName("required_reputation_rank", false, false, true)]
         public uint? RequiredRepValue;
 
-        [DBFieldName("maxcount")]
+        [DBFieldName("max_count")]
         public int? MaxCount;
 
         [DBFieldName("stackable")]
         public int? MaxStackSize;
 
-        [DBFieldName("ContainerSlots")]
+        [DBFieldName("container_slots")]
         public uint? ContainerSlots;
 
-        [DBFieldName("StatsCount", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("stats_count", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm)]
         public uint? StatsCount;
 
         [DBFieldName("stat_type", 10)]
@@ -109,10 +109,10 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("socket_cost_rate", TargetedDbExpansion.Cataclysm, 10)]
         public int?[] SocketCostRate;
 
-        [DBFieldName("ScalingStatDistribution")]
+        [DBFieldName("scaling_stat_distribution", TargetedDbExpansion.WrathOfTheLichKing)]
         public int? ScalingStatDistribution;
 
-        [DBFieldName("ScalingStatValue", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("scaling_stat_value", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm)]
         public uint? ScalingStatValue;
 
         [DBFieldName("dmg_min", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 2)]
@@ -123,7 +123,6 @@ namespace WowPacketParser.Store.Objects
 
         [DBFieldName("dmg_type", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 2)]
         public DamageType?[] DamageTypes;
-
 
         [DBFieldName("armor", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
         public uint? Armor;
@@ -146,7 +145,7 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("arcane_res", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
         public uint? ArcaneResistance;
 
-        [DBFieldName("DamageType", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("damage_type", TargetedDbExpansion.Cataclysm)]
         public DamageType? DamageType;
 
         [DBFieldName("delay")]
@@ -155,7 +154,7 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("ammo_type", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
         public AmmoType? AmmoType;
 
-        [DBFieldName("RangedModRange")]
+        [DBFieldName("range_mod", false, false, true)]
         public float? RangedMod;
 
         [DBFieldName("spellid_", 5)]
@@ -166,9 +165,6 @@ namespace WowPacketParser.Store.Objects
 
         [DBFieldName("spellcharges_", 5)]
         public int?[] TriggeredSpellCharges;
-
-        [DBFieldName("spellppmRate_", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 5)]
-        public float? TriggeredSpellPpmRate;
 
         [DBFieldName("spellcooldown_", 5)]
         public int?[] TriggeredSpellCooldowns;
@@ -185,106 +181,91 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("description")]
         public string Description;
 
-        [DBFieldName("PageText")]
+        [DBFieldName("page_text")]
         public uint? PageText;
 
-        [DBFieldName("LanguageID")]
+        [DBFieldName("page_language")]
         public Language? Language;
 
-        [DBFieldName("PageMaterial")]
+        [DBFieldName("page_material")]
         public PageMaterial? PageMaterial;
 
-        [DBFieldName("startquest")]
+        [DBFieldName("start_quest")]
         public uint? StartQuestId;
 
-        [DBFieldName("lockid")]
+        [DBFieldName("lock_id")]
         public uint? LockId;
 
-        [DBFieldName("Material")]
+        [DBFieldName("material")]
         public Material? Material;
 
         [DBFieldName("sheath")]
         public SheathType? SheathType;
 
-        [DBFieldName("RandomProperty")]
+        [DBFieldName("random_property")]
         public int? RandomProperty;
 
-        [DBFieldName("RandomSuffix")]
+        [DBFieldName("random_suffix", TargetedDbExpansion.TheBurningCrusade)]
         public uint? RandomSuffix;
 
         [DBFieldName("block", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
         public uint? Block;
 
-        [DBFieldName("itemset")]
+        [DBFieldName("set_id")]
         public uint? ItemSet;
 
-        [DBFieldName("MaxDurability")]
+        [DBFieldName("max_durability")]
         public uint? MaxDurability;
 
-        [DBFieldName("area")]
+        [DBFieldName("area_bound")]
         public uint? AreaID;
 
-        [DBFieldName("Map")]
+        [DBFieldName("map_bound", false, false, true)]
         public int? MapID;
 
-        [DBFieldName("BagFamily")]
+        [DBFieldName("bag_family", false, false, true)]
         public BagFamilyMask? BagFamily;
 
-        [DBFieldName("TotemCategory")]
+        [DBFieldName("totem_category", TargetedDbExpansion.TheBurningCrusade)]
         public TotemCategory? TotemCategory;
 
-        [DBFieldName("socketColor_", 3)]
+        [DBFieldName("socket_color_", TargetedDbExpansion.TheBurningCrusade, 3)]
         public ItemSocketColor?[] ItemSocketColors;
 
-        [DBFieldName("socketContent_", 3)]
+        [DBFieldName("socket_content_", TargetedDbExpansion.TheBurningCrusade, 3)]
         public uint?[] SocketContent;
 
-        [DBFieldName("socketBonus")]
+        [DBFieldName("socket_bonus", TargetedDbExpansion.TheBurningCrusade)]
         public int? SocketBonus;
 
-        [DBFieldName("GemProperties")]
+        [DBFieldName("gem_properties", TargetedDbExpansion.TheBurningCrusade)]
         public int? GemProperties;
 
-        [DBFieldName("RequiredDisenchantSkill", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("required_disenchant_skill", TargetedDbExpansion.TheBurningCrusade, TargetedDbExpansion.Cataclysm)]
         public int? RequiredDisenchantSkill;
 
-        [DBFieldName("ArmorDamageModifier")]
+        [DBFieldName("armor_damage_modifier", TargetedDbExpansion.TheBurningCrusade)]
         public float? ArmorDamageModifier;
 
-        [DBFieldName("duration")]
+        [DBFieldName("duration", TargetedDbExpansion.TheBurningCrusade)]
         public uint? Duration;
 
-        [DBFieldName("ItemLimitCategory")]
+        [DBFieldName("item_limit_category", TargetedDbExpansion.WrathOfTheLichKing)]
         public int? ItemLimitCategory;
 
-        [DBFieldName("HolidayId")]
+        [DBFieldName("holiday_id", TargetedDbExpansion.WrathOfTheLichKing)]
         public Holiday? HolidayID;
 
-        [DBFieldName("ScriptName", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
-        public string ScriptName;
-
-        [DBFieldName("DisenchantID", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
-        public uint? DisenchantID;
-
-        [DBFieldName("FoodType", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
-        public uint? FoodType;
-
-        [DBFieldName("minMoneyLoot", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
-        public uint MinMoneyLoot;
-
-        [DBFieldName("maxMoneyLoot", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]
-        public uint MaxMoneyLoot;
-
-        [DBFieldName("StatScalingFactor", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("stat_scaling_factor", TargetedDbExpansion.Cataclysm)]
         public float? StatScalingFactor;
 
-        [DBFieldName("CurrencySubstitutionId", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("currency_substitution_id", TargetedDbExpansion.Cataclysm)]
         public uint? CurrencySubstitutionID;
 
-        [DBFieldName("CurrencySubstitutionCount", TargetedDbExpansion.Cataclysm)]
+        [DBFieldName("currency_substitution_count", TargetedDbExpansion.Cataclysm)]
         public uint? CurrencySubstitutionCount;
 
-        [DBFieldName("VerifiedBuild")]
+        [DBFieldName("sniff_build")]
         public int? VerifiedBuild = ClientVersion.BuildInt;
     }
 }

@@ -13,8 +13,10 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("Entry", true, DbType = (TargetedDbType.CMANGOS))]
         public uint? Entry;
 
-        [DBFieldName("gossip_menu_id", DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY | TargetedDbType.VMANGOS))]
-        [DBFieldName("GossipMenuId", DbType = (TargetedDbType.CMANGOS))]
+        [DBFieldName("gossip_menu_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY | TargetedDbType.VMANGOS))]
+        [DBFieldName("GossipMenuId", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.CMANGOS))]
+        [DBFieldName("gossip_menu_id", TargetedDbExpansion.TheBurningCrusade, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY | TargetedDbType.VMANGOS))]
+        [DBFieldName("GossipMenuId", TargetedDbExpansion.TheBurningCrusade, DbType = (TargetedDbType.CMANGOS))]
         public uint? GossipMenuId;
 
         [DBFieldName("level_min", DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
@@ -61,7 +63,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("UnitFlags", DbType = (TargetedDbType.CMANGOS))]
         public UnitFlags? UnitFlags;
 
-        [DBFieldName("unit_flags2", DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.TheBurningCrusade, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
         public UnitFlags2? UnitFlags2;
 
         [DBFieldName("unit_flags3", TargetedDbExpansion.Legion, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
@@ -80,13 +83,18 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("DynamicFlags", TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.CMANGOS))]
         public UnitDynamicFlagsWOD? DynamicFlagsWod;
 
-        [DBFieldName("vehicle_id", DbType = (TargetedDbType.WPP))]
-        [DBFieldName("VehicleId", DbType = (TargetedDbType.TRINITY))]
-        [DBFieldName("VehicleTemplateId", DbType = (TargetedDbType.CMANGOS))]
+        [DBFieldName("vehicle_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("VehicleId", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.TRINITY))]
+        [DBFieldName("VehicleTemplateId", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.CMANGOS))]
+        [DBFieldName("vehicle_id", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("VehicleId", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.TRINITY))]
+        [DBFieldName("VehicleTemplateId", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.CMANGOS))]
         public uint? VehicleID;
 
-        [DBFieldName("hover_height", DbType = (TargetedDbType.WPP))]
-        [DBFieldName("HoverHeight", DbType = (TargetedDbType.TRINITY))]
+        [DBFieldName("hover_height", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("HoverHeight", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.TRINITY))]
+        [DBFieldName("hover_height", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("HoverHeight", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.TRINITY))]
         public float? HoverHeight;
 
         [DBFieldName("auras", DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]

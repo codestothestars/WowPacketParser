@@ -51,7 +51,7 @@ namespace WowPacketParser.SQL
         /// <summary>
         /// True if counting should include 0
         /// </summary>
-        public readonly bool StartAtZero;
+        public bool StartAtZero;
 
         public readonly LocaleConstant? Locale;
 
@@ -253,6 +253,9 @@ namespace WowPacketParser.SQL
             if (OnlyWhenSavingTransports && !Settings.SaveTransports)
                 return false;
 
+            if (MultipleSniffsOnly && !(!string.IsNullOrWhiteSpace(Settings.SQLFileName) && Settings.DumpFormatWithSQL()))
+                return false;
+
             TargetedDbExpansion target = Settings.TargetedDbExpansion;
 
             if (_addedInVersion.HasValue && !_removedInVersion.HasValue)
@@ -260,9 +263,6 @@ namespace WowPacketParser.SQL
 
             if (_addedInVersion.HasValue && _removedInVersion.HasValue)
                 return target >= _addedInVersion.Value && target < _removedInVersion.Value;
-
-            if (MultipleSniffsOnly && !(!string.IsNullOrWhiteSpace(Settings.SQLFileName) && Settings.DumpFormatWithSQL()))
-                return false;
 
             return true;
         }

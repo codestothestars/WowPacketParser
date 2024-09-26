@@ -541,6 +541,9 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadCString("Title", idx);
         }
 
+        // in vanilla gossip menu ids are not sent, use unique id for all menus
+        private static uint GossipCounter = 0;
+
         [HasSniffData]
         [Parser(Opcode.SMSG_GOSSIP_MESSAGE)]
         public static void HandleNpcGossip(Packet packet)
@@ -555,6 +558,8 @@ namespace WowPacketParser.Parsing.Parsers
             uint menuId = 0;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_4_0_8089))
                 menuId = packet.ReadUInt32("Menu Id");
+            else
+                menuId = ++GossipCounter;
             gossip.Entry = menuId;
 
             Storage.StoreCreatureGossip(guid, menuId, packet);
