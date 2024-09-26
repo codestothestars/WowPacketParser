@@ -18,8 +18,8 @@ namespace WowPacketParser.Store.Objects
         {
             DbGuid = ++DynamicObjectGuidCounter;
 
-            DynamicObjectData = new DynamicObjectData(this);
-            DynamicObjectDataOriginal = new OriginalDynamicObjectData(this);
+            DynamicObjectData = new DynamicObjectData(this, false);
+            DynamicObjectDataOriginal = new DynamicObjectData(this, true);
         }
     }
 }
