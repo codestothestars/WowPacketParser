@@ -7,11 +7,13 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
     public class GameObjectData : IGameObjectData
     {
         private WoWObject Object { get; }
-        private Dictionary<int, UpdateField> UpdateFields => Object.UpdateFields;
+        private Dictionary<int, UpdateField> UpdateFields => (UseOriginalData ? Object.OriginalUpdateFields : Object.UpdateFields);
+        private bool UseOriginalData;
 
-        public GameObjectData(WoWObject obj)
+        public GameObjectData(WoWObject obj, bool useOriginal)
         {
             Object = obj;
+            UseOriginalData = useOriginal;
         }
 
         public WowGuid CreatedBy
@@ -67,79 +69,10 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         public byte AnimProgress => (byte)(ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056)
                 ? ((UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_BYTES_1) & 0xFF000000) >> 24)
-                : UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_ANIMPROGRESS));
+                : UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_ANIMPROGRESS, 100));
 
         public uint CustomParam => UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_FIELD_CUSTOM_PARAM);
 
-        public IGameObjectData Clone() { return new GameObjectData(Object); }
-    }
-    public class OriginalGameObjectData : IGameObjectData
-    {
-        private WoWObject Object { get; }
-        private Dictionary<int, UpdateField> UpdateFields => Object.OriginalUpdateFields;
-
-        public OriginalGameObjectData(WoWObject obj)
-        {
-            Object = obj;
-        }
-
-        public WowGuid CreatedBy
-        {
-            get
-            {
-                if (!ClientVersion.AddedInVersion(ClientType.WarlordsOfDraenor))
-                {
-                    var parts = UpdateFields.GetArray<GameObjectField, uint>(GameObjectField.GAMEOBJECT_FIELD_CREATED_BY, 2);
-                    return new WowGuid64(Utilities.MAKE_PAIR64(parts[0], parts[1]));
-                }
-                else
-                {
-                    var parts = UpdateFields.GetArray<GameObjectField, uint>(GameObjectField.GAMEOBJECT_FIELD_CREATED_BY, 4);
-                    return new WowGuid128(Utilities.MAKE_PAIR64(parts[0], parts[1]), Utilities.MAKE_PAIR64(parts[2], parts[3]));
-                }
-            }
-        }
-
-        public int DisplayID => UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_DISPLAYID);
-
-        public uint Flags => UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_FLAGS);
-
-        public uint DynamicFlags => (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056)
-                ? UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_DYNAMIC)
-                : UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_DYN_FLAGS));
-
-        public int Level => UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_LEVEL);
-
-        public Quaternion ParentRotation
-        {
-            get
-            {
-                var parts = UpdateFields.GetArray<GameObjectField, float?>(GameObjectField.GAMEOBJECT_PARENTROTATION, 4);
-                return new Quaternion(parts[0].GetValueOrDefault(0.0f), parts[1].GetValueOrDefault(0.0f),
-                    parts[2].GetValueOrDefault(0.0f), parts[3].GetValueOrDefault(1.0f));
-            }
-        }
-
-        public int FactionTemplate => UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_FACTION);
-
-        public sbyte State => (sbyte)(ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056)
-            ? (UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_BYTES_1) & 0x000000FF)
-            : UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_STATE));
-
-        public sbyte TypeID => (sbyte)((UpdateFields.GetValue<GameObjectField, int>(GameObjectField.GAMEOBJECT_BYTES_1) & 0x0000FF00) >> 8);
-
-        public uint ArtKit => (byte)(ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056)
-                ? ((UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_BYTES_1) & 0x00FF0000) >> 16)
-                : UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_ARTKIT));
-
-        public byte PercentHealth => (byte)((UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_BYTES_1) & 0xFF000000) >> 24);
-
-        public byte AnimProgress => (byte)(ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056)
-                ? ((UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_BYTES_1) & 0xFF000000) >> 24)
-                : UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_ANIMPROGRESS));
-
-        public uint CustomParam => UpdateFields.GetValue<GameObjectField, uint>(GameObjectField.GAMEOBJECT_FIELD_CUSTOM_PARAM);
-
-        public IGameObjectData Clone() { return new GameObjectData(Object); }
+        public IGameObjectData Clone() { return new GameObjectData(Object, UseOriginalData); }
     }
 }

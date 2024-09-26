@@ -20,8 +20,8 @@ namespace WowPacketParser.Store.Objects
         {
             DbGuid = ++GameObjectGuidCounter;
 
-            GameObjectData = new GameObjectData(this);
-            GameObjectDataOriginal = new OriginalGameObjectData(this);
+            GameObjectData = new GameObjectData(this, false);
+            GameObjectDataOriginal = new GameObjectData(this, true);
         }
 
         public override bool IsTemporarySpawn()

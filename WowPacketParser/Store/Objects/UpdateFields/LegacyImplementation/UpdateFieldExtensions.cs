@@ -46,7 +46,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
         /// <param name="dict">The dictionary</param>
         /// <param name="updateField">The update field we want</param>
         /// <returns></returns>
-        public static TK GetValue<T, TK>(this Dictionary<int, UpdateField> dict, T updateField) // where T: System.Enum // C# 7.3
+        public static TK GetValue<T, TK>(this Dictionary<int, UpdateField> dict, T updateField, TK defaultValue = default(TK)) // where T: System.Enum // C# 7.3
         {
             UpdateField uf;
             if (dict != null && dict.TryGetValue(Enums.Version.UpdateFields.GetUpdateField(updateField), out uf))
@@ -67,7 +67,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
                 }
             }
 
-            return default(TK);
+            return defaultValue;
         }
 
         /// <summary>
