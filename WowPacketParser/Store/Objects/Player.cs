@@ -29,8 +29,8 @@ namespace WowPacketParser.Store.Objects
         public Player() : base(false)
         {
             DbGuid = ++PlayerGuidCounter;
-            PlayerData = new PlayerData(this);
-            PlayerDataOriginal = new OriginalPlayerData(this);
+            PlayerData = new PlayerData(this, false);
+            PlayerDataOriginal = new PlayerData(this, true);
             ActivePlayerData = new ActivePlayerData(this, false);
             ActivePlayerDataOriginal = new ActivePlayerData(this, true);
         }
