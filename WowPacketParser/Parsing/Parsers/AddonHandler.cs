@@ -32,6 +32,12 @@ namespace WowPacketParser.Parsing.Parsers
             }
             else
             {
+                if (ClientVersion.RemovedInVersion(1, 11, 0))
+                {
+                    newPacket.ReadSByte("Unknown1");
+                    newPacket.ReadUInt32("Unknown2");
+                }
+
                 int count = 0;
 
                 while (newPacket.Position != newPacket.Length)
@@ -48,6 +54,38 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             newPacket.ClosePacket(false);
+        }
+
+        [Parser(Opcode.SMSG_ADDON_INFO, ClientVersionBuild.Zero, ClientVersionBuild.V1_11_0_5344)]
+        public static void HandleServerAddonsListVanilla(Packet packet)
+        {
+            // This packet requires _addonCount from CMSG_AUTH_SESSION to be parsed.
+            if (_addonCount == -1)
+            {
+                packet.AddValue("Error", "CMSG_AUTH_SESSION was not received - cannot successfully parse this packet.");
+                packet.ReadToEnd();
+                return;
+            }
+
+            if (packet.ReadBool("InfoProvided"))
+            {
+                if (packet.ReadBool("KeyProvided"))
+                    packet.ReadBytes("KeyData", 256);
+            }
+
+            for (var i = 0; i < _addonCount; i++)
+            {
+                packet.ReadByteE<SecureAddonStatus>("Status", i);
+                if (packet.ReadBool("InfoProvided", i))
+                {
+                    if (packet.ReadBool("KeyProvided", i))
+                        packet.ReadBytes("KeyData", 256);
+
+                    packet.ReadInt32("Revision", i);
+                }
+                if (packet.ReadBool("UrlProvided", i))
+                    packet.ReadCString("Url", i);
+            }
         }
 
         [Parser(Opcode.SMSG_ADDON_INFO)]
