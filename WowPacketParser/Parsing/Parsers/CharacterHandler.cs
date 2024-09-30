@@ -1375,6 +1375,12 @@ namespace WowPacketParser.Parsing.Parsers
             }
         }
 
+        [Parser(Opcode.SMSG_SET_REST_START)]
+        public static void HandleSetRestStart(Packet packet)
+        {
+            packet.ReadUInt32("RestedTime");
+        }
+
         [Parser(Opcode.CMSG_ENUM_CHARACTERS)]
         [Parser(Opcode.CMSG_HEARTH_AND_RESURRECT)]
         [Parser(Opcode.CMSG_SELF_RES)]

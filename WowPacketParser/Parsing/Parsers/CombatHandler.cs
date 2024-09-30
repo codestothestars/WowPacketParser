@@ -175,7 +175,7 @@ namespace WowPacketParser.Parsing.Parsers
             if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_RAGE_GAIN))
                 packet.ReadInt32("RageGained");
 
-            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_UNK0))
+            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_DEBUG))
             {
                 packet.ReadInt32("Unk Attacker State 3 1");
                 packet.ReadSingle("Unk Attacker State 3 2");
@@ -200,7 +200,57 @@ namespace WowPacketParser.Parsing.Parsers
             Storage.StoreUnitAttackLog(attackData);
         }
 
-        [Parser(Opcode.SMSG_ATTACKER_STATE_UPDATE, ClientVersionBuild.Zero, ClientVersionBuild.V4_0_6_13596)]
+        [Parser(Opcode.SMSG_ATTACKER_STATE_UPDATE, ClientVersionBuild.Zero, ClientVersionBuild.V1_10_0_5140)]
+        public static void HandleAttackerStateUpdateVanilla(Packet packet)
+        {
+            UnitMeleeAttackLog attackData = new UnitMeleeAttackLog();
+            var hitInfo = packet.ReadInt32E<SpellHitInfoVanilla>("HitInfo");
+            attackData.HitInfo = (uint)hitInfo;
+            attackData.Attacker = ClientVersion.AddedInVersion(1, 9, 0) ? packet.ReadPackedGuid("AttackerGUID") : packet.ReadGuid("AttackerGUID");
+            attackData.Victim = ClientVersion.AddedInVersion(1, 9, 0) ? packet.ReadPackedGuid("TargetGUID") : packet.ReadGuid("TargetGUID");
+            attackData.Damage = packet.ReadInt32("Damage");
+
+            attackData.SubDamageCount = packet.ReadByte("Sub Damage Count");
+            for (int i = 0; i < attackData.SubDamageCount; i++)
+            {
+                attackData.TotalSchoolMask |= (uint)packet.ReadInt32("SchoolMask", i);
+                packet.ReadSingle("Float Damage", i);
+                packet.ReadInt32("Int Damage", i);
+                attackData.TotalAbsorbedDamage += packet.ReadInt32("Damage Absorbed", i);
+                attackData.TotalResistedDamage += packet.ReadInt32("Damage Resisted", i);
+            }
+
+            attackData.VictimState = (uint)packet.ReadInt32E<VictimStates>("VictimState");
+            attackData.AttackerState = packet.ReadInt32("AttackerState");
+            attackData.SpellId = (uint)packet.ReadInt32<SpellId>("Melee Spell ID ");
+            attackData.BlockedDamage = packet.ReadInt32("Block Amount");
+
+            /*
+            if (hitInfo.HasAnyFlag(SpellHitInfoVanilla.HITINFO_DEBUG))
+            {
+                packet.ReadUInt32("UnkDebug1");
+                packet.ReadSingle("UnkDebug2");
+                packet.ReadSingle("UnkDebug3");
+                packet.ReadSingle("UnkDebug4");
+                packet.ReadSingle("UnkDebug5");
+                packet.ReadSingle("UnkDebug6");
+                packet.ReadSingle("UnkDebug7");
+                packet.ReadSingle("UnkDebug8");
+                packet.ReadSingle("UnkDebug9");
+                for (int i = 0; i < 5; ++i)
+                {
+                    packet.ReadSingle("UnkDebugPair1", i);
+                    packet.ReadSingle("UnkDebugPair2", i);
+                }
+                packet.ReadUInt32("UnkDebug10");
+            }
+            */
+
+            attackData.Time = packet.Time;
+            Storage.StoreUnitAttackLog(attackData);
+        }
+
+        [Parser(Opcode.SMSG_ATTACKER_STATE_UPDATE, ClientVersionBuild.V1_10_0_5140, ClientVersionBuild.V4_0_6_13596)]
         public static void HandleAttackerStateUpdate(Packet packet)
         {
             UnitMeleeAttackLog attackData = new UnitMeleeAttackLog();
@@ -242,10 +292,11 @@ namespace WowPacketParser.Parsing.Parsers
                 hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_BLOCK))
                 attackData.BlockedDamage = packet.ReadInt32("Block Amount");
 
-            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_RAGE_GAIN))
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056) &&
+                hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_RAGE_GAIN))
                 packet.ReadInt32("Rage Gained");
 
-            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_UNK0))
+            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_DEBUG))
             {
                 packet.ReadInt32("Unk Attacker State 3 1");
                 packet.ReadSingle("Unk Attacker State 3 2");

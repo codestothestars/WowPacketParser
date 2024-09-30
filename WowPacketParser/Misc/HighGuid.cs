@@ -28,6 +28,7 @@ namespace WowPacketParser.Misc
             { HighGuidTypeLegacy.Group, HighGuidType.RaidGroup },
             { HighGuidTypeLegacy.BattleGround2, HighGuidType.PVPQueueGroup }, // ?? unused in wpp
             { HighGuidTypeLegacy.MOTransport, HighGuidType.Transport }, // ?? unused in wpp
+            { HighGuidTypeLegacy.MOTransport2, HighGuidType.Transport },
             { HighGuidTypeLegacy.Guild, HighGuidType.Guild },
             { HighGuidTypeLegacy.Item, HighGuidType.Item },
             { HighGuidTypeLegacy.DynObject, HighGuidType.DynamicObject },

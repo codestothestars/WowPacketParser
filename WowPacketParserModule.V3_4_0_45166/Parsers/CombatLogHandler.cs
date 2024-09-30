@@ -72,7 +72,7 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_RAGE_GAIN))
                 packet.ReadInt32("RageGained", indexes);
 
-            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_UNK0))
+            if (hitInfo.HasAnyFlag(SpellHitInfo.HITINFO_DEBUG))
             {
                 packet.ReadInt32("Unk Attacker State 3 1", indexes);
                 packet.ReadSingle("Unk Attacker State 3 2", indexes);

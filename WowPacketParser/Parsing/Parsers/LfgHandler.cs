@@ -729,6 +729,20 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadBit("Player (1)/ Party (0)");
         }
 
+        [Parser(Opcode.MSG_LOOKING_FOR_GROUP)]
+        public static void HandleLookingForGroup(Packet packet)
+        {
+            if (packet.Direction == Direction.ServerToClient)
+                packet.ReadInt32("Status");
+        }
+
+        [Parser(Opcode.SMSG_MEETINGSTONE_SETQUEUE)]
+        public static void HandleMeetingStoneSetQueue(Packet packet)
+        {
+            packet.ReadInt32("AreaId");
+            packet.ReadByte("Status");
+        }
+
         [Parser(Opcode.CMSG_LFG_PLAYER_LOCK_INFO_REQUEST)]
         [Parser(Opcode.CMSG_LFG_PARTY_LOCK_INFO_REQUEST)]
         [Parser(Opcode.CMSG_DF_GET_JOIN_STATUS)]
