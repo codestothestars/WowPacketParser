@@ -131,7 +131,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("unit_flags", DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
         public uint? UnitFlag;
 
-        [DBFieldName("unit_flags2", DbType = (TargetedDbType.WPP))]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.TheBurningCrusade, DbType = (TargetedDbType.WPP))]
         public uint? UnitFlag2;
 
         [DBFieldName("dynamic_flags", DbType = (TargetedDbType.WPP))]
@@ -179,7 +180,14 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("sheath_state", DbType = (TargetedDbType.WPP))]
         public uint? SheatheState;
 
-        [DBFieldName("pvp_flags", DbType = (TargetedDbType.WPP))]
+        [DBFieldName("misc_flags", TargetedDbExpansion.Zero, TargetedDbExpansion.TheBurningCrusade, DbType = (TargetedDbType.WPP))]
+        public uint? MiscFlags;
+
+        [DBFieldName("debuff_limit", TargetedDbExpansion.TheBurningCrusade, TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.WPP))]
+        public uint? DebuffLimit;
+
+        [DBFieldName("pvp_flags", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("pvp_flags", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.WPP))]
         public uint? PvpFlags;
 
         //[DBFieldName("pet_flags", DbType = (TargetedDbType.WPP))]
@@ -236,7 +244,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("channel_spell_id", DbType = (TargetedDbType.WPP))]
         public uint? ChannelSpellId;
 
-        [DBFieldName("channel_visual_id", DbType = (TargetedDbType.WPP))]
+        [DBFieldName("channel_visual_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("channel_visual_id", TargetedDbExpansion.Legion, DbType = (TargetedDbType.WPP))]
         public uint? ChannelVisualId;
 
         [DBFieldName("auras", DbType = (TargetedDbType.WPP))]

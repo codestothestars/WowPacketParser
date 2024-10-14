@@ -7,10 +7,13 @@ namespace WowPacketParser.Parsing.Parsers
     {
         public static void ReadSingleContactBlock(Packet packet, bool onlineCheck)
         {
-            var status = packet.ReadByteE<ContactStatus>("Status");
+            if (ClientVersion.AddedInVersion(1, 9, 0) || onlineCheck)
+            {
+                var status = packet.ReadByteE<ContactStatus>("Status");
 
-            if (onlineCheck && status == ContactStatus.Offline)
-                return;
+                if (onlineCheck && status == ContactStatus.Offline)
+                    return;
+            }
 
             packet.ReadInt32<AreaId>("Area");
             packet.ReadInt32("Level");

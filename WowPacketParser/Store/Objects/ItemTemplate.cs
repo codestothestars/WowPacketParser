@@ -115,13 +115,16 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("scaling_stat_value", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm)]
         public uint? ScalingStatValue;
 
-        [DBFieldName("dmg_min", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 2)]
+        [DBFieldName("dmg_min", TargetedDbExpansion.Zero, TargetedDbExpansion.WrathOfTheLichKing, 2)]
+        [DBFieldName("dmg_min", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm, 5)]
         public float?[] DamageMins;
 
-        [DBFieldName("dmg_max", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 2)]
+        [DBFieldName("dmg_max", TargetedDbExpansion.Zero, TargetedDbExpansion.WrathOfTheLichKing, 5)]
+        [DBFieldName("dmg_max", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm, 2)]
         public float?[] DamageMaxs;
 
-        [DBFieldName("dmg_type", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 2)]
+        [DBFieldName("dmg_type", TargetedDbExpansion.Zero, TargetedDbExpansion.WrathOfTheLichKing, 5)]
+        [DBFieldName("dmg_type", TargetedDbExpansion.WrathOfTheLichKing, TargetedDbExpansion.Cataclysm, 2)]
         public DamageType?[] DamageTypes;
 
         [DBFieldName("armor", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm)]

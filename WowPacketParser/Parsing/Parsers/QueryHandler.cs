@@ -146,11 +146,13 @@ namespace WowPacketParser.Parsing.Parsers
                 for (int i = 0; i < 2; ++i)
                     creature.KillCredits[i] = packet.ReadUInt32("Kill Credit", i);
             }
-            else // Did they stop sending pet spell data after 3.1?
+            else
             {
                 if (ClientVersion.RemovedInVersion(ClientType.WrathOfTheLichKing))
                     packet.ReadInt32("Unk Int");
-                creature.PetSpellDataID = packet.ReadUInt32("Pet Spell Data Id");
+
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_8_1_4769))
+                    creature.PetSpellDataID = packet.ReadUInt32("Pet Spell Data Id");
             }
 
             int displayIdCount = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? 4 : 1;

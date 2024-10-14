@@ -158,7 +158,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("unit_flags")]
         public uint? UnitFlags;
 
-        [DBFieldName("unit_flags2")]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero)]
+        [DBFieldName("unit_flags2", TargetedDbExpansion.TheBurningCrusade)]
         public uint? UnitFlags2;
 
         [DBFieldName("current_health")]
@@ -191,14 +192,21 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("vis_flags")]
         public uint? VisFlags;
 
-        [DBFieldName("anim_tier", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]
-        [DBFieldName("anim_tier", TargetedDbExpansion.WrathOfTheLichKing, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("anim_tier", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero)]
+        [DBFieldName("anim_tier", TargetedDbExpansion.WrathOfTheLichKing)]
         public uint? AnimTier;
 
         [DBFieldName("sheath_state")]
         public uint? SheatheState;
 
-        [DBFieldName("pvp_flags")]
+        [DBFieldName("misc_flags", TargetedDbExpansion.Zero, TargetedDbExpansion.TheBurningCrusade)]
+        public uint? MiscFlags;
+
+        [DBFieldName("debuff_limit", TargetedDbExpansion.TheBurningCrusade, TargetedDbExpansion.WrathOfTheLichKing)]
+        public uint? DebuffLimit;
+
+        [DBFieldName("pvp_flags", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero)]
+        [DBFieldName("pvp_flags", TargetedDbExpansion.WrathOfTheLichKing)]
         public uint? PvpFlags;
 
         //[DBFieldName("pet_flags")]
@@ -249,7 +257,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("channel_spell_id")]
         public uint? ChannelSpellId;
 
-        [DBFieldName("channel_visual_id")]
+        [DBFieldName("channel_visual_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero)]
+        [DBFieldName("channel_visual_id", TargetedDbExpansion.Legion)]
         public uint? ChannelVisualId;
 
         [DBFieldName("equipment_cache")]

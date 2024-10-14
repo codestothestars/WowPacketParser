@@ -31,6 +31,7 @@ namespace WowPacketParser.Misc
             { HighGuidTypeLegacy.MOTransport2, HighGuidType.Transport },
             { HighGuidTypeLegacy.Guild, HighGuidType.Guild },
             { HighGuidTypeLegacy.Item, HighGuidType.Item },
+            { HighGuidTypeLegacy.Item2, HighGuidType.Item },
             { HighGuidTypeLegacy.DynObject, HighGuidType.DynamicObject },
             { HighGuidTypeLegacy.GameObject, HighGuidType.GameObject },
             { HighGuidTypeLegacy.Transport2, HighGuidType.Transport },

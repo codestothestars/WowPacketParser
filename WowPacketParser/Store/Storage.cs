@@ -767,7 +767,7 @@ namespace WowPacketParser.Store
             {
                 GameObjectUniqueAnim uniqueData = new GameObjectUniqueAnim
                 {
-                    GameObjectEntry = guid.GetEntry(),
+                    GameObjectEntry = GetCurrentObjectEntry(guid),
                     AnimId = animData.AnimId,
                     AsDespawn = animData.AsDespawn,
                     SniffId = sniffId,
@@ -853,7 +853,7 @@ namespace WowPacketParser.Store
                 {
                     CreatureUniqueEmote uniqueEmote = new CreatureUniqueEmote
                     {
-                        Entry = guid.GetEntry(),
+                        Entry = GetCurrentObjectEntry(guid),
                         EmoteId = (uint)emote,
                         EmoteName = emote.ToString(),
                         SniffId = packet.SniffId

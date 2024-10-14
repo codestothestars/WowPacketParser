@@ -2715,6 +2715,8 @@ namespace WowPacketParser.SQL.Builders
                     playerRow.Data.VisFlags = player.UnitDataOriginal.VisFlags;
                     playerRow.Data.AnimTier = player.UnitDataOriginal.AnimTier;
                     playerRow.Data.SheatheState = player.UnitDataOriginal.SheatheState;
+                    playerRow.Data.MiscFlags = player.UnitDataOriginal.MiscFlags;
+                    playerRow.Data.DebuffLimit = player.UnitDataOriginal.DebuffLimit;
                     playerRow.Data.PvpFlags = player.UnitDataOriginal.PvpFlags;
                     //playerRow.Data.PetFlags = player.UnitDataOriginal.PetFlags;
                     playerRow.Data.ShapeshiftForm = player.UnitDataOriginal.ShapeshiftForm;

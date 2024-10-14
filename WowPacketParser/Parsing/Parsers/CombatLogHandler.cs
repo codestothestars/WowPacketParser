@@ -113,8 +113,15 @@ namespace WowPacketParser.Parsing.Parsers
 
         private static void ReadSpellRemoveLogVanilla(Packet packet, object index = null)
         {
-            packet.ReadPackedGuid("Target GUID", index);
-            packet.ReadPackedGuid("Caster GUID", index); // Can be 0
+            if (ClientVersion.AddedInVersion(1, 12, 0))
+            {
+                packet.ReadPackedGuid("Target GUID", index);
+                packet.ReadPackedGuid("Caster GUID", index); // Can be 0
+            }
+            else
+            {
+                packet.ReadGuid("Target GUID", index);
+            }
 
             var count = packet.ReadInt32("Count", index);
 
@@ -217,6 +224,17 @@ namespace WowPacketParser.Parsing.Parsers
                             packet.ReadInt32("Slot", index, i, j);
                             break;
                         }
+                        case SpellEffect.Summon:
+                        case SpellEffect.SummonPet:
+                        case SpellEffect.Jump:
+                        case SpellEffect.JumpDest:
+                        case SpellEffect.GameobjectDamage:
+                        case SpellEffect.GameobjectRepair:
+                        {
+                            if (ClientVersion.AddedInVersion(1, 9, 0))
+                                goto fallthrough;
+                            break;
+                        }
                         case SpellEffect.Instakill:
                         case SpellEffect.Resurrect:
                         case SpellEffect.Dispel:
@@ -234,12 +252,6 @@ namespace WowPacketParser.Parsing.Parsers
                         case SpellEffect.CreateRandomItem:
                         case SpellEffect.DismissPet:
                         case SpellEffect.TransDoor:
-                        case SpellEffect.Summon:
-                        case SpellEffect.SummonPet:
-                        case SpellEffect.Jump:
-                        case SpellEffect.JumpDest:
-                        case SpellEffect.GameobjectDamage:
-                        case SpellEffect.GameobjectRepair:
                         case SpellEffect.GameobjectSetDestructionState:
                         case SpellEffect.KillCredit:
                         case SpellEffect.UntrainTalents:
@@ -251,6 +263,7 @@ namespace WowPacketParser.Parsing.Parsers
                         case SpellEffect.SummonObjectSlot3:
                         case SpellEffect.SummonObjectSlot4:
                         case SpellEffect.Unk112:
+                        fallthrough:
                         {
                             packet.ReadGuid("Target", i, j);
                             break;

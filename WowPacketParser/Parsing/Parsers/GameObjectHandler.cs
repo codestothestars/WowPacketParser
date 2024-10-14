@@ -147,6 +147,12 @@ namespace WowPacketParser.Parsing.Parsers
             Storage.StoreGameObjectDespawnAnim(guid, packet.Time);
         }
 
+        [Parser(Opcode.SMSG_GAMEOBJECT_SPAWN_ANIM)]
+        public static void HandleGOSpawnAnim(Packet packet)
+        {
+            WowGuid guid = packet.ReadGuid("GUID");
+        }
+
         [Parser(Opcode.SMSG_GAME_OBJECT_CUSTOM_ANIM)]
         public static void HandleGOCustomAnim(Packet packet)
         {

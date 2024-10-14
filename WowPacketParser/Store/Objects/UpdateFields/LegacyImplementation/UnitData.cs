@@ -437,6 +437,10 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         public byte SheatheState => (byte)(UpdateFields.GetValue<UnitField, uint>(UnitField.UNIT_FIELD_BYTES_2) & 0xFF);
 
+        public byte MiscFlags => (byte)(ClientVersion.RemovedInVersion(ClientVersionBuild.V2_0_1_6180)
+                ? (byte)((UpdateFields.GetValue<UnitField, uint>(UnitField.UNIT_FIELD_BYTES_2) >> 8) & 0xFF)
+                : 0);
+
         public byte DebuffLimit => (byte)(ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) &&
                                           ClientVersion.RemovedInVersion(ClientVersionBuild.V3_0_2_9056)
                 ? (byte)((UpdateFields.GetValue<UnitField, uint>(UnitField.UNIT_FIELD_BYTES_2) >> 8) & 0xFF)

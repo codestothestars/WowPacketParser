@@ -147,5 +147,29 @@ namespace WowPacketParser.Parsing.Parsers
 
             Storage.StoreText(text, packet);
         }
+
+        [Parser(Opcode.CMSG_MESSAGECHAT)]
+        public static void HandleClientChatMessage(Packet packet)
+        {
+            var type = packet.ReadInt32E<ChatMessageTypeVanilla>("Type");
+
+            packet.ReadInt32E<Language>("Language");
+
+            switch (type)
+            {
+                case ChatMessageTypeVanilla.Whisper:
+                {
+                    packet.ReadCString("Recipient");
+                    break;
+                }
+                case ChatMessageTypeVanilla.Channel:
+                {
+                    packet.ReadCString("Channel");
+                    break;
+                }
+            }
+
+            packet.ReadCString("Message");
+        }
     }
 }

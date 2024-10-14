@@ -214,6 +214,8 @@ namespace WowPacketParser.SQL.Builders
                 row.Data.VisFlags = unitData.VisFlags;
                 row.Data.AnimTier = unitData.AnimTier;
                 row.Data.SheatheState = unitData.SheatheState;
+                row.Data.MiscFlags = unitData.MiscFlags;
+                row.Data.DebuffLimit = unitData.DebuffLimit;
                 row.Data.PvpFlags = unitData.PvpFlags;
                 //row.Data.PetFlags = unitData.PetFlags;
                 row.Data.ShapeshiftForm = unitData.ShapeshiftForm;

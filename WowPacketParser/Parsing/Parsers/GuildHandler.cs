@@ -121,7 +121,9 @@ namespace WowPacketParser.Parsing.Parsers
         {
             var size = packet.ReadUInt32("Number Of Members");
             packet.ReadCString("MOTD");
-            packet.ReadCString("Info");
+
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadCString("Info");
 
             var numFields = packet.ReadInt32("Number Of Ranks");
             for (var i = 0; i < numFields; i++)
@@ -154,6 +156,8 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (!online)
                     packet.ReadUInt32("Last Online", i);
+                else if (ClientVersion.RemovedInVersion(1, 9, 0))
+                    packet.ReadByte("Party Status", i);
 
                 packet.ReadCString("Public Note", i);
                 packet.ReadCString("Officer Note", i);

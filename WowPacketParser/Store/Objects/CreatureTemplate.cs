@@ -55,8 +55,9 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("MeleeBaseAttackTime", DbType = (TargetedDbType.CMANGOS))]
         public uint? BaseAttackTime;
 
-        [DBFieldName("unit_class", TargetedDbExpansion.Zero, TargetedDbExpansion.BattleForAzeroth, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS | TargetedDbType.TRINITY))]
-        [DBFieldName("UnitClass", TargetedDbExpansion.Zero, TargetedDbExpansion.BattleForAzeroth, DbType = (TargetedDbType.CMANGOS))]
+        [DBFieldName("unit_class", DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
+        [DBFieldName("unit_class", TargetedDbExpansion.Zero, TargetedDbExpansion.BattleForAzeroth, DbType = (TargetedDbType.TRINITY))]
+        [DBFieldName("UnitClass", DbType = (TargetedDbType.CMANGOS))]
         public uint? UnitClass;
 
         [DBFieldName("unit_flags", DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS | TargetedDbType.TRINITY))]
@@ -71,15 +72,12 @@ namespace WowPacketParser.Store.Objects
         public UnitFlags3? UnitFlags3;
 
         [DBFieldName("dynamicflags", TargetedDbExpansion.Zero, TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.TRINITY))]
-        [DBFieldName("dynamic_flags", TargetedDbExpansion.Zero, TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
         [DBFieldName("DynamicFlags", TargetedDbExpansion.Zero, TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.CMANGOS))]
         public UnitDynamicFlags? DynamicFlags;
 
         [DBFieldName("dynamicflags", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.TRINITY))]
-        [DBFieldName("dynamic_flags", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.VMANGOS))]
         [DBFieldName("DynamicFlags", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.CMANGOS))]
         [DBFieldName("dynamicflags", TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.TRINITY))]
-        [DBFieldName("dynamic_flags", TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
         [DBFieldName("DynamicFlags", TargetedDbExpansion.WarlordsOfDraenor, DbType = (TargetedDbType.CMANGOS))]
         public UnitDynamicFlagsWOD? DynamicFlagsWod;
 
@@ -352,8 +350,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("type_flags2", TargetedDbExpansion.Cataclysm, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
         public uint? TypeFlags2;
 
-        [DBFieldName("pet_spell_list_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Cataclysm, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
-        [DBFieldName("PetSpellDataId", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Cataclysm, DbType = (TargetedDbType.TRINITY | TargetedDbType.CMANGOS))]
+        [DBFieldName("pet_spell_list_id", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Cataclysm, Nullable = true, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
+        [DBFieldName("PetSpellDataId", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Cataclysm, Nullable = true, DbType = (TargetedDbType.TRINITY | TargetedDbType.CMANGOS))]
         public uint? PetSpellDataID;
 
         [DBFieldName("health_multiplier", TargetedDbExpansion.WrathOfTheLichKingClassic, TargetedDbExpansion.Zero, DbType = (TargetedDbType.WPP))]

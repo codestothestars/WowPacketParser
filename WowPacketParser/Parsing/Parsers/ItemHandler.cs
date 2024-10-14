@@ -677,7 +677,7 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(1, 12, 0))
                 item.MapID = packet.ReadInt32<MapId>("Map");
 
-            if (ClientVersion.AddedInVersion(1, 11, 0))
+            if (ClientVersion.AddedInVersion(1, 9, 0))
                 item.BagFamily = packet.ReadInt32E<BagFamilyMask>("Bag Family");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))

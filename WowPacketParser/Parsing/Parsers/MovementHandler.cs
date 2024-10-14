@@ -313,7 +313,7 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_MONSTER_MOVE_TRANSPORT, Direction.ServerToClient))
             {
-                WowGuid transportGuid = packet.ReadPackedGuid("Transport GUID");
+                WowGuid transportGuid = ClientVersion.AddedInVersion(1, 9, 0) ? packet.ReadPackedGuid("Transport GUID") : packet.ReadGuid("Transport GUID");
                 if (monsterMove != null)
                     monsterMove.TransportGuid = transportGuid;
 
@@ -2053,10 +2053,31 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadInt32("Movement Counter");
             ReadMovementInfo(packet, guid);
-            packet.ReadInt32("Apply");
+            
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadInt32("Apply");
+            else
+                packet.ReadSingle("Apply");
         }
 
         [Parser(Opcode.CMSG_MOVE_KNOCK_BACK_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
+        public static void HandleMoveKnockBackAck(Packet packet)
+        {
+            WowGuid guid;
+            if (ClientVersion.Build < ClientVersionBuild.V3_0_2_9056)
+                guid = packet.ReadGuid("Guid");
+            else
+                guid = packet.ReadPackedGuid("Guid");
+
+            if (ClientVersion.AddedInVersion(1, 10, 0))
+                packet.ReadInt32("Movement Counter");
+
+            ReadMovementInfo(packet, guid);
+
+            if (ClientVersion.RemovedInVersion(1, 9, 0))
+                packet.ReadSingle("New Speed");
+        }
+
         [Parser(Opcode.CMSG_FORCE_MOVE_UNROOT_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
         [Parser(Opcode.CMSG_FORCE_MOVE_ROOT_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
         [Parser(Opcode.CMSG_MOVE_GRAVITY_ENABLE_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
@@ -2332,7 +2353,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_MOVE_KNOCK_BACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_2_2_14545)]
         public static void HandleMoveKnockBack(Packet packet)
         {
-            packet.ReadPackedGuid("GUID");
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadPackedGuid("GUID");
+            else
+                packet.ReadGuid("GUID");
+
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadUInt32("Movement Counter");
             packet.ReadSingle("X direction");

@@ -228,6 +228,7 @@ namespace WowPacketParser.Enums
         Unknown270    = 0x10E, // pets and mounts?
         Guild         = 0x10F,
         Item          = 0x400, // Container
+        Item2         = 0xB00, // seen in a vanilla snif
         DynObject     = 0xF00, // Corpses
         GameObject    = 0xF01,
         Transport     = 0xF02,

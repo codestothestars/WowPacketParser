@@ -28,9 +28,9 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadByteE<GroupUpdateFlag>("Update Flags", i);
             }
 
-            packet.ReadGuid("Leader GUID");
+            WowGuid leaderGuid = packet.ReadGuid("Leader GUID");
 
-            if (numFields <= 0)
+            if (numFields <= 0 && leaderGuid.IsEmpty())
                 return;
 
             packet.ReadByteE<LootMethod>("Loot Method");
@@ -42,7 +42,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_PARTY_MEMBER_FULL_STATE)]
         public static void HandlePartyMemberStats(Packet packet)
         {
-            packet.ReadPackedGuid("GUID");
+            if (ClientVersion.AddedInVersion(1, 9, 0))
+                packet.ReadPackedGuid("GUID");
+            else
+                packet.ReadGuid("GUID");
+
             var updateFlags = packet.ReadUInt32E<GroupUpdateFlagVanilla>("Update Flags");
 
             if (updateFlags.HasFlag(GroupUpdateFlagVanilla.Status))

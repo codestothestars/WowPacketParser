@@ -89,9 +89,13 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadByte("Unk Byte");
         }
 
+        private static bool IsFirstAuthResponse = true;
+
         [Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.Zero, ClientVersionBuild.V4_2_2_14545)]
         public static void HandleAuthSession(Packet packet)
         {
+            IsFirstAuthResponse = true;
+
             // Do not overwrite version after Handler was initialized
             packet.ReadInt32E<ClientVersionBuild>("Client Build");
 
@@ -123,6 +127,8 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.V4_2_2_14545, ClientVersionBuild.V4_3_0_15005)]
         public static void HandleAuthSession422(Packet packet)
         {
+            IsFirstAuthResponse = true;
+
             packet.ReadByte("Byte");
             packet.ReadByte("Byte");
             packet.ReadInt32("Int32");
@@ -168,6 +174,8 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.V4_3_0_15005, ClientVersionBuild.V4_3_2_15211)]
         public static void HandleAuthSession430(Packet packet)
         {
+            IsFirstAuthResponse = true;
+
             packet.ReadInt32("Int32");
             packet.ReadByte("Digest (1)");
             packet.ReadInt64("Int64");
@@ -207,6 +215,8 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.V4_3_2_15211, ClientVersionBuild.V4_3_3_15354)]
         public static void HandleAuthSession432(Packet packet)
         {
+            IsFirstAuthResponse = true;
+
             var sha = new byte[20];
             packet.ReadInt32("Int32");
             sha[12] = packet.ReadByte();
@@ -259,6 +269,8 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.V5_0_5_16048)]
         public static void HandleAuthSession505(Packet packet)
         {
+            IsFirstAuthResponse = true;
+
             var sha = new byte[20];
             packet.ReadUInt32("UInt32 2");//18
             sha[2] = packet.ReadByte();//24
@@ -326,6 +338,8 @@ namespace WowPacketParser.Parsing.Parsers
                     break;
                 }
             }
+
+            IsFirstAuthResponse = false;
         }
 
         [Parser(Opcode.SMSG_AUTH_RESPONSE, ClientVersionBuild.V5_0_5_16048)]
@@ -375,10 +389,15 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             packet.ReadByteE<ResponseCode>("Auth Code");
+
+            IsFirstAuthResponse = false;
         }
 
         public static void ReadAuthResponseInfo(Packet packet)
         {
+            if (!IsFirstAuthResponse && ClientVersion.RemovedInVersion(ClientVersionBuild.V2_0_1_6180))
+                return;
+
             packet.ReadInt32("Billing Time Remaining");
             packet.ReadByteE<BillingFlag>("Billing Flags");
             packet.ReadInt32("Billing Time Rested");
@@ -394,7 +413,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void ReadQueuePositionInfo(Packet packet)
         {
             packet.ReadInt32("Queue Position");
-            packet.ReadBool("Realm Has Free Character Migration");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                packet.ReadBool("Realm Has Free Character Migration");
         }
 
         [Parser(Opcode.CMSG_PLAYER_LOGIN, ClientVersionBuild.Zero, ClientVersionBuild.V4_2_2_14545)]

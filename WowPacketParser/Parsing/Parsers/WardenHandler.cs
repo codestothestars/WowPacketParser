@@ -8,6 +8,9 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_WARDEN_DATA)]
         public static void HandleServerWardenData(Packet packet)
         {
+            packet.AsHex();
+            packet.ReadToEnd();
+            /*
             var opcode = packet.ReadByteE<WardenServerOpcode>("Warden Server Opcode");
 
             packet.SetPosition(0);
@@ -62,11 +65,15 @@ namespace WowPacketParser.Parsing.Parsers
                     break;
                 }
             }
+            */
         }
 
         [Parser(Opcode.CMSG_WARDEN_DATA)]
         public static void HandleClientWardenData(Packet packet)
         {
+            packet.AsHex();
+            packet.ReadToEnd();
+            /*
             var opcode = packet.ReadByteE<WardenClientOpcode>("Warden Client Opcode");
 
             switch (opcode)
@@ -85,6 +92,7 @@ namespace WowPacketParser.Parsing.Parsers
                     break;
                 }
             }
+            */
         }
 
         [Parser(Opcode.SMSG_CHECK_FOR_BOTS)]

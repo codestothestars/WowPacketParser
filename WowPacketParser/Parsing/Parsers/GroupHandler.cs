@@ -64,7 +64,7 @@ namespace WowPacketParser.Parsing.Parsers
                     packet.ReadByteE<LfgRoleFlag>("Role", i);
             }
 
-            packet.ReadGuid("Leader GUID");
+            WowGuid leaderGuid = packet.ReadGuid("Leader GUID");
 
             if (numFields <= 0)
                 return;

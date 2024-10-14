@@ -73,6 +73,8 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         byte AnimTier { get; }
         int CreatedBySpell { get; }
         byte SheatheState { get; }
+        byte MiscFlags { get; }
+        byte DebuffLimit { get; }
         byte PvpFlags { get; }
         byte PetFlags { get; }
         byte ShapeshiftForm { get; }

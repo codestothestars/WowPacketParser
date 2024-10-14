@@ -4334,7 +4334,7 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadInt32("Spline Time", index);
                 monsterMove.MoveTime = (uint)packet.ReadInt32("Spline Full Time", index);
 
-                if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_8_0_4714))
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_8_1_4769))
                     packet.ReadInt32("Spline ID", index);
 
                 var splineCount = packet.ReadInt32("Waypoints Count", index);

@@ -171,6 +171,10 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_2_5_43903
         public DynamicUpdateField<int> WorldEffects { get; } = new DynamicUpdateField<int>();
         public DynamicUpdateField<WowGuid> ChannelObjects { get; } = new DynamicUpdateField<WowGuid>();
 
+        // placeholders for interface compatibility
+        public byte MiscFlags { get; set; }
+        public byte DebuffLimit { get; set; }
+
         public IUnitData Clone()
         {
             UnitData copy = (UnitData)MemberwiseClone();

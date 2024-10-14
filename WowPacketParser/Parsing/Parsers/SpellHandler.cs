@@ -1568,6 +1568,18 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadInt32("Cooldown Mod");
         }
 
+        [Parser(Opcode.SMSG_RESISTLOG)]
+        public static void HandleResistLog(Packet packet)
+        {
+            packet.ReadGuid("Attacker GUID");
+            packet.ReadGuid("Victim GUID");
+            packet.ReadInt32<SpellId>("Spell ID");
+            packet.ReadSingle("UnkFloat_1");
+            packet.ReadSingle("UnkFloat_2");
+            packet.ReadInt32("UnkInt32_1");
+            packet.ReadInt32("UnkInt32_2");
+        }
+
         [Parser(Opcode.SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA)]
         [Parser(Opcode.CMSG_CANCEL_AUTO_REPEAT_SPELL)]
         [Parser(Opcode.CMSG_CANCEL_GROWTH_AURA)]

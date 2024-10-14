@@ -294,7 +294,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_VENDOR_INVENTORY, ClientVersionBuild.Zero, ClientVersionBuild.V4_2_2_14545)]
         public static void HandleVendorInventoryList(Packet packet)
         {
-            uint entry = packet.ReadGuid("GUID").GetEntry();
+            var guid = packet.ReadGuid("GUID");
             int count = packet.ReadByte("Item Count");
 
             if (count == 0)
@@ -307,7 +307,7 @@ namespace WowPacketParser.Parsing.Parsers
             {
                 NpcVendor vendor = new NpcVendor
                 {
-                    Entry = entry,
+                    Entry = Storage.GetCurrentObjectEntry(guid),
                     Slot = packet.ReadInt32("Item Position", i),
                     SniffId = packet.SniffId
                 };

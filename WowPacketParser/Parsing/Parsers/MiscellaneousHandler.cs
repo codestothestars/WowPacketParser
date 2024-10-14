@@ -477,10 +477,12 @@ namespace WowPacketParser.Parsing.Parsers
             weatherUpdate.State = packet.ReadInt32E<WeatherState>("State");
             weatherUpdate.Grade = packet.ReadSingle("Grade");
 
-            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V2_0_1_6180))
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_9_0_4937) &&
+                ClientVersion.RemovedInVersion(ClientVersionBuild.V2_0_1_6180))
                 weatherUpdate.Sound = packet.ReadUInt32("Sound");
 
-            weatherUpdate.Instant = packet.ReadByte("Instant Change");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_10_0_5140))
+                weatherUpdate.Instant = packet.ReadByte("Instant Change");
 
             weatherUpdate.UnixTimeMs = (ulong)packet.UnixTimeMs;
             Storage.WeatherUpdates.Add(weatherUpdate, packet.TimeSpan);
@@ -660,6 +662,9 @@ namespace WowPacketParser.Parsing.Parsers
                 if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                     packet.ReadByteE<Gender>("Gender", i);
                 packet.ReadUInt32<ZoneId>("Zone Id", i);
+
+                if (ClientVersion.RemovedInVersion(1, 9, 0))
+                    packet.ReadUInt32("Party Status", i);
             }
         }
 

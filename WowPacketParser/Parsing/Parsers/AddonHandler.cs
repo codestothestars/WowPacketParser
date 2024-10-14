@@ -43,9 +43,9 @@ namespace WowPacketParser.Parsing.Parsers
                 while (newPacket.Position != newPacket.Length)
                 {
                     newPacket.ReadCString("Name");
-                    newPacket.ReadBool("Enabled");
-                    newPacket.ReadInt32("CRC");
-                    newPacket.ReadInt32("Unk Int32");
+                    newPacket.ReadBool("Uses public key");
+                    newPacket.ReadInt32("Public key CRC");
+                    newPacket.ReadInt32("URL file CRC");
 
                     count++;
                 }
@@ -67,10 +67,10 @@ namespace WowPacketParser.Parsing.Parsers
                 return;
             }
 
-            if (packet.ReadBool("InfoProvided"))
+            if (packet.ReadBool("InfoProvided", "WowDev"))
             {
-                if (packet.ReadBool("KeyProvided"))
-                    packet.ReadBytes("KeyData", 256);
+                if (packet.ReadBool("KeyProvided", "WowDev"))
+                    packet.ReadBytes("KeyData", 256, "WowDev");
             }
 
             for (var i = 0; i < _addonCount; i++)

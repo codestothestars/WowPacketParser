@@ -134,7 +134,11 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
         public DynamicUpdateField<WowGuid> ChannelObjects { get; } = new DynamicUpdateField<WowGuid>();
         public int CreatureFamily { get; set; }
         public int CreatureType { get; set; }
-        
+
+        // placeholders for interface compatibility
+        public byte MiscFlags { get; set; }
+        public byte DebuffLimit { get; set; }
+
         public IUnitData Clone()
         {
             UnitData copy = (UnitData)MemberwiseClone();
