@@ -2560,20 +2560,22 @@ namespace WowPacketParser.Store
             if (guid.GetObjectType() != ObjectType.Unit)
                 return;
 
+            uint entry = GetCurrentObjectEntry(guid);
+
             bool isDefault = false;
-            if (!Storage.CreatureDefaultGossips.ContainsKey(guid.GetEntry()))
+            if (!Storage.CreatureDefaultGossips.ContainsKey(entry))
             {
                 isDefault = true;
-                Storage.CreatureDefaultGossips.Add(guid.GetEntry(), (uint)menuId);
+                Storage.CreatureDefaultGossips.Add(entry, (uint)menuId);
             }
-            else if (Storage.CreatureDefaultGossips[guid.GetEntry()] == menuId)
+            else if (Storage.CreatureDefaultGossips[entry] == menuId)
                 isDefault = true;
             else if (WowPacketParser.Parsing.Parsers.NpcHandler.CanBeDefaultGossipMenu)
                 isDefault = true;
 
             CreatureGossip newGossip = new CreatureGossip
             {
-                CreatureId = guid.GetEntry(),
+                CreatureId = entry,
                 GossipMenuId = menuId,
                 IsDefault = isDefault,
                 SniffId = packet.SniffId,

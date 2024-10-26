@@ -593,6 +593,8 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (ClientVersion.AddedInVersion(ClientType.TheBurningCrusade))
                     gossipMenuOptionBox.BoxText = packet.ReadCString("Box Text", i);
+                else
+                    gossipMenuOptionBox.BoxText = "";
 
                 if (menuId != 0)
                 {
