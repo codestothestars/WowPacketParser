@@ -180,7 +180,7 @@ namespace WowPacketParser.Parsing.Parsers
             uint trainerId = 0;
 
             WowGuid guid = packet.ReadGuid("GUID");
-            uint entry = guid.GetEntry();
+            uint entry = Storage.GetCurrentObjectEntry(guid);
 
             trainer.Type = packet.ReadInt32E<TrainerType>("TrainerType");
 
