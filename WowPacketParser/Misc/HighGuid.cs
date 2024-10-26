@@ -37,6 +37,7 @@ namespace WowPacketParser.Misc
             { HighGuidTypeLegacy.Transport2, HighGuidType.Transport },
             { HighGuidTypeLegacy.Transport, HighGuidType.Transport },
             { HighGuidTypeLegacy.Unit, HighGuidType.Creature },
+            { HighGuidTypeLegacy.Unit2, HighGuidType.Creature },
             { HighGuidTypeLegacy.Pet, HighGuidType.Pet },
             { HighGuidTypeLegacy.Vehicle, HighGuidType.Vehicle },
             { HighGuidTypeLegacy.Unknown270, HighGuidType.Null }

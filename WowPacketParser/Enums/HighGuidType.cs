@@ -235,6 +235,7 @@ namespace WowPacketParser.Enums
         Transport2    = 0x600, // seen in a vanilla sniff, go type 11
         MOTransport2  = 0x800, // seen in a vanilla sniff, go type 15
         Unit          = 0xF03,
+        Unit2         = 0x308,  // seen in a vanilla sniff
         Pet           = 0xF04,
         Vehicle       = 0xF05
     }
