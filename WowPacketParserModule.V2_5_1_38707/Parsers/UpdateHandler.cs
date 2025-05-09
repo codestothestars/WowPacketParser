@@ -444,7 +444,7 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
                 packet.ReadBit("RemoteTimeValid", index);
                 var hasInertia = ClientVersion.IsVersionWithUpdatedMovementInfo() && packet.ReadBit("Has Inertia", index);
 
-                var hasAdvFlying = ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47014) && packet.ReadBit("HasAdvFlying", index);
+                var hasAdvFlying = ClientVersion.AddedInClassicVersion(1, 14, 4, 3, 4, 1) && packet.ReadBit("HasAdvFlying", index);
 
                 if (hasTransport)
                     V8_0_1_27101.Parsers.UpdateHandler.ReadTransportData(moveInfo, guid, packet, index);
@@ -454,7 +454,7 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
 
                 if (hasInertia)
                 {
-                    if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47014))
+                    if (ClientVersion.AddedInClassicVersion(1, 14, 4, 3, 4, 1))
                         packet.ReadInt32("ID", "Inertia");
                     else
                         packet.ReadPackedGuid128("GUID", index, "Inertia");
@@ -498,7 +498,7 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
 
                 packet.ReadSingle("MovementForcesModMagnitude", index);
 
-                if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47014))
+                if (ClientVersion.AddedInClassicVersion(1, 14, 4, 3, 4, 1))
                 {
                     packet.ReadSingle("AdvFlyingAirFriction", index);
                     packet.ReadSingle("AdvFlyingMaxVel", index);
@@ -976,7 +976,7 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
 
                 if (hasActionButtons)
                 {
-                    var actionButtonCount = (ClientVersion.AddedInVersion(ClientVersionBuild.V3_4_1_47720) ? 180 : 132);
+                    var actionButtonCount = (ClientVersion.AddedInClassicVersion(1, 14, 4, 3, 4, 1) ? 180 : 132);
                     for (int i = 0; i < actionButtonCount; i++)
                         packet.ReadInt32("Action", index, i);
                 }
