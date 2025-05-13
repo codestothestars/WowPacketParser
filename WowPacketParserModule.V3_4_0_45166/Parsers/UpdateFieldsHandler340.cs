@@ -612,15 +612,15 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
             {
                 for (var i = 0; i < 7; ++i)
                 {
-                    data.Unk340[i] = packet.ReadSingle("Unk340", indexes, i);
-                    data.Unk340_2[i] = packet.ReadSingle("Unk340_2", indexes, i);
+                    data.PowerRegenFlatModifier[i] = packet.ReadSingle("PowerRegenFlatModifier", indexes, i);
+                    data.PowerRegenInterruptedFlatModifier[i] = packet.ReadSingle("PowerRegenInterruptedFlatModifier", indexes, i);
                 }
             }
             for (var i = 0; i < 7; ++i)
             {
                 data.Power[i] = packet.ReadInt32("Power", indexes, i);
                 data.MaxPower[i] = packet.ReadInt32("MaxPower", indexes, i);
-                data.PowerRegenFlatModifier[i] = packet.ReadSingle("PowerRegenFlatModifier", indexes, i);
+                data.ModPowerRegen[i] = packet.ReadSingle("ModPowerRegen", indexes, i);
             }
             data.Level = packet.ReadInt32("Level", indexes);
             data.EffectiveLevel = packet.ReadInt32("EffectiveLevel", indexes);
@@ -751,7 +751,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
             data.SkinningOwnerGUID = packet.ReadPackedGuid128("SkinningOwnerGUID", indexes);
             if ((flags & UpdateFieldFlag.Owner) != UpdateFieldFlag.None)
             {
-                data.Unk340_3 = packet.ReadPackedGuid128("Unk340_3", indexes);
+                data.ComboTarget = packet.ReadPackedGuid128("ComboTarget", indexes);
             }
             for (var i = 0; i < data.PassiveSpells.Count; ++i)
             {
@@ -1253,7 +1253,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
                 }
                 if (changesMask[108])
                 {
-                    data.Unk340_3 = packet.ReadPackedGuid128("Unk340_3", indexes);
+                    data.ComboTarget = packet.ReadPackedGuid128("ComboTarget", indexes);
                 }
             }
             if (changesMask[109])
@@ -1272,11 +1272,11 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
                 {
                     if (changesMask[113 + i])
                     {
-                        data.Unk340[i] = packet.ReadSingle("Unk340", indexes, i);
+                        data.PowerRegenFlatModifier[i] = packet.ReadSingle("PowerRegenFlatModifier", indexes, i);
                     }
                     if (changesMask[120 + i])
                     {
-                        data.Unk340_2[i] = packet.ReadSingle("Unk340_2", indexes, i);
+                        data.PowerRegenInterruptedFlatModifier[i] = packet.ReadSingle("PowerRegenInterruptedFlatModifier", indexes, i);
                     }
                     if (changesMask[127 + i])
                     {
@@ -1288,7 +1288,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_0_45166
                     }
                     if (changesMask[141 + i])
                     {
-                        data.PowerRegenFlatModifier[i] = packet.ReadSingle("PowerRegenFlatModifier", indexes, i);
+                        data.ModPowerRegen[i] = packet.ReadSingle("ModPowerRegen", indexes, i);
                     }
                 }
             }

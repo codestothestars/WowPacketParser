@@ -35,13 +35,13 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
         public byte Sex { get; set; }
         public byte DisplayPower { get; set; }
         public uint OverrideDisplayPowerID { get; set; }
-        public float[] Unk340 { get; } = new float[7];
-        public float[] Unk340_2 { get; } = new float[7];
+        public float[] PowerRegenFlatModifier { get; } = new float[7];
+        public float[] PowerRegenInterruptedFlatModifier { get; } = new float[7];
         public int[] Power { get; set; } = new int[7];
         public int[] MaxPower { get; set; } = new int[7];
         public int Mana => Power[0];
         public int MaxMana => MaxPower[0];
-        public float[] PowerRegenFlatModifier { get; } = new float[7];
+        public float[] ModPowerRegen { get; } = new float[7];
         public int Level { get; set; }
         public int EffectiveLevel { get; set; }
         public int ContentTuningID { get; set; }
@@ -130,7 +130,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
         public int TaxiNodesID { get; set; }
         public WowGuid GuildGUID { get; set; }
         public WowGuid SkinningOwnerGUID { get; set; }
-        public WowGuid Unk340_3 { get; set; }
+        public WowGuid ComboTarget { get; set; }
         public DynamicUpdateField<IPassiveSpellHistory> PassiveSpells { get; } = new DynamicUpdateField<IPassiveSpellHistory>();
         public DynamicUpdateField<int> WorldEffects { get; } = new DynamicUpdateField<int>();
         public DynamicUpdateField<WowGuid> ChannelObjects { get; } = new DynamicUpdateField<WowGuid>();
