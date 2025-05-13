@@ -10,7 +10,7 @@ namespace WowPacketParserModule.V2_5_1_38707.UpdateFields.V2_5_4_42800
         public uint AnimationDataID { get; set; }
         public uint AnimKitID { get; set; }
         public uint AnimProgress { get; set; }
-        public bool Field_C { get; set; }
+        public bool IsDecay { get; set; }
     }
 }
 

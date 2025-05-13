@@ -93,9 +93,7 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
                 packet.ReadInt64("BidAmount", idx);
 
             for (int i = 0; i < gemsCount; i++)
-            {
-                WowPacketParserModule.V7_0_3_22248.Parsers.ItemHandler.ReadItemGemInstanceData(packet, "Gems", idx, i);
-            }
+                Substructures.ItemHandler.ReadItemGemData(packet, idx, "Gems", i);
 
             if (hasAuctionBucketKey)
                 ReadActionBucketKey(packet, idx);

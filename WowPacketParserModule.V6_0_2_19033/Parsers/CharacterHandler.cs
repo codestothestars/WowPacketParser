@@ -356,7 +356,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             log.Amount = (uint)packet.ReadInt32("Amount");
             log.GroupBonus = packet.ReadSingle("GroupBonus");
 
-            log.RAFBonus = packet.ReadBit("ReferAFriend");
+            if (ClientVersion.RemovedInVersion(10, 0, 2, 1, 14, 4, 3, 4, 1))
+                log.RAFBonus = packet.ReadBit("ReferAFriend");
 
             log.Time = packet.Time;
             Storage.XpGainLogs.Add(log);

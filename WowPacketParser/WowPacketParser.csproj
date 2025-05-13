@@ -695,6 +695,8 @@
     <Compile Include="Store\Objects\FactionStandingUpdate.cs" />
     <Compile Include="Store\Objects\GameObjectTemplateLocale.cs" />
     <Compile Include="Store\Objects\Guilds.cs" />
+    <Compile Include="Store\Objects\ItemEnchantData.cs" />
+    <Compile Include="Store\Objects\ItemGemData.cs" />
     <Compile Include="Store\Objects\ItemInstance.cs" />
     <Compile Include="Store\Objects\LocalesQuestObjective.cs" />
     <Compile Include="Store\Objects\LootTemplate.cs" />

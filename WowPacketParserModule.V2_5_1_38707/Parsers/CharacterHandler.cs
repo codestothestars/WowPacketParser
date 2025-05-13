@@ -100,10 +100,7 @@ namespace WowPacketParserModule.V2_5_1_38835.Parsers
             }
 
             for (int i = 0; i < gemsCount; i++)
-            {
-                packet.ReadByte("Slot", idx, "GemData", i);
-                Substructures.ItemHandler.ReadItemInstance(packet, idx, "GemData", "ItemInstance", i);
-            }
+                Substructures.ItemHandler.ReadItemGemData(packet, idx, "Gems", i);
         }
 
         public static void ReadPlayerModelDisplayInfo(Packet packet, params object[] idx)

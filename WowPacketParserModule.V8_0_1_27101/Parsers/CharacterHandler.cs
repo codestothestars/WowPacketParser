@@ -51,18 +51,12 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
                 }
 
                 for (int i = 0; i < gemsCount; i++)
-                {
-                    packet.ReadByte("Slot", idx, i);
-                    Substructures.ItemHandler.ReadItemInstance(packet, idx, i);
-                }
+                    Substructures.ItemHandler.ReadItemGemData(packet, idx, "Gems", i);
             }
             else
             {
                 for (int i = 0; i < gemsCount; i++)
-                {
-                    packet.ReadByte("Slot", idx, i);
-                    Substructures.ItemHandler.ReadItemInstance(packet, idx, i);
-                }
+                    Substructures.ItemHandler.ReadItemGemData(packet, idx, "Gems", i);
 
                 for (int i = 0; i < enchantsCount; i++)
                 {
