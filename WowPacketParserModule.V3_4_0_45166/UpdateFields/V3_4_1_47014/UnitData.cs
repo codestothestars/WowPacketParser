@@ -126,8 +126,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
         public int LooksLikeMountID { get; set; }
         public int LooksLikeCreatureID { get; set; }
         public int LookAtControllerID { get; set; }
-        public int PerksVendorItemID { get; set; }
-        public int TaxiNodesID { get; set; }
+        public int FlightCapabilityID { get; set; }
         public WowGuid GuildGUID { get; set; }
         public WowGuid SkinningOwnerGUID { get; set; }
         public WowGuid ComboTarget { get; set; }

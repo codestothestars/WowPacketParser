@@ -741,6 +741,7 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
             data.WorldEffects.Resize(packet.ReadUInt32());
             data.ChannelObjects.Resize(packet.ReadUInt32());
             data.SkinningOwnerGUID = packet.ReadPackedGuid128("SkinningOwnerGUID", indexes);
+            data.FlightCapabilityID = packet.ReadInt32("FlightCapabilityID", indexes);
             if ((flags & UpdateFieldFlag.Owner) != UpdateFieldFlag.None)
             {
                 data.ComboTarget = packet.ReadPackedGuid128("ComboTarget", indexes);
@@ -1237,15 +1238,15 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
                 }
                 if (changesMask[106])
                 {
-                    data.PerksVendorItemID = packet.ReadInt32("PerksVendorItemID", indexes);
+                    data.GuildGUID = packet.ReadPackedGuid128("GuildGUID", indexes);
                 }
                 if (changesMask[107])
                 {
-                    data.GuildGUID = packet.ReadPackedGuid128("GuildGUID", indexes);
+                    data.SkinningOwnerGUID = packet.ReadPackedGuid128("SkinningOwnerGUID", indexes);
                 }
                 if (changesMask[108])
                 {
-                    data.SkinningOwnerGUID = packet.ReadPackedGuid128("SkinningOwnerGUID", indexes);
+                    data.FlightCapabilityID = packet.ReadInt32("FlightCapabilityID", indexes);
                 }
                 if (changesMask[109])
                 {
@@ -1504,8 +1505,6 @@ namespace WowPacketParserModule.V3_4_0_45166.UpdateFields.V3_4_1_47014
         public override IPlayerData ReadCreatePlayerData(Packet packet, UpdateFieldFlag flags, params object[] indexes)
         {
             var data = new PlayerData();
-            data.DuelArbiter = packet.ReadPackedGuid128("Bla", indexes); // TODO
-            data.DuelArbiter = packet.ReadPackedGuid128("Bla2", indexes);
             data.DuelArbiter = packet.ReadPackedGuid128("DuelArbiter", indexes);
             data.WowAccount = packet.ReadPackedGuid128("WowAccount", indexes);
             data.LootTargetGUID = packet.ReadPackedGuid128("LootTargetGUID", indexes);
