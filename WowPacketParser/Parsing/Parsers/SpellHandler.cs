@@ -937,7 +937,7 @@ namespace WowPacketParser.Parsing.Parsers
         {
             PlaySpellVisualKit visualKitData = new PlaySpellVisualKit();
             visualKitData.Guid = packet.ReadGuid("Caster GUID");
-            visualKitData.KitId = packet.ReadUInt32("SpellVisualKit ID");
+            visualKitData.KitId = packet.ReadInt32("SpellVisualKit ID");
             visualKitData.Time = packet.Time;
             Storage.SpellPlayVisualKit.Add(visualKitData);
         }
@@ -1008,8 +1008,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleCastVisualKit430(Packet packet)
         {
             PlaySpellVisualKit visualKitData = new PlaySpellVisualKit();
-            visualKitData.KitId = packet.ReadUInt32("KitRecID");
-            visualKitData.KitType = packet.ReadUInt32("KitType");
+            visualKitData.KitId = packet.ReadInt32("KitRecID");
+            visualKitData.KitType = packet.ReadInt32("KitType");
             visualKitData.Duration = packet.ReadUInt32("Duration");
 
             var guid = packet.StartBitStream(0, 4, 3, 6, 5, 7, 2, 1);
@@ -1023,9 +1023,9 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleCastVisualKit434(Packet packet)
         {
             PlaySpellVisualKit visualKitData = new PlaySpellVisualKit();
-            visualKitData.KitType = packet.ReadUInt32("Unk");
-            visualKitData.KitId = packet.ReadUInt32("SpellVisualKit ID");
-            visualKitData.Duration = packet.ReadUInt32("Unk");
+            visualKitData.KitType = packet.ReadInt32("Duration");
+            visualKitData.KitId = packet.ReadInt32("KitRecID");
+            visualKitData.Duration = packet.ReadUInt32("KitType");
 
             var guid = packet.StartBitStream(4, 7, 5, 3, 1, 2, 0, 6);
             packet.ParseBitStream(guid, 0, 4, 1, 6, 7, 2, 3, 5);

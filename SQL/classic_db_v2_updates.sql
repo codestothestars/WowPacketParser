@@ -1878,3 +1878,9 @@ ALTER TABLE `creature_template`
 	CHANGE COLUMN `unit_flags2` `unit_flags2` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'tbc+' AFTER `unit_flags`,
 	CHANGE COLUMN `vehicle_id` `vehicle_id` INT(11) NULL DEFAULT NULL COMMENT 'wotlk+' AFTER `unit_flags2`,
 	CHANGE COLUMN `hover_height` `hover_height` FLOAT NULL DEFAULT NULL COMMENT 'wotlk+' AFTER `vehicle_id`;
+
+ALTER TABLE `play_spell_visual_kit`
+	ALTER `kit_id` DROP DEFAULT;
+ALTER TABLE `play_spell_visual_kit`
+	CHANGE COLUMN `kit_id` `kit_id` INT(10) NOT NULL COMMENT 'references SpellVisualKit.dbc' AFTER `caster_type`,
+	CHANGE COLUMN `kit_type` `kit_type` INT(10) NULL DEFAULT NULL AFTER `kit_id`;

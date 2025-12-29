@@ -22,10 +22,10 @@ namespace WowPacketParser.Store.Objects
         public string CasterType;
 
         [DBFieldName("kit_id", true)]
-        public uint KitId;
+        public int KitId;
 
         [DBFieldName("kit_type", false, false, true)]
-        public uint? KitType;
+        public int? KitType;
 
         [DBFieldName("duration", false, false, true)]
         public uint? Duration;

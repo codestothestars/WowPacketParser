@@ -2829,8 +2829,8 @@ CREATE TABLE IF NOT EXISTS `play_spell_visual_kit` (
   `caster_guid` int(10) unsigned NOT NULL,
   `caster_id` int(10) unsigned NOT NULL,
   `caster_type` varchar(16) COLLATE latin1_general_ci NOT NULL,
-  `kit_id` int(10) unsigned NOT NULL COMMENT 'references SpellVisualKit.dbc',
-  `kit_type` int(10) unsigned DEFAULT NULL,
+  `kit_id` int(10) NOT NULL COMMENT 'references SpellVisualKit.dbc',
+  `kit_type` int(10) DEFAULT NULL,
   `duration` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`caster_id`,`caster_type`,`kit_id`,`unixtimems`,`caster_guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=COMPACT COMMENT='from SMSG_PLAY_SPELL_VISUAL_KIT';

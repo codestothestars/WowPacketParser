@@ -324,8 +324,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         {
             PlaySpellVisualKit visualKitData = new PlaySpellVisualKit();
             visualKitData.Guid = packet.ReadPackedGuid128("Unit");
-            visualKitData.KitId = (uint)packet.ReadInt32("KitRecID");
-            visualKitData.KitType = (uint)packet.ReadInt32("KitType");
+            visualKitData.KitId = packet.ReadInt32("KitRecID");
+            visualKitData.KitType = packet.ReadInt32("KitType");
             visualKitData.Duration = packet.ReadUInt32("Duration");
             packet.ReadBit("MountedVisual");
             visualKitData.Time = packet.Time;
