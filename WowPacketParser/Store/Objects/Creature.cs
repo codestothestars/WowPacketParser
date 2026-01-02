@@ -446,6 +446,15 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("transport_seat", OnlyWhenSavingTransports = true, DbType = (TargetedDbType.WPP))]
         public sbyte TransportSeat;
 
+        [DBFieldName("anim_tier", DbType = (TargetedDbType.WPP))]
+        public byte AnimTier;
+
+        [DBFieldName("vertical_speed")]
+        public float VerticalSpeed;
+
+        [DBFieldName("effect_start_time", DbType = (TargetedDbType.WPP))]
+        public uint EffectStartTime;
+
         public WowGuid TransportGuid = WowGuid64.Empty;
         public List<Vector3> SplinePoints = null;
     }

@@ -41,11 +41,17 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             packet.ReadSingle("JumpGravity", indexes);
         }
 
-        public static void ReadMonsterSplineJumpExtraData(Packet packet, params object[] indexes)
+        public static void ReadMonsterSplineJumpExtraData(ServerSideMovement monsterMove, Packet packet, params object[] indexes)
         {
-            packet.ReadSingle("JumpGravity", indexes);
-            packet.ReadUInt32("StartTime", indexes);
+            float verticalSpeed = packet.ReadSingle("JumpGravity", indexes);
+            uint effectStartTime = packet.ReadUInt32("StartTime", indexes);
             packet.ReadUInt32("Duration", indexes);
+
+            if (monsterMove != null)
+            {
+                monsterMove.VerticalSpeed = verticalSpeed;
+                monsterMove.EffectStartTime = effectStartTime;
+            }
         }
 
         public static void ReadMovementSpline(ServerSideMovement monsterMove, Packet packet, Vector3 pos, params object[] indexes)
@@ -55,8 +61,13 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
                 monsterMove.SplineFlags = splineFlags;
             if (ClientVersion.RemovedInVersion(ClientType.Shadowlands))
             {
-                packet.ReadByte("AnimTier", indexes);
-                packet.ReadUInt32("TierTransStartTime", indexes);
+                byte animTier = packet.ReadByte("AnimTier", indexes);
+                uint effectStartTime = packet.ReadUInt32("TierTransStartTime", indexes);
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
             packet.ReadInt32("Elapsed", indexes);
             uint moveTime = packet.ReadUInt32("MoveTime", indexes);
@@ -154,14 +165,19 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
                 ReadMonsterSplineSpellEffectExtraData(packet, indexes, "MonsterSplineSpellEffectExtra");
 
             if (hasJumpExtraData)
-                ReadMonsterSplineJumpExtraData(packet, indexes, "MonsterSplineJumpExtraData");
+                ReadMonsterSplineJumpExtraData(monsterMove, packet, indexes, "MonsterSplineJumpExtraData");
 
             if (hasAnimTier)
             {
                 packet.ReadInt32("TierTransitionID", indexes);
-                packet.ReadInt32("StartTime", indexes);
+                uint effectStartTime = packet.ReadUInt32("StartTime", indexes);
                 packet.ReadInt32("EndTime", indexes);
-                packet.ReadByte("AnimTier", indexes);
+                byte animTier = packet.ReadByte("AnimTier", indexes);
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             if (hasUnk901)

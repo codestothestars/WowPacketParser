@@ -429,8 +429,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (hasAnimTier)
             {
-                packet.ReadByteE<MovementAnimationState>("Animation State");
-                packet.ReadInt32("Async-time in ms");
+                byte animTier = (byte)packet.ReadByteE<MovementAnimationState>("Animation State");
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms");
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             int moveTime = packet.ReadInt32("Move Time");
@@ -439,8 +444,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (hasTrajectory)
             {
-                packet.ReadSingle("Vertical Speed");
-                packet.ReadInt32("Async-time in ms");
+                float verticalSpeed = packet.ReadSingle("Vertical Speed");
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms");
+                if (monsterMove != null)
+                {
+                    monsterMove.VerticalSpeed = verticalSpeed;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             var waypoints = packet.ReadInt32("Waypoints");
@@ -501,8 +511,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(SplineFlag434.Animation))
             {
-                packet.ReadByteE<MovementAnimationState>("Animation State");
-                packet.ReadInt32("Asynctime in ms"); // Async-time in ms
+                byte animTier = (byte)packet.ReadByteE<MovementAnimationState>("Animation State");
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms");
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             int moveTime = packet.ReadInt32("Move Time");
@@ -511,8 +526,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(SplineFlag434.Parabolic))
             {
-                packet.ReadSingle("Vertical Speed");
-                packet.ReadInt32("Async-time in ms");
+                float verticalSpeed = packet.ReadSingle("Vertical Speed");
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms");
+                if (monsterMove != null)
+                {
+                    monsterMove.VerticalSpeed = verticalSpeed;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             var waypoints = packet.ReadInt32("Waypoints");
@@ -598,8 +618,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(SplineFlag422.AnimationTier))
             {
-                packet.ReadByteE<MovementAnimationState>("Animation State");
-                packet.ReadInt32("Asynctime in ms"); // Async-time in ms
+                byte animTier = (byte)packet.ReadByteE<MovementAnimationState>("Animation State");
+                uint effectStartTime = packet.ReadUInt32("Asynctime in ms"); // Async-time in ms
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             int moveTime = packet.ReadInt32("Move Time");
@@ -608,8 +633,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(SplineFlag422.Trajectory))
             {
-                packet.ReadSingle("Vertical Speed");
-                packet.ReadInt32("Unk Int32 2");
+                float verticalSpeed = packet.ReadSingle("Vertical Speed");
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms");
+                if (monsterMove != null)
+                {
+                    monsterMove.VerticalSpeed = verticalSpeed;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             var waypoints = packet.ReadInt32("Waypoints");

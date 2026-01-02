@@ -293,7 +293,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                             V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineSpellEffectExtraData(packet, index);
 
                         if (hasJumpExtraData)
-                            V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineJumpExtraData(packet, index);
+                            V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineJumpExtraData(monsterMove, packet, index);
 
                         if (guid == Storage.CurrentActivePlayer)
                             Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;

@@ -44,11 +44,17 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             packet.ReadSingle("JumpGravity", indexes);
         }
 
-        public static void ReadMonsterSplineJumpExtraData(Packet packet, params object[] indexes)
+        public static void ReadMonsterSplineJumpExtraData(ServerSideMovement monsterMove, Packet packet, params object[] indexes)
         {
-            packet.ReadSingle("JumpGravity", indexes);
-            packet.ReadUInt32("StartTime", indexes);
+            float verticalSpeed = packet.ReadSingle("JumpGravity", indexes);
+            uint effectStartTime = packet.ReadUInt32("StartTime", indexes);
             packet.ReadUInt32("Duration", indexes);
+
+            if (monsterMove != null)
+            {
+                monsterMove.VerticalSpeed = verticalSpeed;
+                monsterMove.EffectStartTime = effectStartTime;
+            }
         }
 
         public static void ReadMovementSpline(ServerSideMovement monsterMove, Packet packet, Vector3 pos, params object[] indexes)
@@ -56,24 +62,20 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
             uint splineFlags = (uint)packet.ReadUInt32E<SplineFlag>("Flags", indexes);
             if (monsterMove != null)
                 monsterMove.SplineFlags = splineFlags;
-            if (ClientVersion.RemovedInVersion(ClientType.Shadowlands))
-            {
-                packet.ReadByte("AnimTier", indexes);
-                packet.ReadUInt32("TierTransStartTime", indexes);
-            }
+
             packet.ReadInt32("Elapsed", indexes);
+
             uint moveTime = packet.ReadUInt32("MoveTime", indexes);
             if (monsterMove != null)
                 monsterMove.MoveTime = moveTime;
-            packet.ReadUInt32("FadeObjectTime", indexes);
 
+            packet.ReadUInt32("FadeObjectTime", indexes);
             packet.ReadByte("Mode", indexes);
-            if (ClientVersion.RemovedInVersion(ClientType.Shadowlands))
-                packet.ReadByte("VehicleExitVoluntary", indexes);
 
             WowGuid transportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
             if (monsterMove != null)
                 monsterMove.TransportGuid = transportGuid;
+
             sbyte seat = packet.ReadSByte("VehicleSeat", indexes);
             if (monsterMove != null)
                 monsterMove.TransportSeat = seat;
@@ -82,24 +84,14 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
 
             var type = packet.ReadBitsE<SplineFacingType>("Face", 2, indexes);
             var pointsCount = packet.ReadBits("PointsCount", 16, indexes);
-            if (ClientVersion.AddedInVersion(ClientType.Shadowlands))
-            {
-                packet.ReadBit("VehicleExitVoluntary", indexes);
-                packet.ReadBit("Interpolate", indexes);
-            }
+            packet.ReadBit("VehicleExitVoluntary", indexes);
+            packet.ReadBit("Interpolate", indexes);
             var packedDeltasCount = packet.ReadBits("PackedDeltasCount", 16, indexes);
             var totalPointsCount = pointsCount + packedDeltasCount;
             var hasSplineFilter = packet.ReadBit("HasSplineFilter", indexes);
             var hasSpellEffectExtraData = packet.ReadBit("HasSpellEffectExtraData", indexes);
             var hasJumpExtraData = packet.ReadBit("HasJumpExtraData", indexes);
-
-            var hasAnimTier = false;
-            if (ClientVersion.AddedInVersion(ClientType.Shadowlands))
-                hasAnimTier = packet.ReadBit("HasAnimTierTransition", indexes);
-
-            var hasUnk901 = false;
-            if (ClientVersion.AddedInVersion(ClientType.Shadowlands) && !ClientVersion.IsClassicClientVersionBuild(ClientVersion.Build))
-                hasUnk901 = packet.ReadBit("HasUnknown901", indexes);
+            var hasAnimTier = packet.ReadBit("HasAnimTierTransition", indexes);
 
             if (hasSplineFilter)
                 ReadMonsterSplineFilter(packet, indexes, "MonsterSplineFilter");
@@ -163,24 +155,19 @@ namespace WowPacketParserModule.V3_4_0_45166.Parsers
                 ReadMonsterSplineSpellEffectExtraData(packet, indexes, "MonsterSplineSpellEffectExtra");
 
             if (hasJumpExtraData)
-                ReadMonsterSplineJumpExtraData(packet, indexes, "MonsterSplineJumpExtraData");
+                ReadMonsterSplineJumpExtraData(monsterMove, packet, indexes, "MonsterSplineJumpExtraData");
 
             if (hasAnimTier)
             {
                 packet.ReadInt32("TierTransitionID", indexes);
-                packet.ReadUInt32("StartTime", indexes);
+                uint effectStartTime = packet.ReadUInt32("StartTime", indexes);
                 packet.ReadUInt32("EndTime", indexes);
-                packet.ReadByte("AnimTier", indexes);
-            }
+                byte animTier = packet.ReadByte("AnimTier", indexes);
 
-            if (hasUnk901)
-            {
-                for (var i = 0; i < 16; ++i)
+                if (monsterMove != null)
                 {
-                    packet.ReadInt32("Unknown1", indexes, "Unknown901", i);
-                    packet.ReadInt32("Unknown2", indexes, "Unknown901", i);
-                    packet.ReadInt32("Unknown3", indexes, "Unknown901", i);
-                    packet.ReadInt32("Unknown4", indexes, "Unknown901", i);
+                    monsterMove.EffectStartTime = effectStartTime;
+                    monsterMove.AnimTier = animTier;
                 }
             }
 

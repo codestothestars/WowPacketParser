@@ -2187,7 +2187,7 @@ namespace WowPacketParser.Parsing.Parsers
                         monsterMove.MoveTime = packet.ReadUInt32("Spline Full Time", index);
 
                         if (hasSplineVerticalAcceleration)
-                            packet.ReadSingle("Spline Vertical Acceleration", index);
+                            monsterMove.VerticalSpeed = packet.ReadSingle("Spline Vertical Acceleration", index);
 
                         packet.ReadSingle("Spline Duration Multiplier Next", index);
                         packet.ReadSingle("Spline Duration Multiplier", index);
@@ -2205,7 +2205,7 @@ namespace WowPacketParser.Parsing.Parsers
                         }
 
                         if (hasSplineStartTime)
-                            packet.ReadUInt32("Spline Start Time", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("Spline Start Time", index);
 
                         for (var i = 0u; i < splineCount; ++i)
                         {
@@ -2726,10 +2726,10 @@ namespace WowPacketParser.Parsing.Parsers
 
                         packet.ReadUInt32("Spline Time", index);
                         if (hasSplineVerticalAcceleration)
-                            packet.ReadSingle("Spline Vertical Acceleration", index);
+                            monsterMove.VerticalSpeed = packet.ReadSingle("Spline Vertical Acceleration", index);
 
                         if (hasSplineStartTime)
-                            packet.ReadUInt32("Spline Start time", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("Spline Start time", index);
 
                         for (var i = 0; i < unkSplineCounter; ++i)
                         {

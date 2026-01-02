@@ -637,6 +637,9 @@ CREATE TABLE IF NOT EXISTS `creature_movement_server` (
   `transport_id` int(10) unsigned NOT NULL DEFAULT '0',
   `transport_type` varchar(16) COLLATE latin1_general_ci NOT NULL DEFAULT '',
   `transport_seat` tinyint(4) NOT NULL DEFAULT '0',
+  `anim_tier` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `vertical_speed` float NOT NULL DEFAULT '0',
+  `effect_start_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`point`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='out of combat movement points from SMSG_ON_MONSTER_MOVE';
 
@@ -663,6 +666,9 @@ CREATE TABLE IF NOT EXISTS `creature_movement_server_combat` (
   `transport_id` int(10) unsigned NOT NULL DEFAULT '0',
   `transport_type` varchar(16) COLLATE latin1_general_ci NOT NULL DEFAULT '',
   `transport_seat` tinyint(4) NOT NULL DEFAULT '0',
+  `anim_tier` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `vertical_speed` float NOT NULL DEFAULT '0',
+  `effect_start_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`point`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='in combat movement points from SMSG_ON_MONSTER_MOVE';
 
@@ -2664,6 +2670,9 @@ CREATE TABLE IF NOT EXISTS `player_movement_server` (
   `transport_id` int(10) unsigned NOT NULL DEFAULT '0',
   `transport_type` varchar(16) COLLATE latin1_general_ci NOT NULL DEFAULT '',
   `transport_seat` tinyint(4) NOT NULL DEFAULT '0',
+  `anim_tier` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `vertical_speed` float NOT NULL DEFAULT '0',
+  `effect_start_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`point`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=COMPACT COMMENT='movement points from SMSG_ON_MONSTER_MOVE';
 

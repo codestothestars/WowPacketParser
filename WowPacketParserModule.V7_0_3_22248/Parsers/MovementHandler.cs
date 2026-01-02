@@ -130,14 +130,27 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             uint splineFlags = (uint)packet.ReadInt32E<SplineFlag>("Flags", indexes);
             if (monsterMove != null)
                 monsterMove.SplineFlags = splineFlags;
-            packet.ReadByte("AnimTier", indexes);
-            packet.ReadUInt32("TierTransStartTime", indexes);
+
+            byte animTier = packet.ReadByte("AnimTier", indexes);
+            uint effectStartTime = packet.ReadUInt32("TierTransStartTime", indexes);
+            if (monsterMove != null)
+            {
+                monsterMove.AnimTier = animTier;
+                monsterMove.EffectStartTime = effectStartTime;
+            }
+
             packet.ReadInt32("Elapsed", indexes);
             uint moveTime = packet.ReadUInt32("MoveTime", indexes);
             if (monsterMove != null)
                 monsterMove.MoveTime = moveTime;
-            packet.ReadSingle("JumpGravity", indexes);
-            packet.ReadUInt32("SpecialTime", indexes);
+
+            float verticalSpeed = packet.ReadSingle("JumpGravity", indexes);
+            effectStartTime = packet.ReadUInt32("SpecialTime", indexes);
+            if (monsterMove != null && (verticalSpeed != 0 || effectStartTime != 0))
+            {
+                monsterMove.VerticalSpeed = verticalSpeed;
+                monsterMove.EffectStartTime = effectStartTime;
+            }
 
             packet.ReadByte("Mode", indexes);
             packet.ReadByte("VehicleExitVoluntary", indexes);

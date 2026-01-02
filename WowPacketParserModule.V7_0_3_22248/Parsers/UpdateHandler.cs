@@ -307,10 +307,10 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                         monsterMove.Orientation = orientation;
 
                         if (hasJumpGravity)
-                            packet.ReadSingle("JumpGravity", index);
+                            monsterMove.VerticalSpeed = packet.ReadSingle("JumpGravity", index);
 
                         if (hasSpecialTime)
-                            packet.ReadInt32("SpecialTime", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("SpecialTime", index);
 
                         for (var i = 0; i < pointsCount; ++i)
                         {

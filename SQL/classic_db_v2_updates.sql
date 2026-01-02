@@ -1884,3 +1884,18 @@ ALTER TABLE `play_spell_visual_kit`
 ALTER TABLE `play_spell_visual_kit`
 	CHANGE COLUMN `kit_id` `kit_id` INT(10) NOT NULL COMMENT 'references SpellVisualKit.dbc' AFTER `caster_type`,
 	CHANGE COLUMN `kit_type` `kit_type` INT(10) NULL DEFAULT NULL AFTER `kit_id`;
+
+ALTER TABLE `creature_movement_server`
+	ADD COLUMN `anim_tier` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `transport_seat`,
+	ADD COLUMN `vertical_speed` FLOAT NOT NULL DEFAULT '0' AFTER `anim_tier`,
+	ADD COLUMN `effect_start_time` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `vertical_speed`;
+
+ALTER TABLE `player_movement_server`
+	ADD COLUMN `anim_tier` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `transport_seat`,
+	ADD COLUMN `vertical_speed` FLOAT NOT NULL DEFAULT '0' AFTER `anim_tier`,
+	ADD COLUMN `effect_start_time` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `vertical_speed`;
+
+ALTER TABLE `creature_movement_server_combat`
+	ADD COLUMN `anim_tier` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `transport_seat`,
+	ADD COLUMN `vertical_speed` FLOAT NOT NULL DEFAULT '0' AFTER `anim_tier`,
+	ADD COLUMN `effect_start_time` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `vertical_speed`;

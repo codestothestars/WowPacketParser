@@ -101,8 +101,13 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
 
             if (flags.HasAnyFlag(SplineFlag.Animation))
             {
-                packet.ReadSByteE<MovementAnimationState>("AnimTier", indexes);
-                packet.ReadInt32("TierTransStartTime", indexes); // Async-time in ms
+                byte animTier = (byte)packet.ReadByteE<MovementAnimationState>("AnimTier", indexes);
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms", indexes);
+                if (monsterMove != null)
+                {
+                    monsterMove.AnimTier = animTier;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             int movetime = packet.ReadInt32("MoveTime", indexes);
@@ -111,8 +116,13 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
 
             if (flags.HasAnyFlag(SplineFlag.Parabolic))
             {
-                packet.ReadSingle("JumpGravity", indexes);
-                packet.ReadInt32("SpecialTime", indexes);
+                float verticalSpeed = packet.ReadSingle("Vertical Speed", indexes);
+                uint effectStartTime = packet.ReadUInt32("Async-time in ms", indexes);
+                if (monsterMove != null)
+                {
+                    monsterMove.VerticalSpeed = verticalSpeed;
+                    monsterMove.EffectStartTime = effectStartTime;
+                }
             }
 
             var pointsCount = packet.ReadInt32("PointsCount", indexes);

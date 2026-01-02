@@ -285,7 +285,7 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
                     if (bit216)
                     {
                         if (hasSplineVerticalAcceleration)
-                            packet.ReadSingle("Spline Vertical Acceleration", index);
+                           monsterMove.VerticalSpeed = packet.ReadSingle("Spline Vertical Acceleration", index);
                         packet.ReadUInt32("Spline Time", index);
                         if (splineType == SplineType.FacingAngle)
                             monsterMove.Orientation = packet.ReadSingle("Facing Angle", index);
@@ -323,7 +323,7 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
                         packet.ReadSingle("Spline Duration Multiplier Next", index);
                         monsterMove.MoveTime = packet.ReadUInt32("Spline Full Time", index);
                         if (hasSplineStartTime)
-                            packet.ReadUInt32("Spline Start time", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("Spline Start time", index);
 
                         packet.ReadSingle("Spline Duration Multiplier", index);
                     }

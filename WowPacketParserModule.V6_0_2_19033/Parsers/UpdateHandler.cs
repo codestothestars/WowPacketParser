@@ -229,10 +229,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                         monsterMove.Orientation = orientation;
 
                         if (hasJumpGravity)
-                            packet.ReadSingle("JumpGravity", index);
+                            monsterMove.VerticalSpeed =packet.ReadSingle("JumpGravity", index);
 
                         if (hasSpecialTime)
-                            packet.ReadInt32("SpecialTime", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("SpecialTime", index);
 
                         if (hasSplineFilterKey)
                         {

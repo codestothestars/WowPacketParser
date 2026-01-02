@@ -613,14 +613,14 @@ namespace WowPacketParserModule.V2_5_1_38707.Parsers
                             V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineSpellEffectExtraData(packet, index);
 
                         if (hasJumpExtraData)
-                            V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineJumpExtraData(packet, index);
+                            V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineJumpExtraData(monsterMove, packet, index);
 
                         if (hasAnimationTierTransition)
                         {
                             packet.ReadInt32("TierTransitionID", index);
-                            packet.ReadInt32("StartTime", index);
+                            monsterMove.EffectStartTime = packet.ReadUInt32("StartTime", index);
                             packet.ReadInt32("EndTime", index);
-                            packet.ReadByte("AnimTier", index);
+                            monsterMove.AnimTier = packet.ReadByte("AnimTier", index);
                         }
 
                         if (hasUnknown901)
