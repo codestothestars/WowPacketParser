@@ -48,12 +48,14 @@ namespace WowPacketParser.Parsing.Parsers
                     case "Movement":
                     {
                         var guid = ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_2_9901) ? packet.ReadPackedGuid("GUID", i) : packet.ReadGuid("GUID", i);
-                        var moves = ReadMovementUpdateBlock(packet, guid, i);
+                        MovementInfo moveInfo;
+                        ServerSideMovement monsterMove;
+                        ReadMovementUpdateBlock(packet, guid, i, out moveInfo, out monsterMove);
                         if (Storage.Objects.ContainsKey(guid))
                         {
                             var obj = Storage.Objects[guid].Item1;
-                            HandleMovementInfoChange(obj, guid, packet.Time, moves);
-                        }   
+                            HandleMovementInfoChange(obj, guid, packet.Time, moveInfo);
+                        }
                         break;
                     }
                     case "CreateObject1":
@@ -86,25 +88,28 @@ namespace WowPacketParser.Parsing.Parsers
         private static void ReadCreateObjectBlock(Packet packet, WowGuid guid, uint map, object index, ObjectCreateType type)
         {
             ObjectType objType = ObjectTypeConverter.Convert(packet.ReadByteE<ObjectTypeLegacy>("Object Type", index));
-            var moves = ReadMovementUpdateBlock(packet, guid, index);
-            Storage.StoreObjectCreateTime(guid, map, moves, packet, type);
+            MovementInfo moveInfo;
+            ServerSideMovement monsterMove;
+            ReadMovementUpdateBlock(packet, guid, index, out moveInfo, out monsterMove);
+            Storage.StoreObjectCreateTime(guid, map, moveInfo, packet, type);
 
             BitArray updateMaskArray = null;
             var updates = ReadValuesUpdateBlockOnCreate(packet, objType, index, out updateMaskArray);
             var dynamicUpdates = ReadDynamicValuesUpdateBlockOnCreate(packet, objType, index);
+            WoWObject obj;
 
             // If this is the second time we see the same object (same guid,
             // same position) update its phasemask
             if (Storage.Objects.ContainsKey(guid))
             {
-                var existObj = Storage.Objects[guid].Item1;
-                ProcessExistingObject(ref existObj, guid, packet, updateMaskArray, updates, dynamicUpdates, moves); // can't do "ref Storage.Objects[guid].Item1 directly
+                obj = Storage.Objects[guid].Item1;
+                ProcessExistingObject(ref obj, guid, packet, updateMaskArray, updates, dynamicUpdates, moveInfo); // can't do "ref Storage.Objects[guid].Item1 directly
             }
             else
             {
-                WoWObject obj = CreateObject(objType, map);
+                obj = CreateObject(objType, map);
 
-                obj.Movement = moves;
+                obj.Movement = moveInfo;
                 obj.UpdateFields = updates;
                 obj.DynamicUpdateFields = dynamicUpdates;
                 Storage.StoreNewObject(guid, obj, type, packet);
@@ -116,6 +121,22 @@ namespace WowPacketParser.Parsing.Parsers
                 // Only needed for pets.
                 if (guid.GetHighType() == HighGuidType.Pet)
                     Storage.StoreCreatureStats(obj as Unit, updateMaskArray, guid.GetHighType() == HighGuidType.Pet, packet);
+            }
+
+            if (monsterMove != null && obj is Unit)
+            {
+                if (moveInfo.TransportGuid != null)
+                    monsterMove.TransportGuid = moveInfo.TransportGuid;
+                monsterMove.TransportSeat = moveInfo.TransportSeat;
+
+                if (guid == Storage.CurrentActivePlayer)
+                    Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
+
+                if (Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty())
+                {
+                    Unit unit = obj as Unit;
+                    unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
+                }
             }
 
             if (guid.HasEntry() && (objType == ObjectType.Unit || objType == ObjectType.GameObject))
@@ -1929,9 +1950,10 @@ namespace WowPacketParser.Parsing.Parsers
                 obj.UpdateFields[kvp.Key] = kvp.Value;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock510(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock510(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
 
             var bit654 = packet.ReadBit("Has bit654", index);
             packet.ReadBit();
@@ -1997,7 +2019,6 @@ namespace WowPacketParser.Parsing.Parsers
             var bit158 = 0u;
             var bit198 = 0u;
 
-            ServerSideMovement monsterMove = null;
             if (living)
             {
                 guid2[3] = packet.ReadBit();
@@ -2331,23 +2352,6 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.WriteGuid("GUID 2", guid2, index);
                 packet.AddValue("Position", moveInfo.Position, index);
                 packet.AddValue("Orientation", moveInfo.Orientation, index);
-
-                if (monsterMove != null)
-                {
-                    if (moveInfo.TransportGuid != null)
-                        monsterMove.TransportGuid = moveInfo.TransportGuid;
-                    monsterMove.TransportSeat = moveInfo.TransportSeat;
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
-                }
             }
 
             if (bit520)
@@ -2475,13 +2479,12 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (hasGameObjectRotation)
                 moveInfo.Rotation = packet.ReadPackedQuaternion("GameObject Rotation", index);
-
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock504(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock504(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
 
             // bits
             var hasAttackingTarget = packet.ReadBit("Has Attacking Target", index);
@@ -2573,7 +2576,6 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadBit();   // bit218
             }
 
-            ServerSideMovement monsterMove = null;
             if (living)
             {
                 guid2[3] = packet.ReadBit();
@@ -2865,23 +2867,6 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.WriteGuid("GUID 2", guid2, index);
                 packet.AddValue("Position:", moveInfo.Position, index);
                 packet.AddValue("Orientation", moveInfo.Orientation, index);
-
-                if (monsterMove != null)
-                {
-                    if (moveInfo.TransportGuid != null)
-                        monsterMove.TransportGuid = moveInfo.TransportGuid;
-                    monsterMove.TransportSeat = moveInfo.TransportSeat;
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
-                }
             }
 
             if (bit208)
@@ -2999,13 +2984,12 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (bit284)
                 packet.ReadUInt32();
-
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock433(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock433(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
 
             bool living = packet.ReadBit("Living", index);
             bool hasAttackingTarget = packet.ReadBit("Has Attacking Target", index);
@@ -3047,7 +3031,6 @@ namespace WowPacketParser.Parsing.Parsers
             bool hasAnimKit3 = false;
             var guid2 = new byte[8];
 
-            ServerSideMovement monsterMove = null;
             // Reading bits
             if (living)
             {
@@ -3315,23 +3298,6 @@ namespace WowPacketParser.Parsing.Parsers
                     moveInfo.Orientation = packet.ReadSingle("Orientation", index);
 
                 packet.AddValue("Position", moveInfo.Position, index);
-
-                if (monsterMove != null)
-                {
-                    if (moveInfo.TransportGuid != null)
-                        monsterMove.TransportGuid = moveInfo.TransportGuid;
-                    monsterMove.TransportSeat = moveInfo.TransportSeat;
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
-                }
             }
 
             if (unkFloats)
@@ -3417,12 +3383,12 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             packet.ResetBitReader();
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock432(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock432(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
 
             /*bool bit2 = */packet.ReadBit();
             /*bool bit3 = */packet.ReadBit();
@@ -3465,7 +3431,6 @@ namespace WowPacketParser.Parsing.Parsers
             bool hasAnimKit3 = false;
             var guid2 = new byte[8];
 
-            ServerSideMovement monsterMove = null;
             if (living)
             {
                 unkFloat1 = !packet.ReadBit();
@@ -3765,23 +3730,6 @@ namespace WowPacketParser.Parsing.Parsers
                     packet.ReadInt32();
 
                 moveInfo.WalkSpeed = packet.ReadSingle("Walk Speed", index);
-
-                if (monsterMove != null)
-                {
-                    if (moveInfo.TransportGuid != null)
-                        monsterMove.TransportGuid = moveInfo.TransportGuid;
-                    monsterMove.TransportSeat = moveInfo.TransportSeat;
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
-                }
             }
 
             if (hasAttackingTarget)
@@ -3839,12 +3787,13 @@ namespace WowPacketParser.Parsing.Parsers
                 moveInfo.TransportPathTimer = packet.ReadUInt32("Transport Time", index);
 
             packet.ResetBitReader();
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock430(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock430(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
+
             bool hasAttackingTarget = packet.ReadBit("Has Attacking Target", index);
             /*bool bit2 = */packet.ReadBit();
             bool hasVehicleData = packet.ReadBit("Has Vehicle Data", index);
@@ -3886,7 +3835,6 @@ namespace WowPacketParser.Parsing.Parsers
             bool hasAnimKit3 = false;
             var guid2 = new byte[8];
 
-            ServerSideMovement monsterMove = null;
             if (living)
             {
                 hasTransportData = packet.ReadBit("Has Transport Data", index);
@@ -4191,23 +4139,6 @@ namespace WowPacketParser.Parsing.Parsers
 
                 moveInfo.RunSpeed = packet.ReadSingle("Run Speed", index);
                 packet.AddValue("Position", moveInfo.Position, index);
-
-                if (monsterMove != null)
-                {
-                    if (moveInfo.TransportGuid != null)
-                        monsterMove.TransportGuid = moveInfo.TransportGuid;
-                    monsterMove.TransportSeat = moveInfo.TransportSeat;
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
-                }
             }
 
             if (unkFloats)
@@ -4242,12 +4173,12 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             packet.ResetBitReader();
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock180(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock180(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
-            var moveInfo = MovementHandler.ReadMovementInfo(packet, guid, index);
+            moveInfo = MovementHandler.ReadMovementInfo(packet, guid, index);
+            monsterMove = null;
             var moveFlags = moveInfo.Flags;
 
             var speeds = 6;
@@ -4308,7 +4239,7 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (moveFlags.HasAnyFlag(Enums.v3.MovementFlag.SplineEnabled) || moveInfo.HasSplineData)
             {
-                ServerSideMovement monsterMove = new ServerSideMovement();
+                monsterMove = new ServerSideMovement();
 
                 if (moveInfo.TransportGuid != null)
                     monsterMove.TransportGuid = moveInfo.TransportGuid;
@@ -4349,16 +4280,6 @@ namespace WowPacketParser.Parsing.Parsers
 
                 Vector3 endPos = packet.ReadVector3("Spline Endpoint", index);
                 monsterMove.SplinePoints.Add(endPos);
-
-                if (guid == Storage.CurrentActivePlayer)
-                    Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                    Storage.Objects.ContainsKey(guid))
-                {
-                    Unit unit = Storage.Objects[guid].Item1 as Unit;
-                    unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                }
             }
 
             UpdateFlag flags = packet.ReadUInt32E<UpdateFlag>("Update Flags", index);
@@ -4375,31 +4296,48 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(UpdateFlag.Transport))
                 moveInfo.TransportPathTimer = packet.ReadUInt32("Transport Path Timer", index);
-
-            return moveInfo;
         }
 
-        private static MovementInfo ReadMovementUpdateBlock(Packet packet, WowGuid guid, object index)
+        private static void ReadMovementUpdateBlock(Packet packet, WowGuid guid, object index, out MovementInfo moveInfo, out ServerSideMovement monsterMove)
         {
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V5_1_0_16309))
-                return ReadMovementUpdateBlock510(packet, guid, index);
+            {
+                ReadMovementUpdateBlock510(packet, guid, index, out moveInfo, out monsterMove);
+                return;
+            }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V5_0_4_16016))
-                return ReadMovementUpdateBlock504(packet, guid, index);
+            {
+                ReadMovementUpdateBlock504(packet, guid, index, out moveInfo, out monsterMove);
+                return;
+            }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_3_15354))
-                return ReadMovementUpdateBlock433(packet, guid, index);
+            {
+                ReadMovementUpdateBlock433(packet, guid, index, out moveInfo, out monsterMove);
+                return;
+            }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_2_15211))
-                return ReadMovementUpdateBlock432(packet, guid, index);
+            {
+                ReadMovementUpdateBlock432(packet, guid, index, out moveInfo, out monsterMove);
+                return;
+            }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_0_15005))
-                return ReadMovementUpdateBlock430(packet, guid, index);
-
+            {
+                ReadMovementUpdateBlock430(packet, guid, index, out moveInfo, out monsterMove);
+                return;
+            }
+            
             if (ClientVersion.RemovedInVersion(1, 9, 0))
-                return ReadMovementUpdateBlock180(packet, guid, index);
+            {
+               ReadMovementUpdateBlock180(packet, guid, index, out moveInfo, out monsterMove);
+               return;
+            }
 
-            var moveInfo = new MovementInfo();
+            moveInfo = new MovementInfo();
+            monsterMove = null;
 
             UpdateFlag flags;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_0_9767))
@@ -4480,7 +4418,7 @@ namespace WowPacketParser.Parsing.Parsers
                 // guess in which version they stopped checking movement flag and used bits
                 if ((ClientVersion.RemovedInVersion(ClientVersionBuild.V4_2_0_14333) && moveFlags.HasAnyFlag(Enums.v3.MovementFlag.SplineEnabled)) || moveInfo.HasSplineData)
                 {
-                    ServerSideMovement monsterMove = new ServerSideMovement();
+                    monsterMove = new ServerSideMovement();
 
                     if (moveInfo.TransportGuid != null)
                         monsterMove.TransportGuid = moveInfo.TransportGuid;
@@ -4580,16 +4518,6 @@ namespace WowPacketParser.Parsing.Parsers
 
                     Vector3 endPos = packet.ReadVector3("Spline Endpoint", index);
                     monsterMove.SplinePoints.Add(endPos);
-
-                    if (guid == Storage.CurrentActivePlayer)
-                        Storage.CurrentMoveSplineExpireTime = packet.UnixTimeMs + (long)monsterMove.MoveTime;
-
-                    if ((Settings.SaveTransports || moveInfo.TransportGuid == null || moveInfo.TransportGuid.IsEmpty()) &&
-                        Storage.Objects.ContainsKey(guid))
-                    {
-                        Unit unit = Storage.Objects[guid].Item1 as Unit;
-                        unit.AddWaypoint(monsterMove, moveInfo.Position, packet.Time);
-                    }
                 }
             }
             else // !UpdateFlag.Living
@@ -4663,8 +4591,6 @@ namespace WowPacketParser.Parsing.Parsers
                         packet.ReadInt32("PauseTimes", index, count);
                 }
             }
-
-            return moveInfo;
         }
 
         [Parser(Opcode.SMSG_COMPRESSED_UPDATE_OBJECT)]
