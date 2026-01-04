@@ -530,8 +530,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         [Parser(Opcode.SMSG_FLIGHT_SPLINE_SYNC)]
         public static void HandleFlightSplineSync(Packet packet)
         {
-            packet.ReadPackedGuid128("Guid");
-            packet.ReadSingle("SplineDist");
+            CreatureFlightSplineSync splineSync = new CreatureFlightSplineSync();
+            WowGuid guid = packet.ReadPackedGuid128("Guid");
+            splineSync.DurationPercent = packet.ReadSingle("DurationPercent");
+            splineSync.UnixTimeMs = (ulong)packet.UnixTimeMs;
+            Storage.StoreCreatureFlightSplineSync(guid, splineSync);
         }
 
         [Parser(Opcode.SMSG_VIGNETTE_UPDATE)]

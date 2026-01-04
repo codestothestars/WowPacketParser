@@ -1899,3 +1899,11 @@ ALTER TABLE `creature_movement_server_combat`
 	ADD COLUMN `anim_tier` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0' AFTER `transport_seat`,
 	ADD COLUMN `vertical_speed` FLOAT NOT NULL DEFAULT '0' AFTER `anim_tier`,
 	ADD COLUMN `effect_start_time` INT UNSIGNED NOT NULL DEFAULT '0' AFTER `vertical_speed`;
+
+DROP TABLE IF EXISTS `creature_flight_spline_sync`;
+CREATE TABLE IF NOT EXISTS `creature_flight_spline_sync` (
+  `unixtimems` bigint(20) unsigned NOT NULL,
+  `guid` int(10) unsigned NOT NULL,
+  `duration_percent` float NOT NULL,
+  PRIMARY KEY (`unixtimems`,`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;

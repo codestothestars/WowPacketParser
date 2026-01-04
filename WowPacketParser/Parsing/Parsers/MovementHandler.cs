@@ -2369,8 +2369,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_FLIGHT_SPLINE_SYNC)]
         public static void HandleFlightSplineSync(Packet packet)
         {
-            packet.ReadSingle("Duration modifier");
-            packet.ReadPackedGuid("GUID");
+            CreatureFlightSplineSync splineSync = new CreatureFlightSplineSync();
+            splineSync.DurationPercent = packet.ReadSingle("DurationPercent");
+            WowGuid guid = packet.ReadPackedGuid("GUID");
+            splineSync.UnixTimeMs = (ulong)packet.UnixTimeMs;
+            Storage.StoreCreatureFlightSplineSync(guid, splineSync);
         }
 
         [Parser(Opcode.SMSG_CONTROL_UPDATE)]

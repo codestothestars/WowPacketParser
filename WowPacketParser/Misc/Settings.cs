@@ -122,6 +122,7 @@ namespace WowPacketParser.Misc
             public static readonly bool creature_destroy_time = Conf.GetBoolean("creature_destroy_time", false);
             public static readonly bool creature_emote = Conf.GetBoolean("creature_emote", false);
             public static readonly bool creature_equipment_values_update = Conf.GetBoolean("creature_equipment_values_update", false);
+            public static readonly bool creature_flight_spline_sync = Conf.GetBoolean("creature_flight_spline_sync", false);
             public static readonly bool creature_guid_values = Conf.GetBoolean("creature_guid_values", false);
             public static readonly bool creature_guid_values_update = Conf.GetBoolean("creature_guid_values_update", false);
             public static readonly bool creature_movement_client = Conf.GetBoolean("creature_movement_client", false);

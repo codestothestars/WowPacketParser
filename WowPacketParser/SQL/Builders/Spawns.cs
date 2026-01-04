@@ -54,6 +54,7 @@ namespace WowPacketParser.SQL.Builders
             var guidValuesRows = new RowList<CreatureGuidValues>();
             var addonRows = new RowList<CreatureAddon>();
             var interactRows = new RowList<CreatureClientInteract>();
+            var flightSplineSyncRows = new RowList<CreatureFlightSplineSync>();
             var create1Rows = new RowList<CreatureCreate1>();
             var create2Rows = new RowList<CreatureCreate2>();
             var destroyRows = new RowList<CreatureDestroy>();
@@ -691,6 +692,20 @@ namespace WowPacketParser.SQL.Builders
                     }
                 }
 
+                if (Settings.SqlTables.creature_flight_spline_sync)
+                {
+                    if (Storage.CreatureFlightSplineSyncs.ContainsKey(unit.Key))
+                    {
+                        foreach (var update in Storage.CreatureFlightSplineSyncs[unit.Key])
+                        {
+                            Row<CreatureFlightSplineSync> updateRow = new Row<CreatureFlightSplineSync>();
+                            updateRow.Data = update;
+                            updateRow.Data.GUID = "@CGUID+" + creature.DbGuid;
+                            flightSplineSyncRows.Add(updateRow);
+                        }
+                    }
+                }
+
                 if (Settings.SqlTables.creature_equipment_values_update)
                 {
                     if (Storage.UnitEquipmentValuesUpdates.ContainsKey(unit.Key))
@@ -1016,6 +1031,13 @@ namespace WowPacketParser.SQL.Builders
             if (Settings.SqlTables.creature_equipment_values_update && updateEquipmentValuesRows.Count != 0)
             {
                 var updateSql = new SQLInsert<CreatureEquipmentValuesUpdate>(updateEquipmentValuesRows, false, false);
+                result.Append(updateSql.Build());
+                result.AppendLine();
+            }
+
+            if (Settings.SqlTables.creature_flight_spline_sync && flightSplineSyncRows.Count != 0)
+            {
+                var updateSql = new SQLInsert<CreatureFlightSplineSync>(flightSplineSyncRows, false, false);
                 result.Append(updateSql.Build());
                 result.AppendLine();
             }

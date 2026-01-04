@@ -459,6 +459,19 @@ namespace WowPacketParser.Store.Objects
         public List<Vector3> SplinePoints = null;
     }
 
+    [DBTableName("creature_flight_spline_sync", TargetedDbType.WPP)]
+    public sealed class CreatureFlightSplineSync : IDataModel
+    {
+        [DBFieldName("unixtimems", true)]
+        public ulong UnixTimeMs;
+
+        [DBFieldName("guid", true, true)]
+        public string GUID;
+
+        [DBFieldName("duration_percent")]
+        public float DurationPercent;
+    }
+
     [DBTableName("creature_create1_time")]
     public sealed class CreatureCreate1 : IDataModel
     {

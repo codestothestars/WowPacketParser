@@ -473,6 +473,18 @@ CREATE TABLE IF NOT EXISTS `creature_equipment_values_update` (
 -- Data exporting was unselected.
 
 
+-- Dumping structure for table sniffs_new_test.creature_flight_spline_sync
+DROP TABLE IF EXISTS `creature_flight_spline_sync`;
+CREATE TABLE IF NOT EXISTS `creature_flight_spline_sync` (
+  `unixtimems` bigint(20) unsigned NOT NULL,
+  `guid` int(10) unsigned NOT NULL,
+  `duration_percent` float NOT NULL,
+  PRIMARY KEY (`unixtimems`,`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- Data exporting was unselected.
+
+
 -- Dumping structure for table sniffs_new_test.creature_guid_values
 DROP TABLE IF EXISTS `creature_guid_values`;
 CREATE TABLE IF NOT EXISTS `creature_guid_values` (

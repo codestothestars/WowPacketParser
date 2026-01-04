@@ -845,7 +845,19 @@ namespace WowPacketParser.Enums
         PLAYER_XP,
         PLAYER__FIELD_KNOWN_TITLES,
         PLAYER__FIELD_KNOWN_TITLES1,
-        PLAYER__FIELD_KNOWN_TITLES2
+        PLAYER__FIELD_KNOWN_TITLES2,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_LINEID_0,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_STEP_0,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_RANK_0,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_MAX_RANK_0,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_MODIFIER_0,
+        [UpdateField(UpdateFieldType.Short)]
+        PLAYER_SKILL_TALENT_0,
     }
 
     public enum PlayerDynamicField

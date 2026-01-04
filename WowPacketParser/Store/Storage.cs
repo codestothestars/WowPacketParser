@@ -521,6 +521,30 @@ namespace WowPacketParser.Store
             }
         }
 
+        public static readonly Dictionary<WowGuid, List<CreatureFlightSplineSync>> CreatureFlightSplineSyncs = new Dictionary<WowGuid, List<CreatureFlightSplineSync>>();
+        public static void StoreCreatureFlightSplineSync(WowGuid guid, CreatureFlightSplineSync splineSync)
+        {
+            if (!Settings.SqlTables.creature_flight_spline_sync)
+                return;
+
+            if (guid.GetObjectType() != ObjectType.Unit)
+            {
+                Console.WriteLine($"Flight spline sync for non creature {guid.ToString()}");
+                return;
+            }
+
+            if (Storage.CreatureFlightSplineSyncs.ContainsKey(guid))
+            {
+                Storage.CreatureFlightSplineSyncs[guid].Add(splineSync);
+            }
+            else
+            {
+                List<CreatureFlightSplineSync> updateList = new List<CreatureFlightSplineSync>();
+                updateList.Add(splineSync);
+                Storage.CreatureFlightSplineSyncs.Add(guid, updateList);
+            }
+        }
+
         public static readonly DataBag<SpellAuraFlags> SpellAuraFlags = new DataBag<SpellAuraFlags>(Settings.SqlTables.spell_aura_flags);
         public static readonly Dictionary<WowGuid, List<AuraUpdateData>> UnitAurasUpdates = new Dictionary<WowGuid, List<AuraUpdateData>>();
         public static void StoreUnitAurasUpdate(WowGuid guid, List<Aura> auras, DateTime time, bool isFullUpdate)

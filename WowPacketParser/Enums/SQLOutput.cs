@@ -28,6 +28,7 @@
         creature_destroy_time,
         creature_emote,
         creature_equipment_values_update,
+        creature_flight_spline_sync,
         creature_guid_values,
         creature_guid_values_update,
         creature_movement_client,
