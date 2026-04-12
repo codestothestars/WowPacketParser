@@ -33,12 +33,12 @@ namespace WowPacketParser.Store.Objects
         public string IconName;
 
         // ToDo: Add locale support
-        [DBFieldName("cast_bar_caption", TargetedDbExpansion.TheBurningCrusade, LocaleConstant.enUS, DbType = (TargetedDbType.WPP))]
+        [DBFieldName("opening_text", TargetedDbExpansion.TheBurningCrusade, LocaleConstant.enUS, DbType = (TargetedDbType.WPP))]
         [DBFieldName("castBarCaption", TargetedDbExpansion.TheBurningCrusade, LocaleConstant.enUS, DbType = (TargetedDbType.TRINITY | TargetedDbType.CMANGOS))]
         public string CastCaption;
 
-        [DBFieldName("unk1", Nullable = true, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
-        public string UnkString;
+        [DBFieldName("closing_text", Nullable = true, DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY))]
+        public string ClosingText;
 
         [DBFieldName("data", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 24, StartAtZero = true, Nullable = true, DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS | TargetedDbType.CMANGOS))]
         [DBFieldName("Data", TargetedDbExpansion.Zero, TargetedDbExpansion.Cataclysm, 24, StartAtZero = true, Nullable = true, DbType = (TargetedDbType.TRINITY))]

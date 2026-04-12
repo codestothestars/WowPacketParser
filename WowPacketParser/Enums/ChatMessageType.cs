@@ -1,5 +1,35 @@
 namespace WowPacketParser.Enums
 {
+    public enum ChatMessageTypeBeta : uint
+    {
+        Say = 0,
+        Party = 1,
+        Guild = 2,
+        Officer = 3,
+        Yell = 4,
+        Whisper = 5,
+        WhisperInform = 6,
+        Emote = 7,
+        TextEmote = 8,
+        System = 9,
+        MonsterSay = 10,
+        MonsterYell = 11,
+        MonsterEmote = 12,
+        Channel = 13,
+        ChannelJoin = 14,
+        ChannelLeave = 15,
+        ChannelList = 16,
+        ChannelNotice = 17,
+        ChannelNoticeUser = 18,
+        Afk = 19,
+        Dnd = 20,
+        CombatLog = 21,
+        Ignored = 22,
+        Skill = 23,
+        Loot = 24,
+
+        Addon = uint.MaxValue
+    }
     public enum ChatMessageTypeVanilla : uint
     {
         System = 10,

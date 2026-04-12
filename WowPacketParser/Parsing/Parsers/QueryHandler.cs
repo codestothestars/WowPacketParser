@@ -129,7 +129,10 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 creature.IconName = packet.ReadCString("Icon Name");
 
-            creature.TypeFlags = packet.ReadUInt32E<CreatureTypeFlag>("Type Flags");
+            if (ClientVersion.AddedInVersion(1, 11, 0))
+                creature.TypeFlags = packet.ReadUInt32E<CreatureTypeFlag>("Type Flags");
+            else
+                creature.StaticFlags1 = packet.ReadUInt32E<CreatureStaticFlag1>("Static Flags");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_1_0_13914)) // Might be earlier or later
                 creature.TypeFlags2 = packet.ReadUInt32("Creature Type Flags 2"); // Missing enum
@@ -138,7 +141,8 @@ namespace WowPacketParser.Parsing.Parsers
 
             creature.Family = packet.ReadInt32E<CreatureFamily>("Family");
 
-            creature.Rank = packet.ReadInt32E<CreatureRank>("Rank");
+            if (ClientVersion.AddedInVersion(0, 6, 0))
+                creature.Rank = packet.ReadInt32E<CreatureRank>("Rank");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_0_9767))
             {
@@ -148,14 +152,22 @@ namespace WowPacketParser.Parsing.Parsers
             }
             else
             {
-                if (ClientVersion.RemovedInVersion(ClientType.WrathOfTheLichKing))
+                if (ClientVersion.AddedInVersion(0, 7, 0) &&
+                    ClientVersion.RemovedInVersion(ClientType.WrathOfTheLichKing))
                     packet.ReadInt32("Unk Int");
 
                 if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_8_1_4769))
                     creature.PetSpellDataID = packet.ReadUInt32("Pet Spell Data Id");
             }
 
-            int displayIdCount = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? 4 : 1;
+            int displayIdCount;
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                displayIdCount = 4;
+            else if (ClientVersion.AddedInVersion(0, 7, 0))
+                displayIdCount = 1;
+            else
+                displayIdCount = 0;
+
             creature.DisplayIDs = new uint[displayIdCount];
             for (int i = 0; i < displayIdCount; i++)
                 creature.DisplayIDs[i] = packet.ReadUInt32("Display ID", i);
@@ -166,9 +178,12 @@ namespace WowPacketParser.Parsing.Parsers
                 creature.ManaMultiplier = packet.ReadSingle("ManaMultiplier");
             }
 
-            if (ClientVersion.RemovedInVersion(ClientType.TheBurningCrusade))
+            if (ClientVersion.AddedInVersion(1, 5, 0) &&
+                ClientVersion.RemovedInVersion(ClientType.TheBurningCrusade))
                 creature.Civilian = packet.ReadBool("Civillian");
-            creature.RacialLeader = packet.ReadBool("Racial Leader");
+
+            if (ClientVersion.AddedInVersion(1, 7, 0))
+                creature.RacialLeader = packet.ReadBool("Racial Leader");
 
             int questItems = ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ? 6 : 4;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_0_9767))

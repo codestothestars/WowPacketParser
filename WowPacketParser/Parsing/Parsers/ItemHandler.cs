@@ -564,11 +564,14 @@ namespace WowPacketParser.Parsing.Parsers
 
             item.RequiredSkillLevel = packet.ReadUInt32("Required Skill Level");
 
-            item.RequiredSpell = (uint)packet.ReadInt32<SpellId>("Required Spell");
+            if (ClientVersion.AddedInVersion(0, 10, 0))
+                item.RequiredSpell = (uint)packet.ReadInt32<SpellId>("Required Spell");
 
-            item.RequiredHonorRank = packet.ReadUInt32("Required Honor Rank");
+            if (ClientVersion.AddedInVersion(0, 10, 0))
+                item.RequiredHonorRank = packet.ReadUInt32("Required Honor Rank");
 
-            item.RequiredCityRank = packet.ReadUInt32("Required City Rank");
+            if (ClientVersion.AddedInVersion(0, 10, 0))
+                item.RequiredCityRank = packet.ReadUInt32("Required City Rank");
 
             if (ClientVersion.AddedInVersion(1, 7, 0))
             {
@@ -605,8 +608,16 @@ namespace WowPacketParser.Parsing.Parsers
             item.DamageTypes = new DamageType?[dmgCount];
             for (int i = 0; i < dmgCount; i++)
             {
-                item.DamageMins[i] = packet.ReadSingle("Damage Min", i);
-                item.DamageMaxs[i] = packet.ReadSingle("Damage Max", i);
+                if (ClientVersion.AddedInVersion(0, 10, 0))
+                {
+                    item.DamageMins[i] = packet.ReadSingle("Damage Min", i);
+                    item.DamageMaxs[i] = packet.ReadSingle("Damage Max", i);
+                }
+                else
+                {
+                    item.DamageMins[i] = packet.ReadInt32("Damage Min", i);
+                    item.DamageMaxs[i] = packet.ReadInt32("Damage Max", i);
+                }
                 item.DamageTypes[i] = packet.ReadInt32E<DamageType>("Damage Type", i);
             }
 
@@ -617,11 +628,16 @@ namespace WowPacketParser.Parsing.Parsers
             item.NatureResistance = packet.ReadUInt32("NatureResistance");
             item.FrostResistance = packet.ReadUInt32("FrostResistance");
             item.ShadowResistance = packet.ReadUInt32("ShadowResistance");
-            item.ArcaneResistance = packet.ReadUInt32("ArcaneResistance");
+
+            if (ClientVersion.AddedInVersion(0, 9, 0))
+                item.ArcaneResistance = packet.ReadUInt32("ArcaneResistance");
 
             item.Delay = packet.ReadUInt32("Delay");
 
             item.AmmoType = packet.ReadInt32E<AmmoType>("Ammo Type");
+
+            if (ClientVersion.RemovedInVersion(0, 10, 0))
+                item.RangedMod = packet.ReadUInt32("Unk1");
 
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 item.RangedMod = packet.ReadSingle("Ranged Mod");
@@ -660,21 +676,26 @@ namespace WowPacketParser.Parsing.Parsers
 
             item.SheathType = packet.ReadInt32E<SheathType>("Sheath Type");
 
-            item.RandomProperty = packet.ReadInt32("Random Property");
+            if (ClientVersion.AddedInVersion(0, 5, 5))
+                item.RandomProperty = packet.ReadInt32("Random Property");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 item.RandomSuffix = packet.ReadUInt32("Random Suffix");
 
-            item.Block = packet.ReadUInt32("Block");
+            if (ClientVersion.AddedInVersion(0, 6, 0))
+                item.Block = packet.ReadUInt32("Block");
 
-            item.ItemSet = packet.ReadUInt32("Item Set");
+            if (ClientVersion.AddedInVersion(0, 10, 0))
+                item.ItemSet = packet.ReadUInt32("Item Set");
 
-            item.MaxDurability = packet.ReadUInt32("Max Durability");
+            if (ClientVersion.AddedInVersion(0, 12, 0))
+                item.MaxDurability = packet.ReadUInt32("Max Durability");
 
-            item.AreaID = packet.ReadUInt32<AreaId>("Area");
+            if (ClientVersion.AddedInVersion(1, 7, 0))
+                item.AreaID = packet.ReadUInt32<AreaId>("Area");
 
             // In this single (?) case, map 0 means no map
-            if (ClientVersion.AddedInVersion(1, 12, 0))
+            if (ClientVersion.AddedInVersion(1, 11, 0))
                 item.MapID = packet.ReadInt32<MapId>("Map");
 
             if (ClientVersion.AddedInVersion(1, 9, 0))

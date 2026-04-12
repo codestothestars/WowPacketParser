@@ -462,6 +462,7 @@ namespace WowPacketParser.Misc
         {
             switch (build)
             {
+                case ClientVersionBuild.V0_9_1_3810:
                 case ClientVersionBuild.V1_8_0_4714:
                 case ClientVersionBuild.V1_8_0_4735:
                 case ClientVersionBuild.V1_8_1_4769:

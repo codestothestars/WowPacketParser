@@ -4278,8 +4278,12 @@ namespace WowPacketParser.Parsing.Parsers
                     monsterMove.SplinePoints.Add(vec);
                 }
 
-                Vector3 endPos = packet.ReadVector3("Spline Endpoint", index);
-                monsterMove.SplinePoints.Add(endPos);
+                // don't know when it's added but it's not in 0.9.1
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                {
+                    Vector3 endPos = packet.ReadVector3("Spline Endpoint", index);
+                    monsterMove.SplinePoints.Add(endPos);
+                }
             }
 
             UpdateFlag flags = packet.ReadUInt32E<UpdateFlag>("Update Flags", index);

@@ -29,6 +29,56 @@ namespace WowPacketParser.Parsing.Parsers
             return ReadMovementInfoGen(packet, guid, index);
         }
 
+        public static Enums.v3.MovementFlag ConvertBetaMovementFlags(Enums.v0.MovementFlag flags)
+        {
+            Enums.v3.MovementFlag newFlags = Enums.v3.MovementFlag.None;
+
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Forward))
+                newFlags |= Enums.v3.MovementFlag.Forward;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Backward))
+                newFlags |= Enums.v3.MovementFlag.Backward;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.StrafeLeft))
+                newFlags |= Enums.v3.MovementFlag.StrafeLeft;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.StrafeRight))
+                newFlags |= Enums.v3.MovementFlag.StrafeRight;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Left))
+                newFlags |= Enums.v3.MovementFlag.Left;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Right))
+                newFlags |= Enums.v3.MovementFlag.Right;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.PitchUp))
+                newFlags |= Enums.v3.MovementFlag.PitchUp;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.PitchDown))
+                newFlags |= Enums.v3.MovementFlag.PitchDown;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Walking))
+                newFlags |= Enums.v3.MovementFlag.Walking;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.OnTransport))
+                newFlags |= Enums.v3.MovementFlag.OnTransport;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Levitating))
+                newFlags |= Enums.v3.MovementFlag.DisableGravity;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Root))
+                newFlags |= Enums.v3.MovementFlag.Root;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Falling))
+                newFlags |= Enums.v3.MovementFlag.Falling;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.FallingFar))
+                newFlags |= Enums.v3.MovementFlag.FallingFar;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Swimming))
+                newFlags |= Enums.v3.MovementFlag.Swimming;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.SplineEnabled))
+                newFlags |= Enums.v3.MovementFlag.SplineEnabled;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.CanFly))
+                newFlags |= Enums.v3.MovementFlag.CanFly;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.SplineElevation))
+                newFlags |= Enums.v3.MovementFlag.SplineElevation;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Waterwalking))
+                newFlags |= Enums.v3.MovementFlag.Waterwalking;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.FallingSlow))
+                newFlags |= Enums.v3.MovementFlag.FallingSlow;
+            if (flags.HasAnyFlag(Enums.v0.MovementFlag.Hover))
+                newFlags |= Enums.v3.MovementFlag.Hover;
+
+            return newFlags;
+        }
+
         public static Enums.v3.MovementFlag ConvertVanillaMovementFlags(Enums.v1.MovementFlag flags)
         {
             Enums.v3.MovementFlag newFlags = Enums.v3.MovementFlag.None;
@@ -152,11 +202,17 @@ namespace WowPacketParser.Parsing.Parsers
                 info.Flags2 = (uint)packet.ReadByteE<MovementFlag2>("Extra Movement Flags", index);
                 hasPitch = flags.HasAnyFlag(Enums.v2.MovementFlag.Swimming | Enums.v2.MovementFlag.Flying2);
             }
-            else
+            else if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
             {
                 Enums.v1.MovementFlag flags = packet.ReadInt32E<Enums.v1.MovementFlag>("Movement Flags", index);
                 info.Flags = (uint)ConvertVanillaMovementFlags(flags);
                 hasPitch = flags.HasAnyFlag(Enums.v1.MovementFlag.Swimming);
+            }
+            else
+            {
+                Enums.v0.MovementFlag flags = packet.ReadInt32E<Enums.v0.MovementFlag>("Movement Flags", index);
+                info.Flags = (uint)ConvertBetaMovementFlags(flags);
+                hasPitch = flags.HasAnyFlag(Enums.v0.MovementFlag.Swimming);
             }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_2_2_14545))
@@ -207,7 +263,11 @@ namespace WowPacketParser.Parsing.Parsers
             }
             else
             {
-                info.FallTime = packet.ReadUInt32("Jump Fall Time", index);
+                // no idea when it was added but its not in 0.9.1
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892) ||
+                    info.Flags.HasAnyFlag(Enums.v3.MovementFlag.Falling))
+                    info.FallTime = packet.ReadUInt32("Jump Fall Time", index);
+
                 if (info.Flags.HasAnyFlag(Enums.v3.MovementFlag.Falling))
                 {
                     info.JumpVerticalSpeed = packet.ReadSingle("Jump Vertical Speed", index);
@@ -817,12 +877,14 @@ namespace WowPacketParser.Parsing.Parsers
             }
             else
             {
-                packet.ReadGuid("Guid");
+                if (ClientVersion.AddedInVersion(0, 11, 0))
+                    packet.ReadGuid("Guid");
 
                 if (ClientVersion.AddedInVersion(1, 10, 0))
                     packet.ReadInt32("Movement Counter");
 
-                packet.ReadUInt32("Time");
+                if (ClientVersion.AddedInVersion(1, 2, 0))
+                    packet.ReadUInt32("Time");
             }
         }
 
@@ -2055,7 +2117,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_MOVE_DISABLE_GRAVITY)]
         [Parser(Opcode.SMSG_MOVE_ENABLE_GRAVITY)]
         [Parser(Opcode.SMSG_MOVE_SET_FEATHER_FALL)]
-        [Parser(Opcode.SMSG_MOVE_SET_NORMAL_FALL, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
+        [Parser(Opcode.SMSG_MOVE_SET_NORMAL_FALL, ClientVersionBuild.V0_10_0_3892, ClientVersionBuild.V4_3_4_15595)]
         public static void HandleSetMovementMessages(Packet packet)
         {
             if (ClientVersion.AddedInVersion(1, 9, 0))
@@ -2065,6 +2127,13 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadInt32("Movement Counter");
+        }
+
+        [Parser(Opcode.SMSG_MOVE_SET_NORMAL_FALL, ClientVersionBuild.Zero, ClientVersionBuild.V0_10_0_3892)]
+        public static void HandleMoveSetNormalFall(Packet packet)
+        {
+            WowGuid guid = packet.ReadGuid("Guid");
+            ReadMovementInfo(packet, guid);
         }
 
         [Parser(Opcode.CMSG_MOVE_WATER_WALK_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
@@ -2115,10 +2184,12 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleSpecialMoveAckMessages2(Packet packet)
         {
             WowGuid guid;
-            if (ClientVersion.Build < ClientVersionBuild.V3_0_2_9056)
+            if (ClientVersion.Build >= ClientVersionBuild.V3_0_2_9056)
+                guid = packet.ReadPackedGuid("Guid");
+            else if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
                 guid = packet.ReadGuid("Guid");
             else
-                guid = packet.ReadPackedGuid("Guid");
+                guid = WowGuid64.Empty;
 
             if (ClientVersion.AddedInVersion(1, 10, 0))
                 packet.ReadInt32("Movement Counter");

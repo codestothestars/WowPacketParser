@@ -38,22 +38,24 @@ namespace WowPacketParser.Parsing.Parsers
                 name[i] = packet.ReadCString("Name", i);
             gameObject.Name = name[0];
 
+            if (ClientVersion.AddedInVersion(1, 12, 0))
+                gameObject.IconName = packet.ReadCString("Icon Name");
+
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
             {
-                gameObject.IconName = packet.ReadCString("Icon Name");
-                gameObject.CastCaption = packet.ReadCString("Cast Caption");
+                gameObject.CastCaption = packet.ReadCString("Opening Text");
+                gameObject.ClosingText = packet.ReadCString("Closing Text");
             }
-
-            if (ClientVersion.AddedInVersion(1, 12, 0))
-                gameObject.UnkString = packet.ReadCString("Unk String");
 
             int dataCount;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_0_6_13596))
                 dataCount = 32;
             else if (ClientVersion.AddedInVersion(1, 12, 0))
                 dataCount = 24;
-            else
+            else if (ClientVersion.AddedInVersion(1, 3, 0))
                 dataCount = 16;
+            else
+                dataCount = 10;
 
             gameObject.Data = new int?[dataCount];
             for (int i = 0; i < gameObject.Data.Length; i++)
@@ -95,7 +97,7 @@ namespace WowPacketParser.Parsing.Parsers
                     ID = (uint)entry.Key,
                     Name = gameObject.Name,
                     CastBarCaption = gameObject.CastCaption,
-                    Unk1 = gameObject.UnkString,
+                    Unk1 = gameObject.ClosingText,
                 };
 
                 Storage.LocalesGameObjects.Add(localesGameObject, packet.TimeSpan);

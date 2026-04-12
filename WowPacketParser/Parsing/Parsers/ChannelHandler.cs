@@ -82,8 +82,9 @@ namespace WowPacketParser.Parsing.Parsers
                 {
                     if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                         packet.ReadByteE<ChannelFlag>("Flags");
-                    else
+                    else if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
                         packet.ReadUInt32E<ChannelFlag>("Flags");
+                    
                     packet.ReadInt32("Channel Id");
                     if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                         packet.ReadInt32("Unk");

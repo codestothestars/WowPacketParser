@@ -103,8 +103,11 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadGuid("GUID");
             packet.ReadByteE<EnvironmentDamage>("Type");
             packet.ReadInt32("Damage");
-            packet.ReadInt32("Absorb");
-            packet.ReadInt32("Resist");
+            if (ClientVersion.AddedInVersion(1, 7, 0))
+            {
+                packet.ReadInt32("Absorb");
+                packet.ReadInt32("Resist");
+            }
         }
 
         [Parser(Opcode.SMSG_CANCEL_AUTO_REPEAT)]

@@ -410,7 +410,9 @@ namespace WowPacketParser.Parsing.Parsers
 
                         packet.ReadUInt32("School", index);
                         packet.ReadUInt32("Absorb", index);
-                        packet.ReadInt32("Resist", index);
+
+                        if (ClientVersion.AddedInVersion(1, 6, 0))
+                            packet.ReadInt32("Resist", index);
 
                         if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_2_9901))
                             packet.ReadByte("Critical", index);
@@ -476,7 +478,8 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadByte("School", index);
 
             packet.ReadUInt32("Absorb", index);
-            packet.ReadInt32("Resist", index);
+            if (ClientVersion.AddedInVersion(1, 6, 0))
+                packet.ReadInt32("Resist", index);
             packet.ReadBool("Show spellname in log", index);
             packet.ReadByte("Unk byte", index);
             packet.ReadUInt32("Blocked", index);
@@ -551,11 +554,18 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadGuid("Caster GUID", index);
             var debug = packet.ReadBool("Debug output", index);
 
+            if (ClientVersion.RemovedInVersion(ClientVersionBuild.V0_10_0_3892))
+                packet.ReadByte("UnkByte", index);
+
             var count = packet.ReadUInt32("Target Count", index);
             for (var i = 0; i < count; ++i)
             {
                 packet.ReadGuid("Target GUID", index);
                 packet.ReadByteE<SpellMissType>("Miss Info", index);
+
+                if (ClientVersion.RemovedInVersion(ClientVersionBuild.V0_10_0_3892))
+                    packet.ReadInt32("UnkInt", index);
+
                 if (debug)
                 {
                     packet.ReadSingle("Unk float");

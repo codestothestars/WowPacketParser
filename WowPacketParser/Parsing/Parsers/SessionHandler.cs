@@ -120,7 +120,8 @@ namespace WowPacketParser.Parsing.Parsers
 
             packet.ReadBytes("Proof SHA-1 Hash", 20);
 
-            AddonHandler.ReadClientAddonsList(packet);
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                AddonHandler.ReadClientAddonsList(packet);
         }
 
         //[Parser(Opcode.CMSG_AUTH_SESSION, ClientVersionBuild.V4_2_0_14333)]
@@ -398,9 +399,14 @@ namespace WowPacketParser.Parsing.Parsers
             if (!IsFirstAuthResponse && ClientVersion.RemovedInVersion(ClientVersionBuild.V2_0_1_6180))
                 return;
 
-            packet.ReadInt32("Billing Time Remaining");
-            packet.ReadByteE<BillingFlag>("Billing Flags");
-            packet.ReadInt32("Billing Time Rested");
+            if (ClientVersion.AddedInVersion(1, 1, 0))
+            {
+                packet.ReadInt32("Billing Time Remaining");
+                packet.ReadByteE<BillingFlag>("Billing Flags");
+            }
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_8_0_4714))
+                packet.ReadInt32("Billing Time Rested");
 
             // Unknown, these two show the same as expansion payed for.
             // Eg. If account only has payed for Wotlk expansion it will show 2 for both.
@@ -469,7 +475,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_LOGOUT_RESPONSE)]
         public static void HandlePlayerLogoutResponse(Packet packet)
         {
-            packet.ReadInt32("Reason");
+            if (ClientVersion.AddedInVersion(0, 11, 0))
+                packet.ReadInt32("Reason");
+            else if (ClientVersion.AddedInVersion(0, 10, 0))
+                packet.ReadByte("Reason");
+
             packet.ReadBool("Instant");
             // From TC:
             // Reason 1: IsInCombat

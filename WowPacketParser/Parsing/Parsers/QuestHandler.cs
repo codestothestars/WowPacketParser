@@ -129,7 +129,8 @@ namespace WowPacketParser.Parsing.Parsers
                 if (readFlags)
                     packet.ReadUInt32E<QuestFlags>("Quest Flags");
 
-                packet.ReadInt32<SpellId>("Spell Id");
+                if (ClientVersion.AddedInVersion(1, 5, 0))
+                    packet.ReadInt32<SpellId>("Spell Id");
 
                 if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                     packet.ReadInt32<SpellId>("Spell Cast Id");

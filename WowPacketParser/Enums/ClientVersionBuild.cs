@@ -5,6 +5,15 @@ namespace WowPacketParser.Enums
         // ReSharper disable InconsistentNaming
         Zero = 0,
 
+        // Pre-Release Alpha and Beta
+        V0_9_1_3810 = 3810,
+        V0_10_0_3892 = 3892,
+
+        V1_6_0_4470 = 4470, // ptr
+        V1_6_0_4500 = 4500,
+        V1_6_1_4544 = 4544,
+        V1_6_2_4565 = 4565,
+        V1_6_3_4620 = 4620,
         V1_8_0_4714 = 4714, // ptr
         V1_8_0_4735 = 4735,
         V1_8_1_4769 = 4769,

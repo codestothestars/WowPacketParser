@@ -342,6 +342,9 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("CreatureType", DbType = (TargetedDbType.CMANGOS))]
         public CreatureType? Type;
 
+        [DBFieldName("static_flags1", DbType = (TargetedDbType.WPP | TargetedDbType.VMANGOS))]
+        public CreatureStaticFlag1? StaticFlags1;
+
         [DBFieldName("type_flags", DbType = (TargetedDbType.WPP | TargetedDbType.TRINITY | TargetedDbType.VMANGOS))]
         [DBFieldName("CreatureTypeFlags", DbType = (TargetedDbType.CMANGOS))]
         public CreatureTypeFlag? TypeFlags;

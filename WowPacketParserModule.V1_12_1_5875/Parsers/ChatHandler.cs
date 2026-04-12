@@ -12,6 +12,63 @@ namespace WowPacketParser.Parsing.Parsers
 {
     public static class ChatHandler
     {
+                public static ChatMessageType ConvertBetaMessageType(ChatMessageTypeBeta type)
+        {
+            switch (type)
+            {
+                case ChatMessageTypeBeta.System:
+                    return ChatMessageType.System;
+                case ChatMessageTypeBeta.Say:
+                    return ChatMessageType.Say;
+                case ChatMessageTypeBeta.Party:
+                    return ChatMessageType.Party;
+                case ChatMessageTypeBeta.Guild:
+                    return ChatMessageType.Guild;
+                case ChatMessageTypeBeta.Officer:
+                    return ChatMessageType.Officer;
+                case ChatMessageTypeBeta.Yell:
+                    return ChatMessageType.Yell;
+                case ChatMessageTypeBeta.Whisper:
+                    return ChatMessageType.Whisper;
+                case ChatMessageTypeBeta.WhisperInform:
+                    return ChatMessageType.WhisperInform;
+                case ChatMessageTypeBeta.Emote:
+                    return ChatMessageType.Emote;
+                case ChatMessageTypeBeta.TextEmote:
+                    return ChatMessageType.TextEmote;
+                case ChatMessageTypeBeta.MonsterSay:
+                    return ChatMessageType.MonsterSay;
+                case ChatMessageTypeBeta.MonsterYell:
+                    return ChatMessageType.MonsterYell;
+                case ChatMessageTypeBeta.MonsterEmote:
+                    return ChatMessageType.MonsterEmote;
+                case ChatMessageTypeBeta.Channel:
+                    return ChatMessageType.Channel;
+                case ChatMessageTypeBeta.ChannelJoin:
+                    return ChatMessageType.ChannelJoin;
+                case ChatMessageTypeBeta.ChannelLeave:
+                    return ChatMessageType.ChannelLeave;
+                case ChatMessageTypeBeta.ChannelList:
+                    return ChatMessageType.ChannelList;
+                case ChatMessageTypeBeta.ChannelNotice:
+                    return ChatMessageType.ChannelNotice;
+                case ChatMessageTypeBeta.ChannelNoticeUser:
+                    return ChatMessageType.ChannelNoticeUser;
+                case ChatMessageTypeBeta.Afk:
+                    return ChatMessageType.Afk;
+                case ChatMessageTypeBeta.Dnd:
+                    return ChatMessageType.Dnd;
+                case ChatMessageTypeBeta.Ignored:
+                    return ChatMessageType.Ignored;
+                case ChatMessageTypeBeta.Skill:
+                    return ChatMessageType.Skill;
+                case ChatMessageTypeBeta.Loot:
+                    return ChatMessageType.Loot;
+
+            }
+            return ChatMessageType.System;
+        }
+
         public static ChatMessageType ConvertVanillaMessageType(ChatMessageTypeVanilla type)
         {
             switch (type)
@@ -97,14 +154,21 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_GM_MESSAGECHAT)]
         public static void HandleServerChatMessage(Packet packet)
         {
-            ChatMessageTypeVanilla chatType = packet.ReadByteE<ChatMessageTypeVanilla>("Type");
-            var text = new ChatPacketData
+            var text = new ChatPacketData();
+            text.SenderGUID = WowGuid64.Empty;
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
             {
-                TypeNormalized = ConvertVanillaMessageType(chatType),
-                TypeOriginal = (uint)chatType,
-                Language = packet.ReadInt32E<Language>("Language"),
-                SenderGUID = WowGuid64.Empty
-            };
+                ChatMessageTypeVanilla chatType = packet.ReadByteE<ChatMessageTypeVanilla>("Type");
+                text.TypeNormalized = ConvertVanillaMessageType(chatType);
+                text.TypeOriginal = (uint)chatType;
+            }
+            else
+            {
+                ChatMessageTypeBeta chatType = packet.ReadByteE<ChatMessageTypeBeta>("Type");
+                text.TypeNormalized = ConvertBetaMessageType(chatType);
+                text.TypeOriginal = (uint)chatType;
+            }
+            text.Language = packet.ReadInt32E<Language>("Language");
 
             switch (text.TypeNormalized)
             {
@@ -120,19 +184,23 @@ namespace WowPacketParser.Parsing.Parsers
                 case ChatMessageType.Party:
                 case ChatMessageType.Yell:
                     text.SenderGUID = packet.ReadGuid("Sender Guid");
-                    packet.ReadGuid("Sender Guid");
+                    if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                        packet.ReadGuid("Sender Guid");
                     break;
                 case ChatMessageType.MonsterSay:
                 case ChatMessageType.MonsterYell:
-                    text.SenderGUID = packet.ReadGuid("Sender Guid");
-                    packet.ReadUInt32("Sender Name Length");
+                    if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                        text.SenderGUID = packet.ReadGuid("Sender Guid");
+                    if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                        packet.ReadUInt32("Sender Name Length");
                     text.SenderName = packet.ReadCString("Sender Name");
                     text.ReceiverGUID = packet.ReadGuid("Target Guid");
                     break;
 
                 case ChatMessageType.Channel:
                     text.ChannelName = packet.ReadCString("Channel Name");
-                    packet.ReadUInt32("Player Rank");
+                    if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_6_0_4470))
+                        packet.ReadUInt32("Player Rank");
                     text.SenderGUID = packet.ReadGuid("Sender Guid");
                     break;
 
@@ -140,8 +208,9 @@ namespace WowPacketParser.Parsing.Parsers
                     text.SenderGUID = packet.ReadGuid("Sender Guid");
                     break;
             }
-            
-            packet.ReadInt32("Text Length");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                packet.ReadInt32("Text Length");
             text.Text = packet.ReadCString("Text");
             packet.ReadByteE<ChatTag>("Chat Tag");
 
@@ -151,18 +220,27 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_MESSAGECHAT)]
         public static void HandleClientChatMessage(Packet packet)
         {
-            var type = packet.ReadInt32E<ChatMessageTypeVanilla>("Type");
-
+            ChatMessageType typeNormalized;
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+            {
+                ChatMessageTypeVanilla chatType = packet.ReadInt32E<ChatMessageTypeVanilla>("Type");
+                typeNormalized = ConvertVanillaMessageType(chatType);
+            }
+            else
+            {
+                ChatMessageTypeBeta chatType = packet.ReadInt32E<ChatMessageTypeBeta>("Type");
+                typeNormalized = ConvertBetaMessageType(chatType);
+            }
             packet.ReadInt32E<Language>("Language");
 
-            switch (type)
+            switch (typeNormalized)
             {
-                case ChatMessageTypeVanilla.Whisper:
+                case ChatMessageType.Whisper:
                 {
                     packet.ReadCString("Recipient");
                     break;
                 }
-                case ChatMessageTypeVanilla.Channel:
+                case ChatMessageType.Channel:
                 {
                     packet.ReadCString("Channel");
                     break;
