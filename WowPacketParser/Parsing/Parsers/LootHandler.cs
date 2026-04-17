@@ -129,7 +129,8 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadUInt32("DisplayID", i);
                 packet.ReadInt32("RandomPropertiesSeed", i);
                 packet.ReadInt32("RandomPropertiesID", i);
-                packet.ReadByteE<LootSlotType>("UIType", i);
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                    packet.ReadByteE<LootSlotType>("UIType", i);
                 loot.ItemsList.Add(lootItem);
             }
 

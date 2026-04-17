@@ -161,6 +161,78 @@ namespace WowPacketParser.Loading
 
                     ThreadPool.SetMinThreads(threadCount + 2, 4);
 
+                    // In vanilla and tbc sniffs the same high guid types is used for all server side objects.
+                    // We need to perform an analysis to guess the right type of guids.
+                    if (ClientVersion.Expansion == ClientType.WorldOfWarcraft ||
+                        ClientVersion.Expansion == ClientType.TheBurningCrusade)
+                    {
+                        var reader = _compression != FileCompression.None ? new Reader(_tempName, _sniffType) : new Reader(FileName, _sniffType);
+
+                        var pwp = new ParallelWorkProcessor<Packet>(() => // read
+                        {
+                            if (!reader.PacketReader.CanRead())
+                                return Tuple.Create<Packet, bool>(null, true);
+
+                            Packet packet;
+                            var b = reader.TryRead(out packet);
+
+                            return Tuple.Create(packet, b);
+                        }, packet => // parse
+                        {
+                            try
+                            {
+                                var opcode = Opcodes.GetOpcode(packet.Opcode, packet.Direction);
+                                switch (opcode)
+                                {
+                                    case Opcode.CMSG_SET_SELECTION:
+                                    case Opcode.CMSG_SET_TARGET_OBSOLETE:
+                                    {
+                                        WowGuid guid = packet.ReadGuid();
+                                        if (guid.GetHighType() == HighGuidType.DynamicObject)
+                                            Storage.StoreGuessedObjectType(guid, ObjectType.Unit);
+                                        break;
+                                    }
+                                    case Opcode.SMSG_ATTACK_START:
+                                    case Opcode.SMSG_SPELL_DAMAGE_SHIELD:
+                                    {
+                                        WowGuid guid1 = packet.ReadGuid();
+                                        if (guid1.GetHighType() == HighGuidType.DynamicObject)
+                                            Storage.StoreGuessedObjectType(guid1, ObjectType.Unit);
+                                        WowGuid guid2 = packet.ReadGuid();
+                                        if (guid2.GetHighType() == HighGuidType.DynamicObject)
+                                            Storage.StoreGuessedObjectType(guid2, ObjectType.Unit);
+                                        break;
+                                    }
+                                    case Opcode.CMSG_GAME_OBJ_USE:
+                                    case Opcode.SMSG_GAMEOBJECT_SPAWN_ANIM:
+                                    case Opcode.SMSG_GAME_OBJECT_CUSTOM_ANIM:
+                                    case Opcode.SMSG_GAME_OBJECT_DESPAWN:
+                                    {
+                                        WowGuid guid = packet.ReadGuid();
+                                        if (guid.GetHighType() == HighGuidType.DynamicObject)
+                                            Storage.StoreGuessedObjectType(guid, ObjectType.GameObject);
+                                        break;
+                                    }
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("[ERROR] An exception was thrown during preliminary guid analysis parse.");
+                            }
+
+                            return packet;
+                        },
+                        packet => // write
+                        {
+                            // Close Writer, Stream - Dispose
+                            packet.ClosePacket();
+                        }, threadCount);
+
+                        pwp.WaitForFinished(Timeout.Infinite);
+                        reader.PacketReader.Dispose();
+                    }
+
                     var written = false;
                     using (var writer = (Settings.DumpFormatWithText() ? new StreamWriter(outFileName, true) : null))
                     {

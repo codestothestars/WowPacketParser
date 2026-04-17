@@ -160,7 +160,8 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadByte("Trader");
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 packet.ReadUInt32("Trade Id");
-            packet.ReadUInt32("Client State Index");
+            if (ClientVersion.AddedInVersion(1, 2, 0))
+                packet.ReadUInt32("Client State Index");
             packet.ReadUInt32("Current State Index");
             packet.ReadUInt32("Gold");
             packet.ReadInt32<SpellId>("Spell ID");
@@ -183,9 +184,13 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadInt32("Item Spell Charges", slot);
                 packet.ReadInt32("Item Suffix Factor", slot);
                 packet.ReadInt32("Item Random Property ID", slot);
-                packet.ReadUInt32("Item Lock ID", slot);
-                packet.ReadUInt32("Item Max Durability", slot);
-                packet.ReadUInt32("Item Durability", slot);
+                if (ClientVersion.AddedInVersion(0, 10, 0))
+                    packet.ReadUInt32("Item Lock ID", slot);
+                if (ClientVersion.AddedInVersion(0, 12, 0))
+                {
+                    packet.ReadUInt32("Item Max Durability", slot);
+                    packet.ReadUInt32("Item Durability", slot);
+                }
             }
         }
 

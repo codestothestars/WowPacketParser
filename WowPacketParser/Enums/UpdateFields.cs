@@ -781,6 +781,8 @@ namespace WowPacketParser.Enums
         PLAYER_RUNE_REGEN_2,
         PLAYER_RUNE_REGEN_3,
         PLAYER_RUNE_REGEN_4,
+        [UpdateField(UpdateFieldType.Guid)]
+        PLAYER_SELECTION,
         PLAYER_SELF_RES_SPELL,
         PLAYER_SHIELD_BLOCK,
         PLAYER_SHIELD_BLOCK_CRIT_PERCENTAGE,

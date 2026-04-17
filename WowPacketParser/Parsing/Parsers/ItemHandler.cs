@@ -213,7 +213,8 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadGuid("GUID");
             packet.ReadUInt32("From NPC");
             packet.ReadUInt32("Created");
-            packet.ReadUInt32("Show in chat");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                packet.ReadUInt32("Show in chat");
             packet.ReadByte("Slot");
             if (ClientVersion.AddedInVersion(1, 11, 0))
                 packet.ReadInt32("Item Slot");

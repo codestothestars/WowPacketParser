@@ -148,6 +148,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_STOP_DANCE)]
         [Parser(Opcode.SMSG_INVALIDATE_PLAYER)]
         [Parser(Opcode.CMSG_SET_SELECTION, ClientVersionBuild.Zero, ClientVersionBuild.V5_1_0_16309)]
+        [Parser(Opcode.CMSG_SET_TARGET_OBSOLETE)]
         [Parser(Opcode.CMSG_INSPECT)]
         [Parser(Opcode.CMSG_BUY_BANK_SLOT)]
         [Parser(Opcode.CMSG_DEL_FRIEND)]

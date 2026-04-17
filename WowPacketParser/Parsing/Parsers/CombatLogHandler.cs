@@ -204,6 +204,12 @@ namespace WowPacketParser.Parsing.Parsers
                             packet.ReadInt32("Amount", index, i, j);
                             break;
                         }
+                        case SpellEffect.LearnSpell:
+                        {
+                            packet.ReadGuid("Target GUID", index, i, j);
+                            packet.ReadInt32("Learned Spell", index, i, j);
+                            break;
+                        }
                         case SpellEffect.CreateItem:
                         case SpellEffect.CreateItem2:
                         case SpellEffect.FeedPet:

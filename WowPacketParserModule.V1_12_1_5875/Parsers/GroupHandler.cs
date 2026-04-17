@@ -15,8 +15,11 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_GROUP_LIST)]
         public static void HandleGroupList(Packet packet)
         {
-            var grouptype = packet.ReadByteE<GroupTypeFlag>("Group Type");;
-            packet.ReadByteE<GroupUpdateFlag>("Flags");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+            {
+                packet.ReadByteE<GroupTypeFlag>("Group Type"); ;
+                packet.ReadByteE<GroupUpdateFlag>("Flags");
+            }
 
             var numFields = packet.ReadInt32("Member Count");
             for (var i = 0; i < numFields; i++)
@@ -25,7 +28,9 @@ namespace WowPacketParser.Parsing.Parsers
                 var guid = packet.ReadGuid("GUID", i);
                 StoreGetters.AddName(guid, name);
                 packet.ReadByteE<GroupMemberStatusFlag>("Status", i);
-                packet.ReadByteE<GroupUpdateFlag>("Update Flags", i);
+
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                    packet.ReadByteE<GroupUpdateFlag>("Update Flags", i);
             }
 
             WowGuid leaderGuid = packet.ReadGuid("Leader GUID");
@@ -35,11 +40,33 @@ namespace WowPacketParser.Parsing.Parsers
 
             packet.ReadByteE<LootMethod>("Loot Method");
             packet.ReadGuid("Looter GUID");
-            packet.ReadByteE<ItemQuality>("Loot Threshold");
+
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                packet.ReadByteE<ItemQuality>("Loot Threshold");
         }
 
-        [Parser(Opcode.SMSG_PARTY_MEMBER_PARTIAL_STATE)]
-        [Parser(Opcode.SMSG_PARTY_MEMBER_FULL_STATE)]
+        [Parser(Opcode.SMSG_PARTY_MEMBER_PARTIAL_STATE, ClientVersionBuild.Zero, ClientVersionBuild.V0_10_0_3892)]
+        [Parser(Opcode.SMSG_PARTY_MEMBER_FULL_STATE, ClientVersionBuild.Zero, ClientVersionBuild.V0_10_0_3892)]
+        public static void HandlePartyMemberStatsBeta(Packet packet)
+        {
+            packet.ReadGuid("GUID");
+
+            packet.ReadUInt32("Current Health");
+            packet.ReadUInt32("Max Health");
+            packet.ReadByteE<PowerType>("Power type");
+            packet.ReadInt32("Current Power");
+            packet.ReadInt32("Max Power");
+            packet.ReadInt32("Level");
+            packet.ReadInt32("Map Id");
+            packet.ReadInt32<ZoneId>("Zone Id");
+            packet.ReadSingle("Position X");
+            packet.ReadSingle("Position Y");
+            packet.ReadSingle("Position Z");
+            packet.ReadInt32("Unk");
+        }
+
+        [Parser(Opcode.SMSG_PARTY_MEMBER_PARTIAL_STATE, ClientVersionBuild.V0_10_0_3892)]
+        [Parser(Opcode.SMSG_PARTY_MEMBER_FULL_STATE, ClientVersionBuild.V0_10_0_3892)]
         public static void HandlePartyMemberStats(Packet packet)
         {
             if (ClientVersion.AddedInVersion(1, 9, 0))

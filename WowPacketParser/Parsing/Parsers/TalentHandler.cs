@@ -106,8 +106,13 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadPackedGuid("GUID");
             else if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_0_6a_13623))
                 packet.ReadGuid("GUID");
-            else
+            else if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 packet.ReadPackedGuid("GUID");
+            else
+            {
+                packet.ReadGuid("GUID");
+                return;
+            }
 
             ReadInspectPart(packet);
         }

@@ -22,6 +22,20 @@ namespace WowPacketParser.Store
         public static bool IsCurrentPlayerWatchingCinematic = false;
         public static bool HasCurrentPlayerMovedSinceEnterWorld = false;
 
+        public static Dictionary<WowGuid, ObjectType> GuessedObjectTypes = new Dictionary<WowGuid, ObjectType>();
+        public static void StoreGuessedObjectType(WowGuid guid, ObjectType objectType)
+        {
+            ObjectType storedType;
+            if (GuessedObjectTypes.TryGetValue(guid, out storedType))
+            {
+                if (storedType != objectType)
+                    Console.WriteLine($"[ERROR] Stored guessed type of guid {guid.ToString()} was {storedType.ToString()} but now guessed to be {objectType}!");
+                return;
+            }
+
+            GuessedObjectTypes.Add(guid, objectType);
+        }
+
         public static WowGuid CurrentActivePlayer = WowGuid64.Empty;
         public static void SetCurrentActivePlayer(WowGuid guid, DateTime time)
         {
@@ -3045,6 +3059,7 @@ namespace WowPacketParser.Store
         // and a new one is about to be loaded and parsed.
         public static void ClearTemporaryData()
         {
+            GuessedObjectTypes.Clear();
             CurrentActivePlayer = WowGuid64.Empty;
             CurrentMoveSplineExpireTime = 0;
             IsCurrentPlayerWatchingCinematic = false;

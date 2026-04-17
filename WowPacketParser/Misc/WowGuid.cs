@@ -38,10 +38,16 @@ namespace WowPacketParser.Misc
             if (ClientVersion.Expansion == ClientType.WorldOfWarcraft ||
                 ClientVersion.Expansion == ClientType.TheBurningCrusade)
             {
-                if (Storage.Objects.ContainsKey(this))
+                Store.Objects.WoWObject obj;
+                if (Storage.Objects.TryGetValue(this, out obj))
                 {
-                    var obj = Storage.Objects[this].Item1;
                     return obj.Type;
+                }
+
+                ObjectType storedType;
+                if (Storage.GuessedObjectTypes.TryGetValue(this, out storedType))
+                {
+                    return storedType;
                 }
             }
 
@@ -271,6 +277,20 @@ namespace WowPacketParser.Misc
                     return "Full: 0x" + Low.ToString("X8") + " Type: " + GetHighType()
                         + " BgType: " + StoreGetters.GetName(StoreNameType.Battleground, (int)bgType)
                         + " Unk: " + unkId + (arenaType > 0 ? (" ArenaType: " + arenaType) : String.Empty);
+                }
+            }
+
+            if (ClientVersion.Expansion == ClientType.WorldOfWarcraft ||
+                ClientVersion.Expansion == ClientType.TheBurningCrusade)
+            {
+                if (GetHighType() == HighGuidType.DynamicObject)
+                {
+                    ObjectType objectType = GetObjectType();
+                    if (objectType != ObjectType.DynamicObject)
+                    {
+                        return "Full: 0x" + Low.ToString("X8") + " Type: " + objectType.ToString()
+                        + (String.IsNullOrEmpty(name) ? String.Empty : (" Name: " + name));
+                    }
                 }
             }
 

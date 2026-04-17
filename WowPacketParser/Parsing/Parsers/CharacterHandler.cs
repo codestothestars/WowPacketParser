@@ -1084,7 +1084,8 @@ namespace WowPacketParser.Parsing.Parsers
             if (type == PlayerLogXPReason.Kill)
             {
                 log.Amount = packet.ReadUInt32("Amount");
-                log.GroupBonus = packet.ReadSingle("GroupBonus");
+                if (ClientVersion.AddedInVersion(1, 1, 0))
+                    log.GroupBonus = packet.ReadSingle("GroupBonus");
             }
 
             if (ClientVersion.AddedInVersion(ClientType.TheBurningCrusade))

@@ -1580,6 +1580,13 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadInt32("UnkInt32_2");
         }
 
+        [Parser(Opcode.CMSG_NEW_SPELL_SLOT)]
+        public static void HandleNewSpellSlot(Packet packet)
+        {
+            packet.ReadUInt32("Spell");
+            packet.ReadInt32("Index");
+        }
+
         [Parser(Opcode.SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA)]
         [Parser(Opcode.CMSG_CANCEL_AUTO_REPEAT_SPELL)]
         [Parser(Opcode.CMSG_CANCEL_GROWTH_AURA)]

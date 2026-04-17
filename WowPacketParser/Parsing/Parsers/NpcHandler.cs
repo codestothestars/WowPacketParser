@@ -583,8 +583,15 @@ namespace WowPacketParser.Parsing.Parsers
                 };
 
                 gossipOption.OptionIndex = gossipMenuOptionBox.OptionIndex = packet.ReadUInt32("Index", i);
-                gossipOption.OptionIcon = packet.ReadByteE<GossipOptionIcon>("Icon", i);
-                gossipMenuOptionBox.BoxCoded = packet.ReadBool("Box", i);
+                if (ClientVersion.AddedInVersion(1, 6, 0))
+                {
+                    gossipOption.OptionIcon = packet.ReadByteE<GossipOptionIcon>("Icon", i);
+                    gossipMenuOptionBox.BoxCoded = packet.ReadBool("Box", i);
+                }
+                else
+                {
+                    gossipOption.OptionIcon = packet.ReadUInt32E<GossipOptionIcon>("Icon", i);
+                }
 
                 if (ClientVersion.AddedInVersion(ClientType.TheBurningCrusade))
                     gossipMenuOptionBox.BoxMoney = packet.ReadUInt32("Required money", i);

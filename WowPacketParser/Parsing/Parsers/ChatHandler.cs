@@ -57,8 +57,10 @@ namespace WowPacketParser.Parsing.Parsers
         {
             packet.ReadGuid("GUID");
             packet.ReadInt32E<EmoteTextType>("Text Emote ID");
-            packet.ReadInt32E<EmoteType>("Emote ID");
-            packet.ReadInt32("Name length");
+            if (ClientVersion.AddedInVersion(1, 2, 0))
+                packet.ReadInt32E<EmoteType>("Emote ID");
+            if (ClientVersion.AddedInVersion(1, 1, 0))
+                packet.ReadInt32("Name length");
             packet.ReadCString("Name");
         }
 

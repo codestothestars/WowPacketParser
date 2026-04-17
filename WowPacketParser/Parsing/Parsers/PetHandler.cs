@@ -77,7 +77,8 @@ namespace WowPacketParser.Parsing.Parsers
             for (int i = 0; i < spellCount; i++)
             {
                 packet.ReadUInt16<SpellId>("Spell", i);
-                packet.ReadInt16("Active", i);
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V0_10_0_3892))
+                    packet.ReadInt16("Active", i);
             }
 
             byte cdCount = packet.ReadByte("Cooldown count");
