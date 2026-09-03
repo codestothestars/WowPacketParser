@@ -112,18 +112,26 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             packet.ReadWoWString("QuestTitle", questTitleLen, idx);
         }
-
-        [Parser(Opcode.CMSG_BANKER_ACTIVATE)]
+        
         [Parser(Opcode.CMSG_BINDER_ACTIVATE)]
         [Parser(Opcode.SMSG_BINDER_CONFIRM)]
+        public static void HandleBinderHello(Packet packet)
+        {
+            CoreParsers.NpcHandler.LastGossipOption.Guid = packet.ReadPackedGuid128("Guid");
+        }
+
+        [Parser(Opcode.CMSG_BANKER_ACTIVATE)]
         [Parser(Opcode.CMSG_TALK_TO_GOSSIP)]
         [Parser(Opcode.CMSG_LIST_INVENTORY)]
         [Parser(Opcode.CMSG_TRAINER_LIST)]
         public static void HandleNpcHello(Packet packet)
         {
+            WowGuid guid = packet.ReadPackedGuid128("Guid");
             CoreParsers.NpcHandler.LastGossipOption.Reset();
             CoreParsers.NpcHandler.TempGossipOptionPOI.Reset();
-            CoreParsers.NpcHandler.LastGossipOption.Guid = packet.ReadPackedGuid128("Guid");
+            CoreParsers.NpcHandler.LastGossipOption.Guid = guid;
+            if (guid.GetObjectType() == ObjectType.Unit)
+                Storage.StoreCreatureInteract(guid, packet.Time);
         }
 
         [Parser(Opcode.SMSG_SHOW_BANK)]

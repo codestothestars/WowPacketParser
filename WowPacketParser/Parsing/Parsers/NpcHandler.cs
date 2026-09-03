@@ -440,9 +440,12 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_BINDER_ACTIVATE)]
         public static void HandleNpcHello(Packet packet)
         {
+            WowGuid guid = packet.ReadGuid("GUID");
             LastGossipOption.Reset();
             TempGossipOptionPOI.Reset();
             LastGossipOption.Guid = packet.ReadGuid("GUID");
+            if (guid.GetObjectType() == ObjectType.Unit)
+                Storage.StoreCreatureInteract(guid, packet.Time);
         }
 
         [Parser(Opcode.SMSG_BINDER_CONFIRM)]
