@@ -109,7 +109,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             for (var i = 0; i < missStatusCount; ++i)
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellMissStatus(packet, idx, "MissStatus", i);
 
-            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(dbdata, packet, spellID, idx, "Target");
+            SpellCastData temp = new SpellCastData();
+            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(temp, packet, spellID, idx, "Target");
 
             for (var i = 0; i < hitTargetsCount; ++i)
                 packet.ReadPackedGuid128("HitTarget", idx, i);
