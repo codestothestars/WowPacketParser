@@ -942,7 +942,7 @@ namespace WowPacketParser.Misc
                 case ClientVersionBuild.V1_13_6_36714:
                 case ClientVersionBuild.V1_13_6_36935:
                 case ClientVersionBuild.V1_13_6_37497:
-                {
+                    {
                     return true;
                 }
                 default:

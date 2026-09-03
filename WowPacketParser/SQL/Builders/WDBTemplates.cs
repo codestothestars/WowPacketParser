@@ -119,8 +119,8 @@ namespace WowPacketParser.SQL.Builders
             if (Storage.CreatureTemplateModels.IsEmpty())
                 return string.Empty;
 
-            if (Settings.TargetedDatabase < TargetedDatabase.BattleForAzeroth)
-                return string.Empty;
+            //if (Settings.TargetedDatabase < TargetedDatabase.BattleForAzeroth)
+            //    return string.Empty;
 
             var templatesDb = SQLDatabase.Get(Storage.CreatureTemplateModels);
 

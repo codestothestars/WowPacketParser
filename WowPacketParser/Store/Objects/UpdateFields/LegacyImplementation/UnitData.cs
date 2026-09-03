@@ -74,6 +74,8 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         public int FactionTemplate => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_FACTIONTEMPLATE);
 
+        public int MaxMana => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_MAXPOWER);
+
         public IVisibleItem[] VirtualItems
         {
             get
