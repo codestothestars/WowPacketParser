@@ -443,7 +443,7 @@ namespace WowPacketParser.Parsing.Parsers
             WowGuid guid = packet.ReadGuid("GUID");
             LastGossipOption.Reset();
             TempGossipOptionPOI.Reset();
-            LastGossipOption.Guid = packet.ReadGuid("GUID");
+            LastGossipOption.Guid = guid;
             if (guid.GetObjectType() == ObjectType.Unit)
                 Storage.StoreCreatureInteract(guid, packet.Time);
         }
