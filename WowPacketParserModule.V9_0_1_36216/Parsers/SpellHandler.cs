@@ -217,23 +217,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             }
 
             var guid = packet.ReadPackedGuid128("UnitGUID");
-
-            if (Storage.Objects.ContainsKey(guid))
-            {
-                var unit = Storage.Objects[guid].Item1 as Unit;
-                if (unit != null)
-                {
-                    // If this is the first packet that sends auras
-                    // (hopefully at spawn time) add it to the "Auras" field,
-                    // if not create another row of auras in AddedAuras
-                    // (similar to ChangedUpdateFields)
-
-                    if (unit.Auras == null)
-                        unit.Auras = auras;
-                    else
-                        unit.AddedAuras.Add(auras);
-                }
-            }
+            Storage.StoreUnitAurasUpdate(guid, auras, packet.Time);
         }
 
         [Parser(Opcode.SMSG_CAST_FAILED)]
