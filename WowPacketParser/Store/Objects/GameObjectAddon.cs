@@ -21,10 +21,10 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("parent_rotation3")]
         public float? parentRot3;
 
-        [DBFieldName("WorldEffectID", TargetedDatabase.Legion)]
+        [DBFieldName("WorldEffectID", TargetedDbExpansion.Legion)]
         public uint? WorldEffectID;
 
-        [DBFieldName("AIAnimKitID", TargetedDatabase.Shadowlands)]
+        [DBFieldName("AIAnimKitID", TargetedDbExpansion.Shadowlands)]
         public uint? AIAnimKitID;
     }
 }
