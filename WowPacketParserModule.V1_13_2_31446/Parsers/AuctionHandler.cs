@@ -17,5 +17,19 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             CoreParsers.NpcHandler.LastGossipOption.Reset();
             CoreParsers.NpcHandler.TempGossipOptionPOI.Reset();
         }
+
+        [Parser(Opcode.SMSG_AUCTION_OUTBID_NOTIFICATION)]
+        public static void HandleAuctionOutbitNotification(Packet packet)
+        {
+            packet.ReadUInt32("AuctionHouseID");
+            packet.ReadUInt32("AuctionItemID");
+            packet.ReadPackedGuid128("Bidder");
+            packet.ReadInt32<ItemId>("ItemID");
+            packet.ReadUInt32("UnkInt2");
+            packet.ReadUInt32("UnkInt3");
+            packet.ReadByte("UnkByte");
+            packet.ReadUInt64("BidAmount");
+            packet.ReadUInt64("MinIncrement");
+        }
     }
 }
