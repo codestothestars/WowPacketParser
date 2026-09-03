@@ -54,7 +54,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         byte ShapeshiftForm { get; }
         float HoverHeight { get; }
         int InteractSpellID { get; }
-
+        WowGuid GuildGUID { get; }
         IUnitData Clone();
     }
 }
