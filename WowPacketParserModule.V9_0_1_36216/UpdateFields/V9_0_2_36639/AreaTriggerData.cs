@@ -14,7 +14,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
         public uint TimeToTargetExtraScale { get; set; }
         public int SpellID { get; set; }
         public int SpellForVisuals { get; set; }
-        public ISpellCastVisual SpellVisual { get; set; }
+        public int SpellXSpellVisualID { get; set; }
         public float BoundsRadius2D { get; set; }
         public uint DecalPropertiesID { get; set; }
         public WowGuid CreatingEffectGUID { get; set; }
