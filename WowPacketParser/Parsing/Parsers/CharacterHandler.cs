@@ -1065,7 +1065,8 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadSingle("GroupBonus");
             }
 
-            packet.ReadByteE<ReferAFriendBonusType>("ReferAFriendBonusType");
+            if (ClientVersion.AddedInVersion(ClientType.TheBurningCrusade))
+                packet.ReadByteE<ReferAFriendBonusType>("ReferAFriendBonusType");
         }
 
         [Parser(Opcode.SMSG_TITLE_EARNED)]
