@@ -39,32 +39,53 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             packet.ReadSByte("VehicleExitVoluntary");
             var pos = packet.ReadVector3("Position");
 
-            ReadMovementMonsterSpline(packet, pos, "MovementMonsterSpline");
+            ReadMovementMonsterSpline(guid, packet, pos, "MovementMonsterSpline");
         }
 
-        public static void ReadMovementMonsterSpline(Packet packet, Vector3 pos, params object[] indexes)
+        public static void ReadMovementMonsterSpline(WowGuid guid, Packet packet, Vector3 pos, params object[] indexes)
         {
             packet.ReadInt32("Id", indexes);
-            ReadMovementSpline(packet, pos, indexes, "MovementSpline");
+            ReadMovementSpline(guid, packet, pos, indexes, "MovementSpline");
         }
 
-        public static void ReadMovementSpline(Packet packet, Vector3 pos, params object[] indexes)
+        public static void ReadMovementSpline(WowGuid guid, Packet packet, Vector3 pos, params object[] indexes)
         {
             var type = packet.ReadSByteE<SplineType>("Face", indexes);
 
+            float orientation = 100;
             switch (type)
             {
                 case SplineType.FacingSpot:
-                    packet.ReadVector3("FaceSpot", indexes);
+                    var faceSpot = packet.ReadVector3("FaceSpot", indexes);
+                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineType.FacingTarget:
                     packet.ReadGuid("FacingGUID", indexes);
                     break;
                 case SplineType.FacingAngle:
-                    packet.ReadSingle("FaceDirection", indexes);
+                    orientation = packet.ReadSingle("FaceDirection", indexes);
                     break;
                 case SplineType.Stop:
                     return;
+            }
+
+            if (guid.GetHighType() == HighGuidType.Creature && Storage.Objects != null && Storage.Objects.ContainsKey(guid) &&
+                packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_ON_MONSTER_MOVE, Direction.ServerToClient))
+            {
+                var obj = Storage.Objects[guid].Item1 as Unit;
+                if (obj.UpdateFields != null)
+                {
+                    if ((obj.UnitData.Flags & (uint)UnitFlags.IsInCombat) == 0) // movement could be because of aggro so ignore that
+                    {
+                        CreatureMovement movementData = new CreatureMovement();
+                        movementData.Point = (uint)obj.Waypoints.Count;
+                        movementData.PositionX = pos.X;
+                        movementData.PositionY = pos.Y;
+                        movementData.PositionZ = pos.Z;
+                        movementData.Orientation = orientation;
+                        obj.Waypoints.Add(movementData);
+                    }
+                }
             }
 
             var flags = packet.ReadInt32E<SplineFlag>("Flags", indexes);
