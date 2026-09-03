@@ -27,7 +27,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_1_36216
         public ulong BattlePetDBID { get; set; }
         public IUnitChannel ChannelData { get; set; }
         public uint SummonedByHomeRealm { get; set; }
-        public byte Race { get; set; }
+        public byte RaceId { get; set; }
         public byte ClassId { get; set; }
         public byte PlayerClassId { get; set; }
         public byte Sex { get; set; }
