@@ -39,6 +39,13 @@ namespace WowPacketParser.Store
             _dictionary = new ConcurrentDictionary<T, Tuple<TK, TimeSpan?>>();
         }
 
+        public StoreDictionary(bool enabled)
+        {
+            Types = new List<SQLOutput>();
+            Enabled = enabled;
+            _dictionary = new ConcurrentDictionary<T, Tuple<TK, TimeSpan?>>();
+        }
+
         public StoreDictionary(List<SQLOutput> types)
         {
             Types = types;
@@ -181,6 +188,13 @@ namespace WowPacketParser.Store
             _dictionary = new MultiDictionary<T, Tuple<TK, TimeSpan?>>(true);
         }
 
+        public StoreMulti(bool enabled)
+        {
+            Types = new List<SQLOutput>();
+            Enabled = enabled;
+            _dictionary = new MultiDictionary<T, Tuple<TK, TimeSpan?>>(true);
+        }
+
         public StoreMulti(List<SQLOutput> types)
         {
             Types = types;
@@ -278,6 +292,13 @@ namespace WowPacketParser.Store
             Bag = Enabled ? new ConcurrentBag<Tuple<T, TimeSpan?>>() : null;
         }
 
+        public StoreBag(bool enabled)
+        {
+            Types = new List<SQLOutput>();
+            Enabled = enabled;
+            Bag = Enabled ? new ConcurrentBag<Tuple<T, TimeSpan?>>() : null;
+        }
+
         public void Add(T item, TimeSpan? time = null)
         {
             if (Enabled)
@@ -317,6 +338,8 @@ namespace WowPacketParser.Store
         public DataBag() { }
 
         public DataBag(List<SQLOutput> types) : base(types) { }
+
+        public DataBag(bool enabled) : base(enabled) { }
 
         public Tuple<T, TimeSpan?> this[T key]
         {
