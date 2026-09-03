@@ -170,7 +170,11 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
             public int ItemID { get; set; }
             public ushort ItemAppearanceModID { get; set; }
             public ushort ItemVisual { get; set; }
+
+            public IVisibleItem Clone() { return (IVisibleItem)MemberwiseClone(); }
         }
+
+        public IUnitData Clone() { return new UnitData(Object); }
     }
     public class OriginalUnitData : IUnitData
     {
@@ -342,6 +346,10 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
             public int ItemID { get; set; }
             public ushort ItemAppearanceModID { get; set; }
             public ushort ItemVisual { get; set; }
+
+            public IVisibleItem Clone() { return (IVisibleItem)MemberwiseClone(); }
         }
+
+        public IUnitData Clone() { return new OriginalUnitData(Object); }
     }
 }

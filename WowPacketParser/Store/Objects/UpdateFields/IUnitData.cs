@@ -54,5 +54,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         byte ShapeshiftForm { get; }
         float HoverHeight { get; }
         int InteractSpellID { get; }
+
+        IUnitData Clone();
     }
 }
