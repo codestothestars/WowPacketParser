@@ -66,7 +66,7 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             {
                 case SplineType.FacingSpot:
                     var faceSpot = packet.ReadVector3("FaceSpot", indexes);
-                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
+                    orientation = Utilities.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineType.FacingTarget:
                     packet.ReadGuid("FacingGUID", indexes);

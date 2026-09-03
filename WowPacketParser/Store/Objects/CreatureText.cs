@@ -1,3 +1,4 @@
+using System;
 using WowPacketParser.Enums;
 using WowPacketParser.Misc;
 using WowPacketParser.SQL;
@@ -10,8 +11,26 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("CreatureID", true)]
         public uint? Entry;
 
-        [DBFieldName("GroupID", true, true)]
-        public string GroupId;
+        [DBFieldName("GroupID", true)]
+        public uint GroupId;
+
+        [DBFieldName("HealthPercent")]
+        public float HealthPercent;
+
+        [DBFieldName("UnixTime", true)]
+        public uint UnixTime;
+
+        public string Text;
+    }
+
+    [DBTableName("creature_text_template")]
+    public sealed class CreatureTextTemplate : IDataModel
+    {
+        [DBFieldName("CreatureID", true)]
+        public uint? Entry;
+
+        [DBFieldName("GroupID", true)]
+        public uint GroupId;
 
         [DBFieldName("Text")]
         public string Text;
@@ -22,14 +41,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("Language")]
         public Language? Language;
 
-        [DBFieldName("Probability")]
-        public float? Probability;
-
         [DBFieldName("Emote")]
         public EmoteType? Emote;
-
-        [DBFieldName("Duration")]
-        public uint? Duration;
 
         [DBFieldName("Sound")]
         public uint? Sound;
@@ -44,6 +57,7 @@ namespace WowPacketParser.Store.Objects
         public string SenderName;
         public WowGuid ReceiverGUID;
         public string ReceiverName;
+        public DateTime Time;
 
         public string BroadcastTextIDHelper;
     }
