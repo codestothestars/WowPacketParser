@@ -24,15 +24,15 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             var guid = packet.ReadPackedGuid("MoverGUID");
 
             Unit obj = null;
-            CreatureMovement movementData = null;
-            if (guid.GetObjectType() == ObjectType.Unit && Storage.Objects != null && Storage.Objects.ContainsKey(guid))
+            ServerSideMovement movementData = null;
+            if (Storage.Objects != null && Storage.Objects.ContainsKey(guid))
             {
                 obj = Storage.Objects[guid].Item1 as Unit;
                 if (obj.UpdateFields != null)
                 {
                     obj.Movement.HasWpsOrRandMov = true;
                     if (packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_ON_MONSTER_MOVE, Direction.ServerToClient))
-                        movementData = new CreatureMovement();
+                        movementData = new ServerSideMovement();
                 }
             }
 
@@ -48,13 +48,13 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             ReadMovementMonsterSpline(guid, packet, pos, obj, movementData, "MovementMonsterSpline");
         }
 
-        public static void ReadMovementMonsterSpline(WowGuid guid, Packet packet, Vector3 pos, Unit? obj, CreatureMovement? movementData, params object[] indexes)
+        public static void ReadMovementMonsterSpline(WowGuid guid, Packet packet, Vector3 pos, Unit? obj, ServerSideMovement? movementData, params object[] indexes)
         {
             packet.ReadInt32("Id", indexes);
             ReadMovementSpline(guid, packet, pos, obj, movementData, indexes, "MovementSpline");
         }
 
-        public static void ReadMovementSpline(WowGuid guid, Packet packet, Vector3 pos, Unit? obj, CreatureMovement? movementData, params object[] indexes)
+        public static void ReadMovementSpline(WowGuid guid, Packet packet, Vector3 pos, Unit? obj, ServerSideMovement? movementData, params object[] indexes)
         {
             var type = packet.ReadSByteE<SplineType>("Face", indexes);
 
