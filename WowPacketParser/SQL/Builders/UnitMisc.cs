@@ -155,7 +155,7 @@ namespace WowPacketParser.SQL.Builders
             if (units.Count == 0)
                 return string.Empty;
 
-            if (!Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.creature_model_info))
+            if (!Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.creature_display_info_addon))
                 return string.Empty;
 
             var models = new DataBag<ModelData>();
@@ -248,7 +248,17 @@ namespace WowPacketParser.SQL.Builders
             if (!Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.trainer))
                 return string.Empty;
 
-            return SQLUtil.Compare(Storage.CreatureTrainers, SQLDatabase.Get(Storage.CreatureTrainers), StoreNameType.None);
+            var result = "";
+
+            if (!Storage.CreatureTrainers.IsEmpty())
+            {
+                foreach (var gossip_pair in Storage.CreatureTrainers)
+                    result += "UPDATE `gossip_menu_option` SET `option_id`=5, `npc_option_npcflag`=16 WHERE `menu_id`=" + gossip_pair.Item1.MenuID.ToString() + " && `id`=" + gossip_pair.Item1.OptionIndex.ToString() + ";\r\n";
+                result += "\r\n";
+                result += SQLUtil.Compare(Storage.CreatureTrainers, SQLDatabase.Get(Storage.CreatureTrainers), StoreNameType.None);
+            }
+
+            return result;
         }
 
         [BuilderMethod]
@@ -400,8 +410,22 @@ namespace WowPacketParser.SQL.Builders
             if (Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.gossip_menu_option))
             {
                 result += SQLUtil.Compare(Storage.GossipMenuOptions, SQLDatabase.Get(Storage.GossipMenuOptions), t => t.BroadcastTextIDHelper);
-                result += SQLUtil.Compare(Storage.GossipMenuOptionActions, SQLDatabase.Get(Storage.GossipMenuOptionActions), StoreNameType.None);
-                result += SQLUtil.Compare(Storage.GossipMenuOptionBoxes, SQLDatabase.Get(Storage.GossipMenuOptionBoxes), t => t.BroadcastTextIdHelper);
+
+                if (!Storage.GossipMenuOptionActions.IsEmpty())
+                {
+                    foreach (var gossip_pair in Storage.GossipMenuOptionActions)
+                        result += "UPDATE `gossip_menu_option` SET `action_menu_id`=" + gossip_pair.Item1.ActionMenuId.ToString() + ", `action_poi_id`=" + gossip_pair.Item1.ActionPoiId.ToString() + ", `option_id`=1, `npc_option_npcflag`=1 WHERE `menu_id`=" + gossip_pair.Item1.MenuId.ToString() + " && `id`=" + gossip_pair.Item1.OptionIndex.ToString() + ";\r\n";
+                    result += "\r\n";
+                    result += SQLUtil.Compare(Storage.GossipMenuOptionActions, SQLDatabase.Get(Storage.GossipMenuOptionActions), StoreNameType.None);
+                }
+
+                if (!Storage.GossipMenuOptionBoxes.IsEmpty())
+                {
+                    foreach (var gossip_pair in Storage.GossipMenuOptionBoxes)
+                        result += "UPDATE `gossip_menu_option` SET `box_coded`=" + gossip_pair.Item1.BoxCoded.ToString() + ", `box_money`=" + gossip_pair.Item1.BoxMoney.ToString() + ", `box_text`='" + MySql.Data.MySqlClient.MySqlHelper.EscapeString(gossip_pair.Item1.BoxText) + "' WHERE `menu_id`=" + gossip_pair.Item1.MenuId.ToString() + " && `id`=" + gossip_pair.Item1.OptionIndex.ToString() + ";\r\n";
+                    result += "\r\n";
+                    result += SQLUtil.Compare(Storage.GossipMenuOptionBoxes, SQLDatabase.Get(Storage.GossipMenuOptionBoxes), t => t.BroadcastTextIdHelper);
+                }
             }
 
             return result;
@@ -1057,7 +1081,6 @@ namespace WowPacketParser.SQL.Builders
                         {
                             Entry = text.Key,
                             GroupId = "@GROUP_ID+" + count,
-                            ID = "@ID+",
                             Text = textValue.Item1.Text,
                             Type = textValue.Item1.Type,
                             Language = textValue.Item1.Language,

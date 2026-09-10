@@ -100,8 +100,8 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
 
             creature.DisplayId = displayIds.Concat(new uint?[] { 0, 0, 0, 0 }).Take(4).ToArray();
 
-            creature.HealthModifier = packet.ReadSingle("HpMulti");
-            creature.ManaModifier = packet.ReadSingle("EnergyMulti");
+            creature.HealthMultiplier = packet.ReadSingle("HpMulti");
+            creature.ManaMultiplier = packet.ReadSingle("EnergyMulti");
             uint questItems = packet.ReadUInt32("QuestItems");
             creature.MovementID = (uint)packet.ReadInt32("CreatureMovementInfoID");
             creature.HealthScalingExpansion = packet.ReadInt32E<ClientType>("HealthScalingExpansion");
