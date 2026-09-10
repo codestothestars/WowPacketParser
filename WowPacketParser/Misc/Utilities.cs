@@ -31,6 +31,11 @@ namespace WowPacketParser.Misc
             return ((DateTimeOffset)DateTime.SpecifyKind(time, DateTimeKind.Utc)).ToUnixTimeSeconds();
         }
 
+        public static double GetUnixTimeMsFromDateTime(DateTime time)
+        {
+            return (time - Epoch).TotalMilliseconds;
+        }
+
         public static float GetAngle(float x1, float y1, float x2, float y2)
         {
             float dx = x1 - x2;
