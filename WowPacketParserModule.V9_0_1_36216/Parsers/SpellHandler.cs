@@ -109,8 +109,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             for (var i = 0; i < missStatusCount; ++i)
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellMissStatus(packet, idx, "MissStatus", i);
 
-            SpellCastData temp = new SpellCastData();
-            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(temp, packet, spellID, idx, "Target");
+            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(dbdata, packet, spellID, idx, "Target");
 
             for (var i = 0; i < hitTargetsCount; ++i)
                 packet.ReadPackedGuid128("HitTarget", idx, i);
@@ -136,6 +135,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         {
             SpellCastData castData = new SpellCastData();
             ReadSpellCastData(castData, packet, "Cast");
+            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastStart, packet);
         }
 
         [Parser(Opcode.SMSG_SPELL_GO)]
@@ -149,6 +149,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             var hasLogData = packet.ReadBit();
             if (hasLogData)
                 V8_0_1_27101.Parsers.SpellHandler.ReadSpellCastLogData(packet, "LogData");
+
+            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastGo, packet);
         }
 
         [HasSniffData]
