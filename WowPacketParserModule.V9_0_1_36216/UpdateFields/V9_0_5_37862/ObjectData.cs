@@ -11,6 +11,8 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_5_37862
         public uint TypeID { get; set; }
         public uint DynamicFlags { get; set; }
         public float Scale { get; set; }
+
+        public IObjectData Clone() { return (IObjectData)MemberwiseClone(); }
     }
 }
 
