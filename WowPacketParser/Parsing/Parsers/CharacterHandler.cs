@@ -1055,18 +1055,23 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_LOG_XP_GAIN)]
         public static void HandleLogXPGain(Packet packet)
         {
-            packet.ReadGuid("VictimGUID");
-            packet.ReadUInt32("Original");
+            XpGainLog log = new XpGainLog();
+            log.GUID = packet.ReadGuid("VictimGUID");
+            log.OriginalAmount = packet.ReadUInt32("Original");
             var type = packet.ReadByteE<PlayerLogXPReason>("Reason");
+            log.Reason = (uint)type;
 
             if (type == PlayerLogXPReason.Kill)
             {
-                packet.ReadUInt32("Amount");
-                packet.ReadSingle("GroupBonus");
+                log.Amount = packet.ReadUInt32("Amount");
+                log.GroupBonus = packet.ReadSingle("GroupBonus");
             }
 
             if (ClientVersion.AddedInVersion(ClientType.TheBurningCrusade))
-                packet.ReadByteE<ReferAFriendBonusType>("ReferAFriendBonusType");
+                log.RAFBonus = packet.ReadByteE<ReferAFriendBonusType>("ReferAFriendBonusType") == ReferAFriendBonusType.RecruitAFriend;
+
+            log.Time = packet.Time;
+            Storage.XpGainLogs.Add(log);
         }
 
         [Parser(Opcode.SMSG_TITLE_EARNED)]
