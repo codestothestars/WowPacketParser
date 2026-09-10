@@ -17,9 +17,9 @@ namespace WowPacketParser.Parsing.Parsers
         {
             public uint ID { get; set; }
             public int EmoteOnIncompleteDelay { get; set; }
-            public int EmoteOnIncomplete { get; set; }
+            public uint? EmoteOnIncomplete { get; set; }
             public int EmoteOnCompleteDelay { get; set; }
-            public int EmoteOnComplete { get; set; }
+            public uint? EmoteOnComplete { get; set; }
             public string CompletionText { get; set; }
         }
 
@@ -999,7 +999,7 @@ namespace WowPacketParser.Parsing.Parsers
                 packet.ReadUInt32("Unk UInt32");
         }
 
-        public static void QuestRequestItemHelper(int id, string completionText, int delay, int emote, bool isComplete, Packet packet, WowGuid guid, bool noRequestOnComplete = false)
+        public static void QuestRequestItemHelper(int id, string completionText, int delay, uint emote, bool isComplete, Packet packet, WowGuid guid, bool noRequestOnComplete = false)
         {
             RequestItemEmote requestItemEmote;
             if (RequestItemEmoteStore.TryGetValue(id, out requestItemEmote))
@@ -1033,7 +1033,6 @@ namespace WowPacketParser.Parsing.Parsers
                     emotes.EmoteOnCompleteDelay = delay;
                     emotes.EmoteOnComplete = emote;
                     emotes.EmoteOnIncompleteDelay = -1;
-                    emotes.EmoteOnIncomplete = -1;
                 }
                 else
                 {
@@ -1047,7 +1046,6 @@ namespace WowPacketParser.Parsing.Parsers
                     }
                     else
                     {
-                        emotes.EmoteOnComplete = -1;
                         emotes.EmoteOnCompleteDelay = -1;
                     }
                 }
@@ -1078,7 +1076,7 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadCString("Title");
             string text = packet.ReadCString("Text");
             int emoteDelay = (int)packet.ReadUInt32("Emote Delay");
-            int emoteID = (int)packet.ReadUInt32("Emote");
+            var emoteID = packet.ReadUInt32("Emote");
             packet.ReadUInt32("Close Window on Cancel");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_3_3_11685))
@@ -1121,7 +1119,7 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadCString("Title");
             string completionText = packet.ReadCString("CompletionText");
             int delay = packet.ReadInt32("EmoteDelay");
-            int emote = packet.ReadInt32("EmoteType");
+            var emote = packet.ReadUInt32("EmoteType");
 
             packet.ReadUInt32("Close Window on Cancel");
             packet.ReadUInt32E<QuestFlags>("QuestFlags");
@@ -1176,7 +1174,7 @@ namespace WowPacketParser.Parsing.Parsers
             packet.ReadCString("Title");
             string text = packet.ReadCString("Text");
             int delay = packet.ReadInt32("EmoteDelay");
-            int emote = packet.ReadInt32("EmoteType");
+            var emote = packet.ReadUInt32("EmoteType");
             packet.ReadUInt32("Close Window on Cancel");
             packet.ReadUInt32E<QuestFlags>("Quest Flags");
             packet.ReadUInt32E<QuestFlagsEx>("Quest Flags 2");
