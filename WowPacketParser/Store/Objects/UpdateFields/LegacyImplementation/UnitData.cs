@@ -76,6 +76,8 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         public long CurHealth => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_HEALTH);
 
+        public uint HealthPercent => (uint)(((float)CurHealth / (float)MaxHealth) * 100);
+
         public int CurMana => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_POWER);
 
         public int MaxMana => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_MAXPOWER);
