@@ -146,6 +146,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             var isSelf = packet.ReadBit("ThisIsYou", index);
             if (isSelf)
             {
+                Storage.CurrentActivePlayer = guid;
                 ActivePlayerCreateTime activePlayer = new ActivePlayerCreateTime
                 {
                     Guid = guid,

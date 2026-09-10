@@ -1476,6 +1476,7 @@ namespace WowPacketParser.Parsing.Parsers
             var isSelf =  packet.ReadBit("Self", index);
             if (isSelf)
             {
+                Storage.CurrentActivePlayer = guid;
                 ActivePlayerCreateTime activePlayer = new ActivePlayerCreateTime
                 {
                     Guid = guid,
@@ -3697,6 +3698,7 @@ namespace WowPacketParser.Parsing.Parsers
                 flags = packet.ReadByteE<UpdateFlag>("Update Flags", index);
             if (flags.HasAnyFlag(UpdateFlag.Self))
             {
+                Storage.CurrentActivePlayer = guid;
                 ActivePlayerCreateTime activePlayer = new ActivePlayerCreateTime
                 {
                     Guid = guid,
