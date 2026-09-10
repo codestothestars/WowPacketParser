@@ -1,5 +1,6 @@
 using WowPacketParser.Enums;
 using WowPacketParser.Misc;
+using WowPacketParser.Store;
 
 namespace WowPacketParser.Parsing.Parsers
 {
@@ -114,17 +115,26 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.SMSG_ATTACK_START)]
         public static void HandleAttackStartStart(Packet packet)
         {
-            packet.ReadGuid("AttackerGUID");
-            packet.ReadGuid("VictimGUID");
+            WowGuid attackerGuid = packet.ReadGuid("AttackerGUID");
+            WowGuid victimGuid = packet.ReadGuid("VictimGUID");
+            Storage.StoreCreatureAttack(attackerGuid, victimGuid, packet.Time, true);
         }
 
         [Parser(Opcode.SMSG_ATTACK_STOP)]
-        [Parser(Opcode.SMSG_COMBAT_EVENT_FAILED)]
         public static void HandleAttackStartStop(Packet packet)
         {
-            packet.ReadPackedGuid("AttackerGUID");
-            packet.ReadPackedGuid("VictimGUID");
+            WowGuid attackerGuid = packet.ReadPackedGuid("AttackerGUID");
+            WowGuid victimGuid = packet.ReadPackedGuid("VictimGUID");
             packet.ReadInt32("NowDead"); // Blocks clientside facing when set to 1
+            Storage.StoreCreatureAttack(attackerGuid, victimGuid, packet.Time, false);
+        }
+
+        [Parser(Opcode.SMSG_COMBAT_EVENT_FAILED)]
+        public static void HandleCombatEventFailed(Packet packet)
+        {
+            packet.ReadPackedGuid("GUID");
+            packet.ReadPackedGuid("Victim GUID");
+            packet.ReadInt32("Unk int"); // Has something to do with facing?
         }
 
         [Parser(Opcode.SMSG_ATTACKER_STATE_UPDATE, ClientVersionBuild.V4_0_6_13596)]
