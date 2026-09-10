@@ -326,7 +326,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         public static void HandleUpdateSpellVisual(Packet packet)
         {
             packet.ReadUInt32("SpellID");
-            ReadSpellCastVisual(out var _, packet, "Visual");
+            uint temp;
+            ReadSpellCastVisual(out temp, packet, "Visual");
             packet.ReadPackedGuid128("GUID");
         }
 
@@ -334,7 +335,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         public static void HandleResumeCast(Packet packet)
         {
             packet.ReadPackedGuid128("CasterGUID");
-            ReadSpellCastVisual(out var _, packet, "Visual");
+            uint temp;
+            ReadSpellCastVisual(out temp, packet, "Visual");
             packet.ReadPackedGuid128("CastID");
             packet.ReadPackedGuid128("Target");
             packet.ReadInt32<SpellId>("SpellID");
@@ -348,7 +350,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             packet.ReadPackedGuid128("Target");
 
             packet.ReadUInt32<SpellId>("SpellID");
-            ReadSpellCastVisual(out var _, packet, "Visual");
+            uint temp;
+            ReadSpellCastVisual(out temp, packet, "Visual");
             packet.ReadUInt32("TimeRemaining");
             packet.ReadUInt32("TotalTime");
 
