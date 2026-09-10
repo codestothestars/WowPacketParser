@@ -3811,7 +3811,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
         {
             var data = new DynamicObjectData();
             data.Caster = packet.ReadPackedGuid128("Caster", indexes);
-            data.SpellVisual = ReadCreateSpellCastVisual(packet, indexes, "SpellVisual");
+            data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
             data.SpellID = packet.ReadInt32("SpellID", indexes);
             data.Radius = packet.ReadSingle("Radius", indexes);
             data.CastTime = packet.ReadUInt32("CastTime", indexes);
@@ -3837,7 +3837,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
                 }
                 if (changesMask[2])
                 {
-                    data.SpellVisual = ReadUpdateSpellCastVisual(packet, data.SpellVisual as SpellCastVisual, indexes, "SpellVisual");
+                    data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
                 }
                 if (changesMask[3])
                 {
@@ -4044,7 +4044,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
             data.TimeToTargetExtraScale = packet.ReadUInt32("TimeToTargetExtraScale", indexes);
             data.SpellID = packet.ReadInt32("SpellID", indexes);
             data.SpellForVisuals = packet.ReadInt32("SpellForVisuals", indexes);
-            data.SpellVisual = ReadCreateSpellCastVisual(packet, indexes, "SpellVisual");
+            data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
             data.BoundsRadius2D = packet.ReadSingle("BoundsRadius2D", indexes);
             data.DecalPropertiesID = packet.ReadUInt32("DecalPropertiesID", indexes);
             data.CreatingEffectGUID = packet.ReadPackedGuid128("CreatingEffectGUID", indexes);
@@ -4098,7 +4098,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
                 }
                 if (changesMask[10])
                 {
-                    data.SpellVisual = ReadUpdateSpellCastVisual(packet, data.SpellVisual as SpellCastVisual, indexes, "SpellVisual");
+                    data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
                 }
                 if (changesMask[11])
                 {
