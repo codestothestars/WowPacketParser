@@ -1271,7 +1271,7 @@ namespace WowPacketParser.Parsing.Parsers
             byte i = 0;
             while (packet.CanRead())
             {
-                SpellPetCooldown petCooldown = new SpellPetCooldown();
+                CreaturePetCooldown petCooldown = new CreaturePetCooldown();
                 petCooldown.SpellID = packet.ReadUInt32<SpellId>("Spell ID");
                 petCooldown.Cooldown = (uint)packet.ReadInt32("Time");
                 if (casterGuid.GetObjectType() == ObjectType.Unit)
@@ -1280,7 +1280,7 @@ namespace WowPacketParser.Parsing.Parsers
                     petCooldown.Flags = flags;
                     petCooldown.Index = i;
                     petCooldown.ModRate = 1;
-                    Storage.SpellPetCooldown.Add(petCooldown);
+                    Storage.CreaturePetCooldown.Add(petCooldown);
                 }
                 i++;
             }
