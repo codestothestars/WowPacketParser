@@ -10,6 +10,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         WowGuid SummonedBy { get; }
         WowGuid CreatedBy { get; }
         byte ClassId { get; }
+        byte RaceId { get; }
         byte Sex { get; }
         long Health { get; }
         int[] Power { get; }
@@ -46,5 +47,14 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         byte ShapeshiftForm { get; }
         float HoverHeight { get; }
         int InteractSpellID { get; }
+
+        // Player Fields
+
+        int PlayerAccount { get; }
+        int PlayerExperience { get; }
+        int PlayerMoney { get; }
+        uint PlayerBytes1 { get; }
+        uint PlayerBytes2 { get; }
+        int PlayerFlags { get; }
     }
 }
