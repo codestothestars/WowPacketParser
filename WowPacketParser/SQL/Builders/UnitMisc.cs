@@ -53,7 +53,10 @@ namespace WowPacketParser.SQL.Builders
                     MountID = (uint)npc.UnitData.MountDisplayID,
                     Bytes1 = npc.Bytes1,
                     Bytes2 = npc.Bytes2,
+                    SheathState = npc.UnitData.SheatheState,
+                    PvpFlags = npc.UnitData.PvpFlags,
                     Emote = (uint)npc.UnitData.EmoteState,
+                    MoveFlags = (uint)npc.Movement.Flags,
                     AIAnimKit = npc.AIAnimKit.GetValueOrDefault(0),
                     MovementAnimKit = npc.MovementAnimKit.GetValueOrDefault(0),
                     MeleeAnimKit = npc.MeleeAnimKit.GetValueOrDefault(0),
@@ -183,6 +186,11 @@ namespace WowPacketParser.SQL.Builders
                 model.BoundingRadius = npc.UnitData.BoundingRadius / scale;
                 model.CombatReach = npc.UnitData.CombatReach / scale;
                 model.Gender = (Gender)npc.UnitData.Sex;
+                if (npc.Movement != null)
+                {
+                    model.SpeedWalk = npc.Movement.WalkSpeed / MovementInfo.DEFAULT_WALK_SPEED;
+                    model.SpeedRun = npc.Movement.RunSpeed / MovementInfo.DEFAULT_RUN_SPEED;
+                }
 
                 models.Add(model);
             }
@@ -394,8 +402,8 @@ namespace WowPacketParser.SQL.Builders
 
         public static void AssignNpcFlagsToGossipOption(GossipMenuOption gossipOption)
         {
-            if (Settings.TargetedDatabase == TargetedDatabase.Zero ||
-                Settings.TargetedDatabase == TargetedDatabase.Classic)
+            if (Settings.TargetedDbExpansion == TargetedDbExpansion.Zero ||
+                Settings.TargetedDbExpansion == TargetedDbExpansion.Classic)
             {
                 switch (gossipOption.OptionIcon)
                 {
@@ -971,21 +979,21 @@ namespace WowPacketParser.SQL.Builders
             var levels = GetLevels(units);
             var usesCurrentExpansionLevels = new Dictionary<uint, long>();
             var expansionBaseLevel = 0;
-            if (Settings.TargetedDatabase >= TargetedDatabase.WarlordsOfDraenor && Settings.DBEnabled)
+            if (Settings.TargetedDbExpansion >= TargetedDbExpansion.WarlordsOfDraenor && Settings.DBEnabled)
             {
                 usesCurrentExpansionLevels = SQLDatabase.GetDict<uint, long>($"SELECT entry, 1 FROM {Settings.TDBDatabase}.creature_template WHERE HealthScalingExpansion = -1");
-                switch (Settings.TargetedDatabase)
+                switch (Settings.TargetedDbExpansion)
                 {
-                    case TargetedDatabase.WarlordsOfDraenor:
+                    case TargetedDbExpansion.WarlordsOfDraenor:
                         expansionBaseLevel = 100;
                         break;
-                    case TargetedDatabase.Legion:
+                    case TargetedDbExpansion.Legion:
                         expansionBaseLevel = 110;
                         break;
-                    case TargetedDatabase.BattleForAzeroth:
+                    case TargetedDbExpansion.BattleForAzeroth:
                         expansionBaseLevel = 120;
                         break;
-                    case TargetedDatabase.Shadowlands:
+                    case TargetedDbExpansion.Shadowlands:
                         expansionBaseLevel = 60;
                         break;
                 }
@@ -993,8 +1001,7 @@ namespace WowPacketParser.SQL.Builders
 
             Func<uint, (int MinLevel, int MaxLevel)> getLevel = (uint id) =>
             {
-                CreatureTemplate template;
-                if ((Storage.CreatureTemplates.TryGetValue(id, out template) && template.HealthScalingExpansion == ClientType.Current)
+                if ((Storage.CreatureTemplates.FirstOrDefault(creature => creature.Item1.Entry == id) is (CreatureTemplate template, _) && template.HealthScalingExpansion == ClientType.Current)
                     || usesCurrentExpansionLevels.ContainsKey(id))
                     return (levels[id].Item1 - expansionBaseLevel, levels[id].Item2 - expansionBaseLevel);
 
@@ -1402,8 +1409,7 @@ namespace WowPacketParser.SQL.Builders
                      (template.NpcFlag & NPCFlags.ClassTrainer) == 0))
                 {
                     var subname = GetSubName((int)npc.Value.Entry, false); // Fall back
-                    CreatureTemplate entry;
-                    if (Storage.CreatureTemplates.TryGetValue(npc.Value.Entry, out entry))
+                    if (Storage.CreatureTemplates.FirstOrDefault(creature => creature.Item1.Entry == npc.Value.Entry) is (CreatureTemplate entry, _))
                     {
                         var sub = entry.SubName;
                         if (sub.Length > 0)

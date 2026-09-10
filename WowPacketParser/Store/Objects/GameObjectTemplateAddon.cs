@@ -15,10 +15,10 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("flags")]
         public GameObjectFlag? Flags;
 
-        [DBFieldName("WorldEffectID", TargetedDatabase.Legion)]
+        [DBFieldName("WorldEffectID", TargetedDbExpansion.Legion)]
         public uint? WorldEffectID;
 
-        [DBFieldName("AIAnimKitID", TargetedDatabase.Shadowlands)]
+        [DBFieldName("AIAnimKitID", TargetedDbExpansion.Shadowlands)]
         public uint? AIAnimKitID;
     }
 }

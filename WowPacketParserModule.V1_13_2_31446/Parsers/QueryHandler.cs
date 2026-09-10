@@ -37,7 +37,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
         {
             var entry = packet.ReadEntry("Entry");
 
-            CreatureTemplateClassic creature = new CreatureTemplateClassic
+            CreatureTemplate creature = new CreatureTemplate
             {
                 Entry = (uint)entry.Key
             };
@@ -93,6 +93,8 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             creature.DisplayTotalProbability = packet.ReadSingle("TotalProbability");
 
             uint?[] displayIds = new uint?[displayIdCount];
+            for (uint i = 0; i < 4; ++i)
+                displayIds[i] = 0;
             for (uint i = 0; i < displayIdCount; ++i)
             {
                 displayIds[i] = (uint)packet.ReadInt32("DisplayId", i);
@@ -120,7 +122,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                 }
             }
 
-            creature.DisplayId = displayIds.Concat(new uint?[] { 0, 0, 0, 0 }).Take(4).ToArray();
+            creature.DisplayIDs = displayIds.Concat(new uint?[] { 0, 0, 0, 0 }).Take(4).ToArray();
 
             creature.HealthMultiplier = packet.ReadSingle("HpMulti");
             creature.ManaMultiplier = packet.ReadSingle("EnergyMulti");
@@ -154,7 +156,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
 
             packet.AddSniffData(StoreNameType.Unit, entry.Key, "QUERY_RESPONSE");
 
-            Storage.CreatureTemplatesClassic.Add(creature, packet.TimeSpan);
+            Storage.CreatureTemplates.Add(creature, packet.TimeSpan);
 
             if (ClientLocale.PacketLocale != LocaleConstant.enUS)
             {
