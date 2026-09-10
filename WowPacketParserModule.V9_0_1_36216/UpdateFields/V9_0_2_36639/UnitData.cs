@@ -37,6 +37,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_2_36639
         public long Health { get; set; }
         public int[] Power { get; } = new int[6];
         public int[] MaxPower { get; } = new int[6];
+        public int MaxMana => MaxPower[0];
         public float[] PowerRegenFlatModifier { get; } = new float[6];
         public float[] PowerRegenInterruptedFlatModifier { get; } = new float[6];
         public long MaxHealth { get; set; }

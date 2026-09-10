@@ -73,8 +73,29 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             for (uint i = 0; i < displayIdCount; ++i)
             {
                 displayIds[i] = (uint)packet.ReadInt32("DisplayId", i);
-                packet.ReadSingle("DisplayScale", i);
-                packet.ReadSingle("DisplayProbability", i);
+                if (i == 0)
+                {
+                    creature.DisplayScale1 = packet.ReadSingle("DisplayScale1", i);
+                    creature.DisplayProbability1 = packet.ReadSingle("DisplayProbability1", i);
+                }
+                if (i == 1)
+                {
+                    creature.DisplayScale2 = packet.ReadSingle("DisplayScale2", i);
+                    creature.DisplayProbability3 = packet.ReadSingle("DisplayProbability2", i);
+                }
+
+                if (i == 2)
+                {
+                    creature.DisplayScale3 = packet.ReadSingle("DisplayScale3", i);
+                    creature.DisplayProbability3 = packet.ReadSingle("DisplayProbability3", i);
+                }
+
+                if (i == 3)
+                {
+                    creature.DisplayScale4 = packet.ReadSingle("DisplayScale4", i);
+                    creature.DisplayProbability4 = packet.ReadSingle("DisplayProbability4", i);
+                }
+
             }
 
             creature.DisplayId = displayIds.Concat(new uint?[] { 0, 0, 0, 0 }).Take(4).ToArray();
