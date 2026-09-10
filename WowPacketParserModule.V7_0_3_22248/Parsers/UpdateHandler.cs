@@ -29,9 +29,15 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 var outOfRangeObjCount = removedObjCount - destroyedObjCount;
 
                 for (var i = 0; i < destroyedObjCount; i++)
-                    packet.ReadPackedGuid128("ObjectGUID", "Destroyed", i);
+                {
+                    WowGuid guid = packet.ReadPackedGuid128("ObjectGUID", "Destroyed", i);
+                    Storage.StoreObjectDestroyTime(guid, packet.Time);
+                }
                 for (var i = 0; i < outOfRangeObjCount; i++)
-                    packet.ReadPackedGuid128("ObjectGUID", "OutOfRange", i);
+                {
+                    WowGuid guid = packet.ReadPackedGuid128("ObjectGUID", "OutOfRange", i);
+                    Storage.StoreObjectDestroyTime(guid, packet.Time);
+                }
             }
             packet.ReadUInt32("Data size");
 
@@ -50,9 +56,16 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                         break;
                     }
                     case "CreateObject1":
+                    {
+                        var guid = packet.ReadPackedGuid128("Object Guid", i);
+                        Storage.StoreObjectCreate1Time(guid, packet.Time);
+                        ReadCreateObjectBlock(packet, guid, map, i);
+                        break;
+                    }
                     case "CreateObject2":
                     {
                         var guid = packet.ReadPackedGuid128("Object Guid", i);
+                        Storage.StoreObjectCreate2Time(guid, packet.Time);
                         ReadCreateObjectBlock(packet, guid, map, i);
                         break;
                     }
