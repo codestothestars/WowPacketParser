@@ -1425,7 +1425,7 @@ namespace WowPacketParser.Enums.Version.V1_13_2_31446
             {Opcode.SMSG_PLAYER_IS_ADVENTURE_MAP_POI_VALID, 0x283D},
             {Opcode.SMSG_PLAYER_SAVE_GUILD_EMBLEM, 0x29F6},
             {Opcode.SMSG_PLAYER_SKINNED, 0x278A},
-            {Opcode.SMSG_PLAYER_TABARD_VENDOR_ACTIVATE, 0x279F},
+            {Opcode.SMSG_PLAYER_TABARD_VENDOR_ACTIVATE, 0x279F}, // wrong
             {Opcode.SMSG_PLAYER_TUTORIAL_HIGHLIGHT_SPELL, 0x2842},
             {Opcode.SMSG_PLAYER_TUTORIAL_UNHIGHLIGHT_SPELL, 0x2841},
             {Opcode.SMSG_PLAY_MUSIC, 0x27B1},
