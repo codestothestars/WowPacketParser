@@ -155,9 +155,7 @@ namespace WowPacketParser.SQL.Builders
             if (Storage.QuestClientAcceptTimes.IsEmpty())
                 return string.Empty;
 
-            var templatesDb = SQLDatabase.Get(Storage.QuestClientAcceptTimes);
-
-            return SQLUtil.Compare(Storage.QuestClientAcceptTimes, templatesDb, StoreNameType.None);
+            return SQLUtil.Compare(Storage.QuestClientAcceptTimes, null, StoreNameType.None);
         }
 
         [BuilderMethod]
@@ -169,9 +167,7 @@ namespace WowPacketParser.SQL.Builders
             if (Storage.QuestClientCompleteTimes.IsEmpty())
                 return string.Empty;
 
-            var templatesDb = SQLDatabase.Get(Storage.QuestClientCompleteTimes);
-
-            return SQLUtil.Compare(Storage.QuestClientCompleteTimes, templatesDb, StoreNameType.None);
+            return SQLUtil.Compare(Storage.QuestClientCompleteTimes, null, StoreNameType.None);
         }
 
         [BuilderMethod]
@@ -183,9 +179,7 @@ namespace WowPacketParser.SQL.Builders
             if (Storage.QuestCompleteTimes.IsEmpty())
                 return string.Empty;
 
-            var templatesDb = SQLDatabase.Get(Storage.QuestCompleteTimes);
-
-            return SQLUtil.Compare(Storage.QuestCompleteTimes, templatesDb, StoreNameType.None);
+            return SQLUtil.Compare(Storage.QuestCompleteTimes, null, StoreNameType.None);
         }
 
         [BuilderMethod]
@@ -197,9 +191,7 @@ namespace WowPacketParser.SQL.Builders
             if (Storage.QuestFailTimes.IsEmpty())
                 return string.Empty;
 
-            var templatesDb = SQLDatabase.Get(Storage.QuestFailTimes);
-
-            return SQLUtil.Compare(Storage.QuestFailTimes, templatesDb, StoreNameType.None);
+            return SQLUtil.Compare(Storage.QuestFailTimes, null, StoreNameType.None);
         }
     }
 }
