@@ -61,4 +61,20 @@ namespace WowPacketParser.Store.Objects
 
         public string BroadcastTextIDHelper;
     }
+
+    [DBTableName("world_text")]
+    public sealed class WorldText : IDataModel
+    {
+        [DBFieldName("UnixTime", true)]
+        public uint UnixTime;
+
+        [DBFieldName("Text")]
+        public string Text;
+
+        [DBFieldName("Type")]
+        public ChatMessageType? Type;
+
+        [DBFieldName("Language", TargetedDatabase.Zero, TargetedDatabase.BattleForAzeroth)]
+        public Language? Language;
+    }
 }
