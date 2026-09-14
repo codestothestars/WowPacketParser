@@ -339,7 +339,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.CMSG_IGNORE_TRADE, 0x3159},
             {Opcode.CMSG_INITIATE_ROLE_POLL, 0x35DA},
             {Opcode.CMSG_INITIATE_TRADE, 0x3156},
-            {Opcode.CMSG_INSPECT, 0x3529},
+            {Opcode.CMSG_INSPECT, 0x352A}, // ok
             {Opcode.CMSG_ISLAND_QUEUE, 0x337E},
             {Opcode.CMSG_ITEM_PURCHASE_REFUND, 0x3530},
             {Opcode.CMSG_ITEM_TEXT_QUERY, 0x331D},
@@ -566,7 +566,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.CMSG_REQUEST_CATEGORY_COOLDOWNS, 0x3180},
             {Opcode.CMSG_REQUEST_CEMETERY_LIST, 0x3178},
             {Opcode.CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS, 0x32B2},
-            {Opcode.CMSG_REQUEST_CROWD_CONTROL_SPELL, 0x352A},
+            {Opcode.CMSG_REQUEST_CROWD_CONTROL_SPELL, 0x3528}, // ??
             {Opcode.CMSG_REQUEST_FORCED_REACTIONS, 0x320A},
             {Opcode.CMSG_REQUEST_GUILD_PARTY_STATE, 0x31AA},
             {Opcode.CMSG_REQUEST_GUILD_REWARDS_LIST, 0x31A9},
@@ -633,7 +633,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.CMSG_SET_PVP, 0x32AA},
             {Opcode.CMSG_SET_RAID_DIFFICULTY, 0x36D9},
             {Opcode.CMSG_SET_ROLE, 0x35D9},
-            {Opcode.CMSG_SET_SELECTION, 0x3528},
+            {Opcode.CMSG_SET_SELECTION, 0x3529}, // ok
             {Opcode.CMSG_SET_SHEATHED, 0x3489},
             {Opcode.CMSG_SET_TAXI_BENCHMARK_MODE, 0x34F3},
             {Opcode.CMSG_SET_TITLE, 0x327F},
@@ -1015,7 +1015,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_FORCED_DEATH_UPDATE, 0x270F},
             {Opcode.SMSG_FORCE_ANIM, 0x2797},
             {Opcode.SMSG_FORCE_OBJECT_RELINK, 0x2668},
-            {Opcode.SMSG_FRIEND_STATUS, 0x27D1}, // ?
+            {Opcode.SMSG_FRIEND_STATUS, 0x27D6}, // ok
             {Opcode.SMSG_GAME_OBJECT_ACTIVATE_ANIM_KIT, 0x25D6},
             {Opcode.SMSG_GAME_OBJECT_BASE, 0x2872},
             {Opcode.SMSG_GAME_OBJECT_CUSTOM_ANIM, 0x25D7},
@@ -1024,7 +1024,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_GAME_OBJECT_PLAY_SPELL_VISUAL_KIT, 0x2C4A},
             {Opcode.SMSG_GAME_OBJECT_RESET_STATE, 0x275F},
             {Opcode.SMSG_GAME_OBJECT_SET_STATE_LOCAL, 0x2843},
-            {Opcode.SMSG_GAME_OBJECT_UI_LINK, 0x2758}, // ??
+            {Opcode.SMSG_GAME_OBJECT_UI_LINK, 0x2750}, // ??
             {Opcode.SMSG_GAME_SPEED_SET, 0x26AF},
             {Opcode.SMSG_GAME_TIME_SET, 0x274E},
             {Opcode.SMSG_GAME_TIME_UPDATE, 0x274D},
@@ -1100,7 +1100,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_GROUP_DECLINE, 0x27D9},
             {Opcode.SMSG_GROUP_DESTROYED, 0x27DB},
             {Opcode.SMSG_GROUP_NEW_LEADER, 0x264A},
-            {Opcode.SMSG_GROUP_UNINVITE, 0x27D6}, // ??
+            {Opcode.SMSG_GROUP_UNINVITE, 0x27DF}, // ok
             {Opcode.SMSG_GUILD_ACHIEVEMENT_DELETED, 0x29C5},
             {Opcode.SMSG_GUILD_ACHIEVEMENT_EARNED, 0x29C4},
             {Opcode.SMSG_GUILD_ACHIEVEMENT_MEMBERS, 0x29C7},
@@ -1248,7 +1248,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_LOGOUT_RESPONSE, 0x26B1},
             {Opcode.SMSG_LOG_XP_GAIN, 0x2724}, // ok
             {Opcode.SMSG_LOOT_ALL_PASSED, 0x2636},
-            {Opcode.SMSG_LOOT_LIST, 0x2785},
+            {Opcode.SMSG_LOOT_LIST, 0x278A}, // ok
             {Opcode.SMSG_LOOT_MONEY_NOTIFY, 0x2631},
             {Opcode.SMSG_LOOT_RELEASE, 0x2630},
             {Opcode.SMSG_LOOT_RELEASE_ALL, 0x262F},
@@ -1429,7 +1429,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_PLAYER_BOUND, 0x257D},
             {Opcode.SMSG_PLAYER_IS_ADVENTURE_MAP_POI_VALID, 0x283D},
             {Opcode.SMSG_PLAYER_SAVE_GUILD_EMBLEM, 0x29F6},
-            {Opcode.SMSG_PLAYER_SKINNED, 0x278A},
+            {Opcode.SMSG_PLAYER_SKINNED, 0x2785}, // ??
             {Opcode.SMSG_PLAYER_TABARD_VENDOR_ACTIVATE, 0x279B}, // ??
             {Opcode.SMSG_PLAYER_TUTORIAL_HIGHLIGHT_SPELL, 0x2842},
             {Opcode.SMSG_PLAYER_TUTORIAL_UNHIGHLIGHT_SPELL, 0x2841},
@@ -1625,7 +1625,7 @@ namespace WowPacketParser.Enums.Version.v1_13_5_34713
             {Opcode.SMSG_START_MIRROR_TIMER, 0x2752},
             {Opcode.SMSG_START_TIMER, 0x25BB},
             {Opcode.SMSG_STOP_ELAPSED_TIMER, 0x261B},
-            {Opcode.SMSG_STOP_MIRROR_TIMER, 0x2750}, // ??
+            {Opcode.SMSG_STOP_MIRROR_TIMER, 0x2758}, // ok
             {Opcode.SMSG_STOP_SPEAKERBOT_SOUND, 0x27AF}, // ??
             {Opcode.SMSG_STREAMING_MOVIES, 0x25BA},
             {Opcode.SMSG_SUMMON_CANCEL, 0x26E0},
