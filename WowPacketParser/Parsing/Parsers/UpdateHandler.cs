@@ -471,7 +471,8 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (!skipDictionary)
                     for (int k = 0; k < fieldData.Count; ++k)
-                        dict.Add(start + k, fieldData[k]);
+                        if (!dict.ContainsKey(start + k))
+                            dict.Add(start + k, fieldData[k]);
             }
 
             return dict;
