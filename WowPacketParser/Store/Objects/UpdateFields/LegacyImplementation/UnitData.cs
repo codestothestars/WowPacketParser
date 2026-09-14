@@ -17,6 +17,9 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         private WowGuid GetGuidValue(UnitField field)
         {
+            if (Enums.Version.UpdateFields.GetUpdateField(field) < 0)
+                return WowGuid.Empty;
+
             if (!ClientVersion.AddedInVersion(ClientType.WarlordsOfDraenor))
             {
                 var parts = UpdateFields.GetArray<UnitField, uint>(field, 2);
@@ -298,6 +301,9 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         private WowGuid GetGuidValue(UnitField field)
         {
+            if (Enums.Version.UpdateFields.GetUpdateField(field) < 0)
+                return WowGuid.Empty;
+
             if (!ClientVersion.AddedInVersion(ClientType.WarlordsOfDraenor))
             {
                 var parts = UpdateFields.GetArray<UnitField, uint>(field, 2);
