@@ -1004,16 +1004,11 @@ namespace WowPacketParser.Parsing.Parsers
             RequestItemEmote requestItemEmote;
             if (RequestItemEmoteStore.TryGetValue(id, out requestItemEmote))
             {
-                if (isComplete)
-                {
-                    requestItemEmote.EmoteOnCompleteDelay = delay;
-                    requestItemEmote.EmoteOnComplete = emote;
-                }
-                else
-                {
-                    requestItemEmote.EmoteOnIncompleteDelay = delay;
-                    requestItemEmote.EmoteOnIncomplete = emote;
+                requestItemEmote.EmoteOnCompleteDelay = delay;
+                requestItemEmote.EmoteOnComplete = emote;
 
+                if (!isComplete)
+                {
                     if (noRequestOnComplete)
                     {
                         requestItemEmote.EmoteOnCompleteDelay = 0;
@@ -1030,15 +1025,10 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (isComplete)
                 {
-                    emotes.EmoteOnCompleteDelay = delay;
-                    emotes.EmoteOnComplete = emote;
                     emotes.EmoteOnIncompleteDelay = -1;
                 }
                 else
                 {
-                    emotes.EmoteOnIncompleteDelay = delay;
-                    emotes.EmoteOnIncomplete = emote;
-
                     if (noRequestOnComplete)
                     {
                         emotes.EmoteOnCompleteDelay = 0;
