@@ -60,7 +60,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
                 CreatureText textEntry = new CreatureText();
                 textEntry.Entry = entry;
                 textEntry.Text = text.Text;
-                textEntry.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                textEntry.UnixTimeMs = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
                 if (Storage.Objects.ContainsKey(text.SenderGUID))
                 {
                     var obj = Storage.Objects[text.SenderGUID].Item1 as Unit;
