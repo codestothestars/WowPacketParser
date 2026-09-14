@@ -60,7 +60,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
 
             var weightCount = packet.ReadBits("WeightCount", 2, idx);
 
-            V7_0_3_22248.Parsers.SpellHandler.ReadSpellTargetData(packet, spellId, idx, "Target");
+            SpellCastData temp = new SpellCastData();
+            V7_0_3_22248.Parsers.SpellHandler.ReadSpellTargetData(temp, packet, spellId, idx, "Target");
 
             if (hasMoveUpdate)
                 V7_0_3_22248.Parsers.MovementHandler.ReadMovementStats(packet, idx, "MoveUpdate");
@@ -69,7 +70,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellWeight(packet, idx, "Weight", i);
         }
 
-        public static void ReadSpellCastData(Packet packet, params object[] idx)
+        public static void ReadSpellCastData(SpellCastData dbdata, Packet packet, params object[] idx)
         {
             packet.ReadPackedGuid128("CasterGUID", idx);
             packet.ReadPackedGuid128("CasterUnit", idx);
@@ -108,7 +109,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             for (var i = 0; i < missStatusCount; ++i)
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellMissStatus(packet, idx, "MissStatus", i);
 
-            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(packet, spellID, idx, "Target");
+            V8_0_1_27101.Parsers.SpellHandler.ReadSpellTargetData(dbdata, packet, spellID, idx, "Target");
 
             for (var i = 0; i < hitTargetsCount; ++i)
                 packet.ReadPackedGuid128("HitTarget", idx, i);
@@ -132,13 +133,15 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         [Parser(Opcode.SMSG_SPELL_START)]
         public static void HandleSpellStart(Packet packet)
         {
-            ReadSpellCastData(packet, "Cast");
+            SpellCastData castData = new SpellCastData();
+            ReadSpellCastData(castData, packet, "Cast");
         }
 
         [Parser(Opcode.SMSG_SPELL_GO)]
         public static void HandleSpellGo(Packet packet)
         {
-            ReadSpellCastData(packet, "Cast");
+            SpellCastData castData = new SpellCastData();
+            ReadSpellCastData(castData, packet, "Cast");
 
             packet.ResetBitReader();
 
