@@ -21,6 +21,7 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         int ScalingLevelDelta { get; }
         int FactionTemplate { get; }
         long CurHealth { get; }
+        uint HealthPercent { get; }
         int CurMana { get; }
         int MaxMana { get; }
         IVisibleItem[] VirtualItems { get; }
