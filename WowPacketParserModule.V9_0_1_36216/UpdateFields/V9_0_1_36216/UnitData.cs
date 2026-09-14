@@ -132,6 +132,15 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_1_36216
         public int LooksLikeMountID { get; set; }
         public int LooksLikeCreatureID { get; set; }
         public int LookAtControllerID { get; set; }
+
+        // Player Fields
+        public int PlayerAccount { get; set; }
+        public int PlayerExperience { get; set; }
+        public int PlayerMoney { get; set; }
+        public uint PlayerBytes1 { get; set; }
+        public uint PlayerBytes2 { get; set; }
+        public int PlayerFlags { get; set; }
+
         public int TaxiNodesID { get; set; }
         public WowGuid GuildGUID { get; set; }
         public WowGuid SkinningOwnerGUID { get; set; }
