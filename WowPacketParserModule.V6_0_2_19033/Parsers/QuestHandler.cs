@@ -507,13 +507,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadWoWString("PortraitTurnInText", bits4);
             packet.ReadWoWString("PortraitTurnInName", bits1532);
 
-            string objectType = guid.GetObjectType().ToString();
-            if (objectType == "Unit")
-                objectType = "Creature";
             QuestStarter questStarter = new QuestStarter
             {
                 ObjectId = Storage.GetObjectEntry(guid),
-                ObjectType = objectType,
+                ObjectType = Storage.GetObjectTypeNameForDB(guid),
                 QuestId = (uint)id
             };
             Storage.QuestStarters.Add(questStarter, packet.TimeSpan);
@@ -646,13 +643,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadWoWString("PortraitTurnInText", bits1268);
             packet.ReadWoWString("PortraitTurnInName", bits4);
 
-            string objectType = guid.GetObjectType().ToString();
-            if (objectType == "Unit")
-                objectType = "Creature";
             QuestEnder questEnder = new QuestEnder
             {
                 ObjectId = guid.GetEntry(),
-                ObjectType = objectType,
+                ObjectType = Storage.GetObjectTypeNameForDB(guid),
                 QuestId = (uint)id
             };
             Storage.QuestEnders.Add(questEnder, packet.TimeSpan);
