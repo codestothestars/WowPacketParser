@@ -74,6 +74,10 @@ namespace WowPacketParser.Store.Objects.UpdateFields.LegacyImplementation
 
         public int FactionTemplate => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_FACTIONTEMPLATE);
 
+        public long CurHealth => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_HEALTH);
+
+        public int CurMana => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_POWER);
+
         public int MaxMana => UpdateFields.GetValue<UnitField, int>(UnitField.UNIT_FIELD_MAXPOWER);
 
         public IVisibleItem[] VirtualItems
