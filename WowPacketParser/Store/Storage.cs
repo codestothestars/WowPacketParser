@@ -953,6 +953,10 @@ namespace WowPacketParser.Store
         public static readonly DataBag<ClientReclaimCorpse> ClientReclaimCorpseTimes = new DataBag<ClientReclaimCorpse>(Settings.SqlTables.client_reclaim_corpse);
         public static readonly DataBag<ClientReleaseSpirit> ClientReleaseSpiritTimes = new DataBag<ClientReleaseSpirit>(Settings.SqlTables.client_release_spirit);
 
+        // Guild
+        public static readonly DataBag<GuildTemplate> Guild = new DataBag<GuildTemplate>(Settings.SqlTables.guild);
+        public static readonly DataBag<GuildRankTemplate> GuildRank = new DataBag<GuildRankTemplate>(Settings.SqlTables.guild_rank);
+
         public static void ClearContainers()
         {
             SniffData.Clear();
@@ -1103,6 +1107,9 @@ namespace WowPacketParser.Store
             PlayerChoiceResponseRewardCurrencies.Clear();
             PlayerChoiceResponseRewardFactions.Clear();
             PlayerChoiceResponseRewardItems.Clear();
+
+            Guild.Clear();
+            GuildRank.Clear();
         }
     }
 }
