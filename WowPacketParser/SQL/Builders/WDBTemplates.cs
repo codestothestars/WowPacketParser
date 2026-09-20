@@ -63,7 +63,7 @@ namespace WowPacketParser.SQL.Builders
         [BuilderMethod(true)]
         public static string QuestRewardDisplaySpell()
         {
-            if (!Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.quest_template))
+            if (!Settings.SqlTables.quest_template)
                 return string.Empty;
 
             if (Settings.TargetedDatabase != TargetedDatabase.Shadowlands)
