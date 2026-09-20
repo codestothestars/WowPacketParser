@@ -104,12 +104,6 @@ namespace WowPacketParser.SQL.Builders
                 if (requestItemEmote.Value.EmoteOnComplete >= 0)
                     requestItems.EmoteOnComplete = requestItemEmote.Value.EmoteOnComplete;
 
-                if (requestItemEmote.Value.EmoteOnIncompleteDelay >= 0)
-                    requestItems.EmoteOnIncompleteDelay = (uint)requestItemEmote.Value.EmoteOnIncompleteDelay;
-
-                if (requestItemEmote.Value.EmoteOnIncomplete >= 0)
-                    requestItems.EmoteOnIncomplete = requestItemEmote.Value.EmoteOnIncomplete;
-
                 if (requestItemEmote.Value.EmoteOnCompleteDelay >= 0 && requestItemEmote.Value.EmoteOnComplete >= 0 && requestItemEmote.Value.EmoteOnIncompleteDelay >= 0 && requestItemEmote.Value.EmoteOnIncomplete >= 0)
                     requestItems.VerifiedBuild = ClientVersion.BuildInt;
 
