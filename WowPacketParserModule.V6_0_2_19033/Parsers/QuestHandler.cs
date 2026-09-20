@@ -741,7 +741,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             int id = packet.ReadInt32("QuestID");
             int delay = packet.ReadInt32("EmoteDelay");
-            int emote = packet.ReadInt32("EmoteType");
+            var emote = (uint)packet.ReadInt32("EmoteType");
 
             for (int i = 0; i < 2; i++)
                 packet.ReadInt32("QuestFlags", i);
