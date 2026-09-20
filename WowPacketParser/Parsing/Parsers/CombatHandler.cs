@@ -117,7 +117,7 @@ namespace WowPacketParser.Parsing.Parsers
         {
             WowGuid attackerGuid = packet.ReadGuid("AttackerGUID");
             WowGuid victimGuid = packet.ReadGuid("VictimGUID");
-            Storage.StoreCreatureAttack(attackerGuid, victimGuid, packet.Time, true);
+            Storage.StoreUnitAttack(attackerGuid, victimGuid, packet.Time, true);
         }
 
         [Parser(Opcode.SMSG_ATTACK_STOP)]
@@ -126,7 +126,7 @@ namespace WowPacketParser.Parsing.Parsers
             WowGuid attackerGuid = packet.ReadPackedGuid("AttackerGUID");
             WowGuid victimGuid = packet.ReadPackedGuid("VictimGUID");
             packet.ReadInt32("NowDead"); // Blocks clientside facing when set to 1
-            Storage.StoreCreatureAttack(attackerGuid, victimGuid, packet.Time, false);
+            Storage.StoreUnitAttack(attackerGuid, victimGuid, packet.Time, false);
         }
 
         [Parser(Opcode.SMSG_COMBAT_EVENT_FAILED)]
