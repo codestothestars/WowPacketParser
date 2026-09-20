@@ -96,7 +96,7 @@ namespace WowPacketParser.SQL
                 "SELECT ID, Text, Text1, EmoteID1, EmoteID2, EmoteID3, EmoteDelay1, EmoteDelay2, EmoteDelay3, EmotesID, LanguageID, Flags, ConditionID, SoundEntriesID1, SoundEntriesID2 " +
                 $"FROM {Settings.HotfixesDatabase}.broadcast_text;";
 
-            if (Settings.TargetedDatabase == TargetedDatabase.WrathOfTheLichKing || Settings.TargetedDatabase == TargetedDatabase.Cataclysm)
+            if (Settings.TargetedDbExpansion == TargetedDbExpansion.WrathOfTheLichKing || Settings.TargetedDbExpansion == TargetedDbExpansion.Cataclysm)
                 query = "SELECT ID, LanguageID, Text, Text1, EmoteID1, EmoteID2, EmoteID3, EmoteDelay1, EmoteDelay2, EmoteDelay3, SoundEntriesID, EmotesID, Flags " +
                 $"FROM {Settings.TDBDatabase}.broadcast_text;";
 
@@ -141,7 +141,7 @@ namespace WowPacketParser.SQL
                         broadcastText.EmotesID = Convert.ToUInt16(reader["EmotesID"]);
                         broadcastText.LanguageID = Convert.ToInt32(reader["LanguageID"]);
                         broadcastText.Flags = Convert.ToByte(reader["Flags"]);
-                        if (Settings.TargetedDatabase == TargetedDatabase.WrathOfTheLichKing || Settings.TargetedDatabase == TargetedDatabase.Cataclysm)
+                        if (Settings.TargetedDbExpansion == TargetedDbExpansion.WrathOfTheLichKing || Settings.TargetedDbExpansion == TargetedDbExpansion.Cataclysm)
                         {
                             broadcastText.ConditionID = 0;
                             broadcastText.SoundEntriesID = new uint[2];
