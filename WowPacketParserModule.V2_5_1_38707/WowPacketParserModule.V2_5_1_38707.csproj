@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Authors>TrinityCore</Authors>
-    <Copyright>Copyright © 2014-2020</Copyright>
+    <Copyright>Copyright © 2013-2020</Copyright>
     <PackageProjectUrl>https://www.trinitycore.org/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrinityCore/WowPacketParser</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
@@ -15,16 +15,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\WowPacketParser\bin\Release\Parsers\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>..\WowPacketParser\bin\Release\Parsers\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\WowPacketParser\bin\Debug\Parsers\</OutputPath>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
+    <OutputPath>..\WowPacketParser\bin\Debug\Parsers\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
@@ -34,31 +34,27 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WowPacketParserModule.Substructures\WowPacketParserModule.Substructures.csproj">
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-      <Private>true</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\WowPacketParserModule.V6_0_2_19033\WowPacketParserModule.V6_0_2_19033.csproj">
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-      <Private>false</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\WowPacketParserModule.V7_0_3_22248\WowPacketParserModule.V7_0_3_22248.csproj">
-      <EmbedInteropTypes>false</EmbedInteropTypes>
-      <Private>false</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\WowPacketParserModule.V8_0_1_27101\WowPacketParserModule.V8_0_1_27101.csproj">
-      <EmbedInteropTypes>false</EmbedInteropTypes>
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\WowPacketParserModule.V1_13_2_31446\WowPacketParserModule.V1_13_2_31446.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\WowPacketParserModule.V9_0_1_36216\WowPacketParserModule.V9_0_1_36216.csproj">
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\WowPacketParser\WowPacketParser.csproj">
-      <Private>false</Private>
+      <Private>False</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DBFileReaderLib">
-      <HintPath>..\packages\DBFileReaderLib.1.0.0.0\lib\DBFileReaderLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
