@@ -270,6 +270,43 @@ namespace WowPacketParser.Store
                 Storage.GameObjectUpdates.Add(guid, updateList);
             }
         }
+        public static readonly Dictionary<WowGuid, List<GameObjectCustomAnim>> GameObjectCustomAnims = new Dictionary<WowGuid, List<GameObjectCustomAnim>>();
+        public static void StoreGameObjectCustomAnim(WowGuid guid, GameObjectCustomAnim animData)
+        {
+            if (!Settings.SqlTables.gameobject_custom_anim)
+                return;
+
+            if (guid.GetObjectType() != ObjectType.GameObject)
+                return;
+
+            if (Storage.GameObjectCustomAnims.ContainsKey(guid))
+            {
+                Storage.GameObjectCustomAnims[guid].Add(animData);
+            }
+            else
+            {
+                List<GameObjectCustomAnim> animList = new List<GameObjectCustomAnim>();
+                animList.Add(animData);
+                Storage.GameObjectCustomAnims.Add(guid, animList);
+            }
+        }
+        public static readonly Dictionary<WowGuid, List<DateTime>> GameObjectDespawnAnims = new Dictionary<WowGuid, List<DateTime>>();
+        public static void StoreGameObjectDespawnAnim(WowGuid guid, DateTime time)
+        {
+            if (!Settings.SqlTables.gameobject_despawn_anim)
+                return;
+
+            if (Storage.GameObjectDespawnAnims.ContainsKey(guid))
+            {
+                Storage.GameObjectDespawnAnims[guid].Add(time);
+            }
+            else
+            {
+                List<DateTime> timeList = new List<DateTime>();
+                timeList.Add(time);
+                Storage.GameObjectDespawnAnims.Add(guid, timeList);
+            }
+        }
         public static readonly Dictionary<WowGuid, List<DateTime>> GameObjectClientUseTimes = new Dictionary<WowGuid, List<DateTime>>();
         public static void StoreGameObjectUse(WowGuid guid, DateTime time)
         {
@@ -520,8 +557,10 @@ namespace WowPacketParser.Store
         public static readonly DataBag<PageTextLocale> LocalesPageText = new DataBag<PageTextLocale>(Settings.SqlTables.page_text_locale);
 
         // Spell Casts
+        public static readonly List<SpellVisualKitData> SpellPlayVisualKit = new List<SpellVisualKitData>();
         public static readonly DataBag<SpellCastData> SpellCastStart = new DataBag<SpellCastData>(Settings.SqlTables.spell_cast_start);
         public static readonly DataBag<SpellCastData> SpellCastGo = new DataBag<SpellCastData>(Settings.SqlTables.spell_cast_go);
+
         public static void StoreSpellCastData(SpellCastData castData, DataBag<SpellCastData> storage, Packet packet)
         {
             if (!Settings.SqlTables.spell_cast_start &&
@@ -612,7 +651,12 @@ namespace WowPacketParser.Store
             ConversationLineTemplates.Clear();
             ConversationTemplates.Clear();
 
+            PlayerMovements.Clear();
+            PlayerActiveCreateTime.Clear();
+
             GameObjectClientUseTimes.Clear();
+            GameObjectCustomAnims.Clear();
+            GameObjectDespawnAnims.Clear();
             GameObjectLoot.Clear();
             GameObjectTemplates.Clear();
             GameObjectTemplateQuestItems.Clear();
@@ -626,8 +670,12 @@ namespace WowPacketParser.Store
             QuestVisualEffects.Clear();
             QuestRewardDisplaySpells.Clear();
 
+            CreatureAttackStartTimes.Clear();
+            CreatureAttackStopTimes.Clear();
+            CreatureClientInteractTimes.Clear();
             CreatureLoot.Clear();
             CreatureStats.Clear();
+            CreatureTargetChanges.Clear();
             CreatureTemplates.Clear();
             CreatureTemplatesClassic.Clear();
             CreatureTemplatesNonWDB.Clear();
@@ -646,12 +694,14 @@ namespace WowPacketParser.Store
             NpcTexts.Clear();
             NpcTextsMop.Clear();
 
+            WorldTexts.Clear();
             CreatureTexts.Clear();
             CreatureTextTemplates.Clear();
 
             GossipPOIs.Clear();
 
             Emotes.Clear();
+            Music.Clear();
             Sounds.Clear();
             SpellsX.Clear();
             QuestOfferRewards.Clear();
@@ -687,6 +737,7 @@ namespace WowPacketParser.Store
             NpcSpellClicks.Clear();
             SpellClicks.Clear();
 
+            SpellPlayVisualKit.Clear();
             SpellCastStart.Clear();
             SpellCastGo.Clear();
             SpellPetActions.Clear();
