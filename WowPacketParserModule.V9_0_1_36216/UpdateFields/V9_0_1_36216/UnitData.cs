@@ -41,6 +41,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_1_36216
         public float[] PowerRegenFlatModifier { get; } = new float[6];
         public float[] PowerRegenInterruptedFlatModifier { get; } = new float[6];
         public long MaxHealth { get; set; }
+        public uint HealthPercent => (uint)(((float)CurHealth / (float)MaxHealth) * 100);
         public int Level { get; set; }
         public int EffectiveLevel { get; set; }
         public int ContentTuningID { get; set; }
