@@ -1079,13 +1079,10 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (RequestItemEmoteStore.TryGetValue(id, out requestItemEmote))
             {
-                string objectType = guid.GetObjectType().ToString();
-                if (objectType == "Unit")
-                    objectType = "Creature";
                 QuestEnder questEnder = new QuestEnder
                 {
                     ObjectId = guid.GetEntry(),
-                    ObjectType = objectType,
+                    ObjectType = Storage.GetObjectTypeNameForDB(guid),
                     QuestId = (uint)id
                 };
                 Storage.QuestEnders.Add(questEnder, packet.TimeSpan);
