@@ -276,9 +276,12 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                         var splineMove = splineData.MoveData = new();
                         packet.ResetBitReader();
 
-                        splineMove.Flags = packet.ReadUInt32E<SplineFlag>("SplineFlags", index).ToUniversal();
+                        ServerSideMovement movementData = new ServerSideMovement();
+                        var splineFlags = packet.ReadUInt32E<SplineFlag>("SplineFlags", index);
+                        movementData.SplineFlags = (uint)splineFlags;
+                        splineMove.Flags = splineFlags.ToUniversal();
                         splineMove.Elapsed = packet.ReadInt32("Elapsed", index);
-                        splineMove.Duration = packet.ReadUInt32("Duration", index);
+                        splineMove.Duration = movementData.MoveTime = packet.ReadUInt32("Duration", index);
                         splineMove.DurationModifier = packet.ReadSingle("DurationModifier", index);
                         splineMove.NextDurationModifier = packet.ReadSingle("NextDurationModifier", index);
 
@@ -286,6 +289,9 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                         var hasSpecialTime = packet.ReadBit("HasSpecialTime", index);
 
                         var pointsCount = packet.ReadBits("PointsCount", 16, index);
+                        movementData.SplineCount = pointsCount;
+                        if (pointsCount > 0)
+                            movementData.SplinePoints = new List<Vector3>();
 
                         packet.ReadBitsE<SplineMode>("Mode", 2, index);
 
@@ -306,32 +312,46 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                             packet.ReadBits("FilterFlags", 2, index);
                         }
 
+                        float orientation = 100;
                         switch (face)
                         {
                             case 1:
-                                splineMove.LookPosition = packet.ReadVector3("FaceSpot", index);
+                                var faceSpot = splineMove.LookPosition = packet.ReadVector3("FaceSpot", index);
+                                orientation = Utilities.GetAngle(moveInfo.Position.X, moveInfo.Position.Y, faceSpot.X, faceSpot.Y);
                                 break;
                             case 2:
                                 splineMove.LookTarget = new() { Target = packet.ReadPackedGuid128("FaceGUID", index) };
                                 break;
                             case 3:
-                                splineMove.LookOrientation = packet.ReadSingle("FaceDirection", index);
+                                orientation = splineMove.LookOrientation = packet.ReadSingle("FaceDirection", index);
                                 break;
                             default:
                                 break;
                         }
+                        movementData.Orientation = orientation;
 
                         if (hasSpecialTime)
                             packet.ReadUInt32("SpecialTime", index);
 
                         for (var i = 0; i < pointsCount; ++i)
-                            splineMove.Points.Add(packet.ReadVector3("Points", index, i));
+                        {
+                            var spot = packet.ReadVector3("Points", index, i);
+                            movementData.SplinePoints.Add(spot);
+                            splineMove.Points.Add(spot);
+                        }
 
                         if (hasSpellEffectExtraData)
                             V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineSpellEffectExtraData(packet, index);
 
                         if (hasJumpExtraData)
                             splineMove.Jump = V8_0_1_27101.Parsers.MovementHandler.ReadMonsterSplineJumpExtraData(packet, index);
+
+                        if (pointsCount > 0)
+                        {
+                            Unit unit = obj as Unit;
+                            if (unit != null)
+                                unit.AddWaypoint(movementData, moveInfo.Position, packet.Time);
+                        }
                     }
                 }
             }
