@@ -13,8 +13,11 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("type")]
         public GameObjectType? Type;
 
-        [DBFieldName("displayId")]
+        [DBFieldName("display_id")]
         public uint? DisplayID;
+
+        [DBFieldName("scale")]
+        public float? Size;
 
         [DBFieldName("name", LocaleConstant.enUS)] // ToDo: Add locale support
         public string Name;
@@ -25,11 +28,8 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("cast_bar_caption", LocaleConstant.enUS)] // ToDo: Add locale support
         public string CastCaption;
 
-        [DBFieldName("unk1")]
+        [DBFieldName("unk_string")]
         public string UnkString;
-
-        [DBFieldName("size")]
-        public float? Size;
 
         //TODO: move to gameobject_questitem
         public uint?[] QuestItems;
@@ -41,13 +41,16 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("data", TargetedDatabase.Classic, 34, true)]
         public int?[] Data;
 
+        [DBFieldName("quest_items_count")]
+        public uint QuestItemsRatkosrb;
+
         [DBFieldName("required_level", TargetedDatabase.Cataclysm, TargetedDatabase.Shadowlands)]
         public int? RequiredLevel;
 
         [DBFieldName("ContentTuningId", TargetedDatabase.Shadowlands)]
         public int? ContentTuningId;
 
-        [DBFieldName("VerifiedBuild")]
+        [DBFieldName("sniff_build")]
         public int? VerifiedBuild = ClientVersion.BuildInt;
     }
 
