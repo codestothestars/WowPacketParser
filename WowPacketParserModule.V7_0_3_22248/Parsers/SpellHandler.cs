@@ -512,7 +512,7 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             var count = packet.ReadInt32("SpellCooldownsCount");
             for (int i = 0; i < count; i++)
             {
-                SpellPetCooldown petCooldown = new SpellPetCooldown();
+                CreaturePetCooldown petCooldown = new CreaturePetCooldown();
                 petCooldown.SpellID = (uint)packet.ReadInt32("SrecID", i);
                 petCooldown.Cooldown = (uint)packet.ReadInt32("ForcedCooldown", i);
                 petCooldown.ModRate = packet.ReadSingle("ModRate", i);
@@ -521,7 +521,7 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                     petCooldown.CasterID = casterGuid.GetEntry();
                     petCooldown.Flags = flags;
                     petCooldown.Index = (byte)i;
-                    Storage.SpellPetCooldown.Add(petCooldown);
+                    Storage.CreaturePetCooldown.Add(petCooldown);
                 }
             }
         }
