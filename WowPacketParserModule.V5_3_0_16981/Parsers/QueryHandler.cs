@@ -62,7 +62,7 @@ namespace WowPacketParserModule.V5_3_0_16981.Parsers
             }
             creature.Name = name[0];
 
-            creature.HealthModifier = packet.ReadSingle("HealthModifier");
+            creature.HealthMultiplier = packet.ReadSingle("HealthMultiplier");
             if (lenS3 > 1)
                 creature.SubName = packet.ReadCString("Sub Name");
 
@@ -96,7 +96,7 @@ namespace WowPacketParserModule.V5_3_0_16981.Parsers
             if (lenS5 > 1)
                 packet.ReadCString("string5");
             creature.ModelIDs[2] = packet.ReadUInt32("CreatureDisplayID", 2);
-            creature.ManaModifier = packet.ReadSingle("ManaModifier");
+            creature.ManaMultiplier = packet.ReadSingle("ManaMultiplier");
             creature.RequiredExpansion = packet.ReadUInt32E<ClientType>("Expansion");
 
             packet.AddSniffData(StoreNameType.Unit, entry.Key, "QUERY_RESPONSE");
@@ -123,8 +123,8 @@ namespace WowPacketParserModule.V5_3_0_16981.Parsers
             response.Type = (int?)creature.Type ?? 0;
             response.Family = (int?)creature.Family ?? 0;
             response.Rank = (int?)creature.Rank ?? 0;
-            response.HpMod = creature.HealthModifier ?? 1.0f;
-            response.ManaMod = creature.ManaModifier ?? 1.0f;
+            response.HpMod = creature.HealthMultiplier ?? 1.0f;
+            response.ManaMod = creature.ManaMultiplier ?? 1.0f;
             response.Leader = creature.RacialLeader ?? false;
             response.Expansion = (uint?) creature.RequiredExpansion ?? 0;
             response.MovementId = creature.MovementID ?? 0;

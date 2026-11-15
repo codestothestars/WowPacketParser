@@ -168,8 +168,8 @@ namespace WowPacketParser.Parsing.Parsers
                 response.Models.Add(creature.ModelIDs[i] ?? 0);
             }
 
-            creature.HealthModifier = response.HpMod = packet.ReadSingle("Modifier 1");
-            creature.ManaModifier = response.ManaMod = packet.ReadSingle("Modifier 2");
+            creature.HealthMultiplier = response.HpMod = packet.ReadSingle("Modifier 1");
+            creature.ManaMultiplier = response.ManaMod = packet.ReadSingle("Modifier 2");
 
             creature.RacialLeader = response.Leader = packet.ReadBool("Racial Leader");
 
