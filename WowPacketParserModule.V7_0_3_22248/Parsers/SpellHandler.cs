@@ -44,19 +44,24 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellWeight(packet, idx, "Weight", i);
         }
 
-        public static PacketSpellData ReadSpellCastData(Packet packet, params object[] idx)
+        public static PacketSpellData ReadSpellCastData(ref SpellCastData dbdata, Packet packet, params object[] idx)
         {
             var packetSpellData = new PacketSpellData();
-            packet.ReadPackedGuid128("CasterGUID", idx);
+            WowGuid casterGuid = packet.ReadPackedGuid128("CasterGUID", idx);
+            dbdata.CasterID = casterGuid.GetEntry();
+            dbdata.CasterType = casterGuid.GetObjectType().ToString();
+
             packetSpellData.Caster = packet.ReadPackedGuid128("CasterUnit", idx);
 
             packetSpellData.CastGuid = packet.ReadPackedGuid128("CastID", idx);
             packet.ReadPackedGuid128("OriginalCastID", idx);
 
             var spellID = packetSpellData.Spell = packet.ReadUInt32<SpellId>("SpellID", idx);
+            dbdata.SpellID = spellID;
             packet.ReadUInt32("SpellXSpellVisualID", idx);
 
-            packetSpellData.Flags = packet.ReadUInt32("CastFlags", idx);
+            uint castFlags = packetSpellData.Flags = packet.ReadUInt32("CastFlags", idx);
+            dbdata.CastFlags = castFlags;
             packetSpellData.CastTime = packet.ReadUInt32("CastTime", idx);
 
             V6_0_2_19033.Parsers.SpellHandler.ReadMissileTrajectoryResult(packet, idx, "MissileTrajectory");
@@ -71,7 +76,8 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
 
             packet.ResetBitReader();
 
-            packet.ReadBits("CastFlagsEx", ClientVersion.AddedInVersion(ClientVersionBuild.V7_3_2_25383) ? 23 : 22, idx);
+            uint castFlagsEx = packet.ReadBits("CastFlagsEx", ClientVersion.AddedInVersion(ClientVersionBuild.V7_3_2_25383) ? 23 : 22, idx);
+            dbdata.CastFlagsEx = castFlagsEx;
             var hitTargetsCount = packet.ReadBits("HitTargetsCount", 16, idx);
             var missTargetsCount = packet.ReadBits("MissTargetsCount", 16, idx);
             var missStatusCount = packet.ReadBits("MissStatusCount", 16, idx);
@@ -87,7 +93,12 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             ReadSpellTargetData(packet, packetSpellData, spellID, idx, "Target");
 
             for (var i = 0; i < hitTargetsCount; ++i)
-                packetSpellData.HitTargets.Add(packet.ReadPackedGuid128("HitTarget", idx, i)); ;
+            {
+                WowGuid hitTarget = packet.ReadPackedGuid128("HitTarget", idx, i);
+                dbdata.TargetID = hitTarget.GetEntry();
+                dbdata.TargetType = hitTarget.GetObjectType().ToString();
+                packetSpellData.HitTargets.Add(hitTarget); ;
+            }
 
             for (var i = 0; i < missTargetsCount; ++i)
                 packetSpellData.MissedTargets.Add(packet.ReadPackedGuid128("MissTarget", idx, i));
@@ -262,24 +273,56 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             ReadSpellCastRequest(packet, "Cast");
         }
 
+        public static void AddSpellCastDataIfShould(SpellCastData castData, DataBag<SpellCastData> storage, Packet packet)
+        {
+            if (!Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.spell_cast_start) &&
+                !Settings.SQLOutputFlag.HasAnyFlagBit(SQLOutput.spell_cast_go))
+                return;
+
+            if (!castData.CasterType.Contains("Unit") &&
+                !castData.CasterType.Contains("Creature") &&
+                !castData.CasterType.Contains("GameObject"))
+                return;
+
+            foreach (var cast_pair in storage)
+            {
+                if (cast_pair.Item1.CasterID == castData.CasterID &&
+                    cast_pair.Item1.CasterType == castData.CasterType &&
+                    cast_pair.Item1.CastFlags == castData.CastFlags &&
+                    cast_pair.Item1.CastFlagsEx == castData.CastFlagsEx &&
+                    cast_pair.Item1.SpellID == castData.SpellID &&
+                    cast_pair.Item1.TargetID == castData.TargetID &&
+                    cast_pair.Item1.TargetType == castData.TargetType)
+                    return;
+            }
+
+            storage.Add(castData, packet.TimeSpan);
+        }
+
         [Parser(Opcode.SMSG_SPELL_START)]
         public static void HandleSpellStart(Packet packet)
         {
+            SpellCastData castData = new SpellCastData();
             PacketSpellStart packetSpellStart = packet.Holder.SpellStart = new();
-            packetSpellStart.Data = ReadSpellCastData(packet, "Cast");
+            packetSpellStart.Data = ReadSpellCastData(ref castData, packet, "Cast");
+            AddSpellCastDataIfShould(castData, Storage.SpellCastStart, packet);
         }
 
         [Parser(Opcode.SMSG_SPELL_GO)]
         public static void HandleSpellGo(Packet packet)
         {
+            SpellCastData castData = new SpellCastData();
+
             PacketSpellGo packetSpellGo = packet.Holder.SpellGo = new();
-            packetSpellGo.Data = ReadSpellCastData(packet, "Cast");
+            packetSpellGo.Data = ReadSpellCastData(ref castData, packet, "Cast");
 
             packet.ResetBitReader();
 
             var hasLogData = packet.ReadBit();
             if (hasLogData)
                 ReadSpellCastLogData(packet, "LogData");
+
+            AddSpellCastDataIfShould(castData, Storage.SpellCastGo, packet);
         }
 
         [HasSniffData]
