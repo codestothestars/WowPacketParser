@@ -3,6 +3,7 @@ using WowPacketParser.Misc;
 using WowPacketParser.Parsing;
 using WoWPacketParser.Proto;
 using WowPacketParser.Store;
+using WowPacketParser.Store.Objects;
 using CoreParsers = WowPacketParser.Parsing.Parsers;
 
 namespace WowPacketParserModule.V9_0_1_36216.Parsers
@@ -177,7 +178,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             packet.ReadVector3("Position");
             packet.ReadInt32("BroadcastTextID");
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid));
         }
 
         [Parser(Opcode.SMSG_WORLD_SERVER_INFO)]
