@@ -125,7 +125,7 @@ namespace WowPacketParserModule.V5_4_0_17359.Parsers
             var sound = packetPlaySound.Sound = packet.ReadUInt32("Sound Id");
             packetPlaySound.Source = packet.WriteGuid("Guid", guid).ToUniversalGuid();
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            //Storage.Sounds.Add(sound, packet.TimeSpan);
         }
 
         [Parser(Opcode.SMSG_WORLD_SERVER_INFO)]

@@ -467,7 +467,8 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
         public static void HandleQuestGiverRequestItems(Packet packet)
         {
             var requestItems = packet.Holder.QuestGiverRequestItems = new();
-            requestItems.QuestGiver = packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
+            requestItems.QuestGiver = guid;
             requestItems.QuestGiverEntry = (uint)packet.ReadInt32("QuestGiverCreatureID");
 
             int id = packet.ReadInt32("QuestID");

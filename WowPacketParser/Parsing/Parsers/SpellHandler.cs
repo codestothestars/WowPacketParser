@@ -691,7 +691,8 @@ namespace WowPacketParser.Parsing.Parsers
             else
                 dbdata.CasterType = casterGUID.GetObjectType().ToString();
 
-            packetSpellData.Caster = packet.ReadPackedGuid("Caster Unit GUID");
+            var guid = packet.ReadPackedGuid("Caster Unit GUID");
+            packetSpellData.Caster = guid;
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056))
                 packet.ReadByte("Cast Count");

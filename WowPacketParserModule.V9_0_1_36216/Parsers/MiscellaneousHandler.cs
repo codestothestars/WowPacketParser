@@ -171,7 +171,8 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         {
             PacketPlayObjectSound packetSound = packet.Holder.PlayObjectSound = new PacketPlayObjectSound();
             uint sound = packetSound.Sound = packet.ReadUInt32<SoundId>("SoundId");
-            packetSound.Source = packet.ReadPackedGuid128("SourceObjectGUID");
+            WowGuid guid = packet.ReadPackedGuid128("SourceObjectGUID");
+            packetSound.Source = guid;
             packetSound.Target = packet.ReadPackedGuid128("TargetObjectGUID");
             packet.ReadVector3("Position");
             packet.ReadInt32("BroadcastTextID");

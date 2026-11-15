@@ -59,7 +59,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
 
             packetPlaySound.Source = packet.WriteGuid("Guid", guid).ToUniversalGuid();
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            //Storage.Sounds.Add(sound, packet.TimeSpan);
         }
 
         [Parser(Opcode.CMSG_SET_SELECTION)]

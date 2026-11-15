@@ -59,7 +59,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
         public static void HandleServerChatMessage(Packet packet)
         {
             PacketChat chatPacket = packet.Holder.Chat = new PacketChat();
-            var text = new CreatureText();
+            var text = new CreatureTextTemplate();
 
             var senderGUIDBytes = new byte[8];
             var guildGUIDBytes = new byte[8];
@@ -181,7 +181,20 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
                 entry = text.ReceiverGUID.GetEntry();
 
             if (entry != 0)
-                Storage.CreatureTexts.Add(entry, text, packet.TimeSpan);
+            {
+                text.Time = packet.Time;
+                Storage.CreatureTextTemplates.Add(entry, text, packet.TimeSpan);
+                CreatureText textEntry = new CreatureText();
+                textEntry.Entry = entry;
+                textEntry.Text = text.Text;
+                textEntry.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                if (Storage.Objects.ContainsKey(text.SenderGUID))
+                {
+                    var obj = Storage.Objects[text.SenderGUID].Item1 as Unit;
+                    textEntry.HealthPercent = obj.UnitData.HealthPercent;
+                }
+                Storage.CreatureTexts.Add(textEntry);
+            }
         }
 
         [Parser(Opcode.CMSG_SEND_TEXT_EMOTE)]

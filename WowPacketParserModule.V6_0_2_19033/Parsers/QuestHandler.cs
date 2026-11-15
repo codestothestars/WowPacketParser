@@ -113,7 +113,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleQuestgiverAcceptQuest(Packet packet)
         {
             var questGiverAcceptQuest = packet.Holder.QuestGiverAcceptQuest = new();
-            questGiverAcceptQuest.QuestGiver = packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
+            questGiverAcceptQuest.QuestGiver = guid;
             questGiverAcceptQuest.QuestId = packet.ReadUInt32<QuestId>("QuestID");
             packet.ReadBit("StartCheat");
         }
@@ -675,7 +676,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleQuestRequestItems(Packet packet)
         {
             var requestItems = packet.Holder.QuestGiverRequestItems = new();
-            requestItems.QuestGiver = packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
+            requestItems.QuestGiver = guid;
             requestItems.QuestGiverEntry = (uint)packet.ReadInt32("QuestGiverCreatureID");
 
             int id = packet.ReadInt32("QuestID");
