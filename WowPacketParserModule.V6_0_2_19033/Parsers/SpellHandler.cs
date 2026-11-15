@@ -328,10 +328,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadSingle("Pitch", idx);
         }
 
-        public static void ReadSpellAmmo(Packet packet, params object[] idx)
+        public static void ReadSpellAmmo(SpellCastData dbdata, Packet packet, params object[] idx)
         {
-            packet.ReadUInt32("DisplayID", idx);
-            packet.ReadByteE<InventoryType>("InventoryType", idx);
+            dbdata.AmmoDisplayId = packet.ReadInt32("DisplayID", idx);
+            dbdata.AmmoInventoryType = (int)packet.ReadByteE<InventoryType>("InventoryType", idx);
         }
 
         public static void ReadCreatureImmunities(Packet packet, params object[] idx)
@@ -372,6 +372,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             var packetSpellData = new PacketSpellData();
             packet.ReadPackedGuid128("CasterGUID", idx);
             var guid = packet.ReadPackedGuid128("CasterUnit", idx);
+            dbdata.CasterUnitGuid = guid;
             packetSpellData.Caster = guid;
 
             packetSpellData.CastId = packet.ReadByte("CastID", idx);
@@ -379,7 +380,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             dbdata.SpellID = packetSpellData.Spell = packet.ReadUInt32<SpellId>("SpellID", idx);
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
-                packet.ReadUInt32("SpellXSpellVisualID", idx);
+                dbdata.VisualID = packet.ReadUInt32("SpellXSpellVisualID", idx);
 
             dbdata.CastFlags = packetSpellData.Flags = packet.ReadUInt32("CastFlags", idx);
             dbdata.CastTime = packetSpellData.CastTime = packet.ReadUInt32("CastTime", idx);
@@ -396,7 +397,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             ReadMissileTrajectoryResult(packet, idx, "MissileTrajectory");
 
-            ReadSpellAmmo(packet, idx, "Ammo");
+            ReadSpellAmmo(dbdata, packet, idx, "Ammo");
 
             packet.ReadByte("DestLocSpellCastIndex", idx);
 

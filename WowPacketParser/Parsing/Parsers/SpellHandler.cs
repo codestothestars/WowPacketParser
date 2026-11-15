@@ -671,6 +671,7 @@ namespace WowPacketParser.Parsing.Parsers
             dbdata.CasterGuid = casterGUID;
 
             var guid = packet.ReadPackedGuid("Caster Unit GUID");
+            dbdata.CasterUnitGuid = guid;
             packetSpellData.Caster = guid;
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056))
@@ -689,7 +690,6 @@ namespace WowPacketParser.Parsing.Parsers
                 flags = packet.ReadUInt16E<CastFlag>("Cast Flags");
             packetSpellData.Flags = (uint)flags;
             dbdata.CastFlags = (uint)flags;
-            dbdata.CastFlagsEx = 0;
 
             if (!isSpellGo || ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
                 dbdata.CastTime = packetSpellData.CastTime = packet.ReadUInt32("Time");
@@ -803,8 +803,9 @@ namespace WowPacketParser.Parsing.Parsers
 
             if (flags.HasAnyFlag(CastFlag.Projectile))
             {
-                packetSpellData.AmmoDisplayId = packet.ReadInt32("Ammo Display ID");
-                packetSpellData.AmmoInventoryType = (uint)packet.ReadInt32E<InventoryType>("Ammo Inventory Type");
+                dbdata.AmmoDisplayId = packetSpellData.AmmoDisplayId = packet.ReadInt32("Ammo Display ID");
+                dbdata.AmmoInventoryType = (int)packet.ReadInt32E<InventoryType>("Ammo Inventory Type");
+                packetSpellData.AmmoInventoryType = (uint)dbdata.AmmoInventoryType;
             }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056))

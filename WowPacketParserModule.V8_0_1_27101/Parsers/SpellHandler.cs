@@ -124,13 +124,14 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             dbdata.CasterGuid = packet.ReadPackedGuid128("CasterGUID", idx);
 
             var guid = packet.ReadPackedGuid128("CasterUnit", idx);
+            dbdata.CasterUnitGuid = guid;
             packetSpellData.Caster = guid;
 
             packetSpellData.CastGuid = packet.ReadPackedGuid128("CastID", idx);
             packet.ReadPackedGuid128("OriginalCastID", idx);
 
             dbdata.SpellID = packetSpellData.Spell = packet.ReadUInt32<SpellId>("SpellID", idx);
-            packet.ReadUInt32("SpellXSpellVisualID", idx);
+            dbdata.VisualID = packet.ReadUInt32("SpellXSpellVisualID", idx);
 
             uint castFlags = packetSpellData.Flags = packet.ReadUInt32("CastFlags", idx);
             dbdata.CastFlags = castFlags;
@@ -140,7 +141,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
 
             V6_0_2_19033.Parsers.SpellHandler.ReadMissileTrajectoryResult(packet, idx, "MissileTrajectory");
 
-            packetSpellData.AmmoDisplayId =  packet.ReadInt32("Ammo.DisplayID", idx);
+            dbdata.AmmoDisplayId = packetSpellData.AmmoDisplayId =  packet.ReadInt32("Ammo.DisplayID", idx);
 
             packet.ReadByte("DestLocSpellCastIndex", idx);
 

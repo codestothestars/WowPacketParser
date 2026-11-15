@@ -550,54 +550,17 @@ namespace WowPacketParser.SQL.Builders
         }
 
         [BuilderMethod(true, Units = true)]
-        public static string CreatureTemplateNonWDB(Dictionary<WowGuid, Unit> units)
+        public static string CreatureStats(Dictionary<WowGuid, Unit> units)
         {
             if (units.Count == 0)
                 return string.Empty;
 
-            if (!Settings.SqlTables.creature_template)
+            if (!Settings.SqlTables.creature_stats)
                 return string.Empty;
-
-            var levels = GetLevels(units);
-            var usesCurrentExpansionLevels = new Dictionary<uint, long>();
-            var expansionBaseLevel = 0;
-            if (Settings.TargetedDatabase >= TargetedDatabase.WarlordsOfDraenor && Settings.DBEnabled)
-            {
-                usesCurrentExpansionLevels = SQLDatabase.GetDict<uint, long>($"SELECT entry, 1 FROM {Settings.TDBDatabase}.creature_template WHERE HealthScalingExpansion = -1");
-                switch (Settings.TargetedDatabase)
-                {
-                    case TargetedDatabase.WarlordsOfDraenor:
-                        expansionBaseLevel = 100;
-                        break;
-                    case TargetedDatabase.Legion:
-                        expansionBaseLevel = 110;
-                        break;
-                    case TargetedDatabase.BattleForAzeroth:
-                        expansionBaseLevel = 120;
-                        break;
-                    case TargetedDatabase.Shadowlands:
-                        expansionBaseLevel = 60;
-                        break;
-                }
-            }
-
-            Func<uint, (int MinLevel, int MaxLevel)> getLevel = (uint id) =>
-            {
-                CreatureTemplate template;
-                if ((Storage.CreatureTemplates.TryGetValue(id, out template) && template.HealthScalingExpansion == ClientType.Current)
-                    || usesCurrentExpansionLevels.ContainsKey(id))
-                    return (levels[id].Item1 - expansionBaseLevel, levels[id].Item2 - expansionBaseLevel);
-
-                return levels[id];
-            };
-
-            // Get most common value for fields
-            Dictionary<uint, CreatureTemplateNonWdbExport> creatureExportData = new Dictionary<uint, CreatureTemplateNonWdbExport>();
 
             foreach (var unit in units)
             {
                 var npc = unit.Value;
-
                 if (Settings.SqlTables.creature_stats)
                 {
                     bool hasData = false;
@@ -709,7 +672,7 @@ namespace WowPacketParser.SQL.Builders
                             creatureStats.ArcaneResistance = value.Int32Value;
                         }
                     }
-                    
+
                     if (hasData)
                     {
                         creatureStats.Entry = unit.Key.GetEntry();
@@ -717,6 +680,64 @@ namespace WowPacketParser.SQL.Builders
                         Storage.CreatureStats.Add(creatureStats);
                     }
                 }
+            }
+
+            string result = SQLUtil.Compare(Storage.CreatureStats, SQLDatabase.Get(Storage.CreatureStats),
+                             t => StoreGetters.GetName(StoreNameType.Unit, (int)t.Entry));
+
+            return result;
+        }
+
+        [BuilderMethod(true, Units = true)]
+        public static string CreatureTemplateNonWDB(Dictionary<WowGuid, Unit> units)
+        {
+            if (units.Count == 0)
+                return string.Empty;
+
+            if (!Settings.SqlTables.creature_template)
+                return string.Empty;
+
+            var levels = GetLevels(units);
+            var usesCurrentExpansionLevels = new Dictionary<uint, long>();
+            var expansionBaseLevel = 0;
+            if (Settings.TargetedDatabase >= TargetedDatabase.WarlordsOfDraenor && Settings.DBEnabled)
+            {
+                usesCurrentExpansionLevels = SQLDatabase.GetDict<uint, long>($"SELECT entry, 1 FROM {Settings.TDBDatabase}.creature_template WHERE HealthScalingExpansion = -1");
+                switch (Settings.TargetedDatabase)
+                {
+                    case TargetedDatabase.WarlordsOfDraenor:
+                        expansionBaseLevel = 100;
+                        break;
+                    case TargetedDatabase.Legion:
+                        expansionBaseLevel = 110;
+                        break;
+                    case TargetedDatabase.BattleForAzeroth:
+                        expansionBaseLevel = 120;
+                        break;
+                    case TargetedDatabase.Shadowlands:
+                        expansionBaseLevel = 60;
+                        break;
+                }
+            }
+
+            Func<uint, (int MinLevel, int MaxLevel)> getLevel = (uint id) =>
+            {
+                CreatureTemplate template;
+                if ((Storage.CreatureTemplates.TryGetValue(id, out template) && template.HealthScalingExpansion == ClientType.Current)
+                    || usesCurrentExpansionLevels.ContainsKey(id))
+                    return (levels[id].Item1 - expansionBaseLevel, levels[id].Item2 - expansionBaseLevel);
+
+                return levels[id];
+            };
+
+            // Get most common value for fields
+            Dictionary<uint, CreatureTemplateNonWdbExport> creatureExportData = new Dictionary<uint, CreatureTemplateNonWdbExport>();
+
+            foreach (var unit in units)
+            {
+                var npc = unit.Value;
+
+                
 
                 var auras = string.Empty;
                 if (npc.Auras != null && npc.Auras.Count != 0)
@@ -1124,15 +1145,8 @@ namespace WowPacketParser.SQL.Builders
                 Storage.CreatureTemplatesNonWDB.Add(template);
             }
 
-            string result = "";
-
-            // `creature_stats`
-            if (Settings.SqlTables.creature_stats)
-                result += SQLUtil.Compare(Storage.CreatureStats, SQLDatabase.Get(Storage.CreatureStats),
-                    t => StoreGetters.GetName(StoreNameType.Unit, (int)t.Entry));
-
             var templatesDb = SQLDatabase.Get(Storage.CreatureTemplatesNonWDB);
-            result += SQLUtil.Compare(Storage.CreatureTemplatesNonWDB, templatesDb, StoreNameType.Unit);
+            string result = SQLUtil.Compare(Storage.CreatureTemplatesNonWDB, templatesDb, StoreNameType.Unit);
 
             return result;
         }
