@@ -212,6 +212,11 @@ namespace WowPacketParser.Parsing.Parsers
                 if (Storage.Objects.ContainsKey(guid))
                 {
                     var obj = Storage.Objects[guid].Item1 as Unit;
+                    if (obj == null)
+                        return;
+                    if (obj.Movement == null)
+                        return;
+
                     if (obj.Movement.WalkSpeed != moveInfo.WalkSpeed)
                     {
                         CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
@@ -3254,7 +3259,11 @@ namespace WowPacketParser.Parsing.Parsers
                 moveInfo = MovementHandler.ReadMovementInfo(packet, guid, index);
                 var moveFlags = moveInfo.Flags;
 
-                var speeds = ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056) ? 9 : 8;
+                var speeds = 6;
+                if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_2_9056))
+                    speeds = 9;
+                else if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                    speeds = 8;
 
                 for (var i = 0; i < speeds; ++i)
                 {
