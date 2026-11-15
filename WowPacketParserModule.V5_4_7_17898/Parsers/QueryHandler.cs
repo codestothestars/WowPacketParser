@@ -37,7 +37,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             if (!hasData)
                 return; // nothing to do
 
-            creature.ModelIDs = new uint?[4];
+            creature.DisplayIDs = new uint?[4];
             creature.KillCredits = new uint?[2];
 
             creature.RacialLeader = packet.ReadBit("Racial Leader");
@@ -74,7 +74,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             creature.HealthMultiplier = packet.ReadSingle("Modifier 1");
 
             creature.KillCredits[1] = packet.ReadUInt32();
-            creature.ModelIDs[2] = packet.ReadUInt32();
+            creature.DisplayIDs[2] = packet.ReadUInt32();
 
             //TODO: move to creature_questitems
             //creature.QuestItems = new uint[qItemCount];
@@ -94,8 +94,8 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             creature.MovementID = packet.ReadUInt32("Movement ID");
             creature.RequiredExpansion = packet.ReadUInt32E<ClientType>("Expansion");
 
-            creature.ModelIDs[0] = packet.ReadUInt32();
-            creature.ModelIDs[1] = packet.ReadUInt32();
+            creature.DisplayIDs[0] = packet.ReadUInt32();
+            creature.DisplayIDs[1] = packet.ReadUInt32();
 
             if (bits1C > 1)
                 creature.TitleAlt = packet.ReadCString("TitleAlt");
@@ -105,19 +105,19 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             if (bits24 > 1)
                 creature.SubName = packet.ReadCString("Sub Name");
 
-            creature.ModelIDs[3] = packet.ReadUInt32();
+            creature.DisplayIDs[3] = packet.ReadUInt32();
 
             for (int i = 0; i < 4; ++i)
             {
-                packet.AddValue("Display ID", creature.ModelIDs[i], i);
-                response.Models.Add(creature.ModelIDs[i] ?? 0);
+                packet.AddValue("Display ID", creature.DisplayIDs[i], i);
+                response.Models.Add(creature.DisplayIDs[i] ?? 0);
             }
             for (int i = 0; i < 2; ++i)
                 response.KillCredits.Add(packet.AddValue("Kill Credit", creature.KillCredits[i], i) ?? 0);
 
             packet.AddSniffData(StoreNameType.Unit, entry.Key, "QUERY_RESPONSE");
 
-            Storage.CreatureTemplates.Add(creature.Entry.Value, creature, packet.TimeSpan);
+            Storage.CreatureTemplates.Add(creature, packet.TimeSpan);
 
             if (ClientLocale.PacketLocale != LocaleConstant.enUS)
             {

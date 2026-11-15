@@ -166,19 +166,19 @@ namespace WowPacketParser.Parsing.Parsers
                 creature.PetSpellDataID = packet.ReadUInt32("Pet Spell Data Id");
             }
 
-            creature.ModelIDs = new uint?[4];
+            creature.DisplayIDs = new uint?[4];
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    creature.ModelIDs[i] = packet.ReadUInt32("Display ID", i);
-                    response.Models.Add(creature.ModelIDs[i] ?? 0);
+                    creature.DisplayIDs[i] = packet.ReadUInt32("Display ID", i);
+                    response.Models.Add(creature.DisplayIDs[i] ?? 0);
                 }
             }
             else
             {
-                creature.ModelIDs[0] = packet.ReadUInt32("Display ID");
-                response.Models.Add(creature.ModelIDs[0] ?? 0);
+                creature.DisplayIDs[0] = packet.ReadUInt32("Display ID");
+                response.Models.Add(creature.DisplayIDs[0] ?? 0);
             }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
@@ -191,14 +191,22 @@ namespace WowPacketParser.Parsing.Parsers
                 creature.RacialLeader = packet.ReadBool("Civillian");
             creature.RacialLeader = response.Leader = packet.ReadBool("Racial Leader");
 
-            int qItemCount = ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ? 6 : 4;
-            //TODO: Move to creature_questitem
-            //creature.QuestItems = new uint[qItemCount];
-
+            int questItems = ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ? 6 : 4;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_0_9767))
             {
-                for (int i = 0; i < qItemCount; i++)
-                    response.QuestItems.Add((uint)packet.ReadInt32<ItemId>("Quest Item", i));
+                for (uint i = 0; i < questItems; ++i)
+                {
+                    var itemId = (uint)packet.ReadInt32<ItemId>("QuestItem", i);
+                    CreatureTemplateQuestItem questItem = new CreatureTemplateQuestItem
+                    {
+                        CreatureEntry = (uint)entry.Key,
+                        Idx = i,
+                        ItemId = itemId
+                    };
+
+                    Storage.CreatureTemplateQuestItems.Add(questItem, packet.TimeSpan);
+                    response.QuestItems.Add(itemId);
+                }
                 
                 creature.MovementID = response.MovementId = packet.ReadUInt32("Movement ID");
             }
@@ -209,7 +217,7 @@ namespace WowPacketParser.Parsing.Parsers
 
             packet.AddSniffData(StoreNameType.Unit, entry.Key, "QUERY_RESPONSE");
 
-            Storage.CreatureTemplates.Add(creature.Entry.Value, creature, packet.TimeSpan);
+            Storage.CreatureTemplates.Add(creature, packet.TimeSpan);
 
             if (ClientLocale.PacketLocale != LocaleConstant.enUS)
             {
