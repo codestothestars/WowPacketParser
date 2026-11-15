@@ -2,6 +2,8 @@
 using WowPacketParser.Enums;
 using WowPacketParser.Misc;
 using WowPacketParser.Parsing;
+using WowPacketParser.Store;
+using WowPacketParser.Store.Objects;
 using CoreParsers = WowPacketParser.Parsing.Parsers;
 
 namespace WowPacketParserModule.V6_0_2_19033.Parsers
@@ -251,6 +253,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleLogoutComplete(Packet packet)
         {
             CoreParsers.SessionHandler.LoginGuid = packet.ReadPackedGuid128("Guid");
+            LogoutTime logoutTime = new LogoutTime()
+            {
+                UnixTimeMs = (ulong)Utilities.GetUnixTimeMsFromDateTime(packet.Time)
+            };
+            Storage.LogoutTimes.Add(logoutTime);
         }
 
         [Parser(Opcode.SMSG_DANCE_STUDIO_CREATE_RESULT)]

@@ -1072,6 +1072,9 @@ namespace WowPacketParser.Store
         public static readonly DataBag<ClientReclaimCorpse> ClientReclaimCorpseTimes = new DataBag<ClientReclaimCorpse>(Settings.SqlTables.client_reclaim_corpse);
         public static readonly DataBag<ClientReleaseSpirit> ClientReleaseSpiritTimes = new DataBag<ClientReleaseSpirit>(Settings.SqlTables.client_release_spirit);
 
+        // Logout Time
+        public static readonly DataBag<LogoutTime> LogoutTimes = new DataBag<LogoutTime>(Settings.SqlTables.logout_time);
+
         // Guild
         public static readonly DataBag<GuildTemplate> Guild = new DataBag<GuildTemplate>(Settings.SqlTables.guild);
         public static readonly DataBag<GuildRankTemplate> GuildRank = new DataBag<GuildRankTemplate>(Settings.SqlTables.guild_rank);
@@ -1092,6 +1095,9 @@ namespace WowPacketParser.Store
             ConversationActorTemplates.Clear();
             ConversationLineTemplates.Clear();
             ConversationTemplates.Clear();
+
+            CharacterSpells.Clear();
+            CharacterReputations.Clear();
 
             PlayerMovements.Clear();
             PlayerActiveCreateTime.Clear();
@@ -1195,6 +1201,8 @@ namespace WowPacketParser.Store
             SpellClicks.Clear();
 
             SpellPlayVisualKit.Clear();
+            SpellChannelStart.Clear();
+            SpellChannelUpdate.Clear();
             SpellCastFailed.Clear();
             SpellCastStart.Clear();
             SpellCastGo.Clear();
@@ -1234,6 +1242,10 @@ namespace WowPacketParser.Store
             PlayerChoiceResponseRewardCurrencies.Clear();
             PlayerChoiceResponseRewardFactions.Clear();
             PlayerChoiceResponseRewardItems.Clear();
+
+            ClientReclaimCorpseTimes.Clear();
+            ClientReleaseSpiritTimes.Clear();
+            LogoutTimes.Clear();
 
             Guild.Clear();
             GuildRank.Clear();
