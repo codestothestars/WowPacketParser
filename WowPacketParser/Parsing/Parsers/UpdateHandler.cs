@@ -424,11 +424,13 @@ namespace WowPacketParser.Parsing.Parsers
                                 hasData = true;
                                 creatureUpdate.StandState = (update.Value.UInt32Value & 0xFF);
                             }
+                            /*
                             if (obj.UnitData.PetTalentPoints != ((update.Value.UInt32Value >> 8) & 0xFF))
                             {
                                 hasData = true;
                                 creatureUpdate.PetTalentPoints = ((update.Value.UInt32Value >> 8) & 0xFF);
                             }
+                            */
                             if (obj.UnitData.VisFlags != ((update.Value.UInt32Value >> 16) & 0xFF))
                             {
                                 hasData = true;
@@ -456,11 +458,13 @@ namespace WowPacketParser.Parsing.Parsers
                                 hasData = true;
                                 creatureUpdate.PvpFlags = ((update.Value.UInt32Value >> 8) & 0xFF);
                             }
+                            /*
                             if (obj.UnitData.PetFlags != ((update.Value.UInt32Value >> 16) & 0xFF))
                             {
                                 hasData = true;
                                 creatureUpdate.PetFlags = ((update.Value.UInt32Value >> 16) & 0xFF);
                             }
+                            */
                             if (obj.UnitData.ShapeshiftForm != ((update.Value.UInt32Value >> 24) & 0xFF))
                             {
                                 hasData = true;
@@ -841,10 +845,15 @@ namespace WowPacketParser.Parsing.Parsers
                         if (Storage.Objects.ContainsKey(guid))
                         {
                             var obj = Storage.Objects[guid].Item1 as GameObject;
-                            if (obj.ObjectData.DynamicFlags != update.Value.UInt32Value)
+                            if ((obj.ObjectData.DynamicFlags & 0x0000FFFF) != (update.Value.UInt32Value & 0x0000FFFF))
                             {
                                 hasData = true;
-                                goUpdate.DynamicFlags = update.Value.UInt32Value;
+                                goUpdate.DynamicFlags = (update.Value.UInt32Value & 0x0000FFFF);
+                            }
+                            if (((obj.ObjectData.DynamicFlags & 0xFFFF0000) >> 16) != ((update.Value.UInt32Value & 0xFFFF0000) >> 16))
+                            {
+                                hasData = true;
+                                goUpdate.PathProgress = ((update.Value.UInt32Value & 0xFFFF0000) >> 16);
                             }
                         }
                     }
@@ -865,10 +874,15 @@ namespace WowPacketParser.Parsing.Parsers
                         if (Storage.Objects.ContainsKey(guid))
                         {
                             var obj = Storage.Objects[guid].Item1 as GameObject;
-                            if (obj.GameObjectData.DynamicFlags != (update.Value.UInt32Value & 0x0000FFFF))
+                            if ((obj.GameObjectData.DynamicFlags & 0x0000FFFF) != (update.Value.UInt32Value & 0x0000FFFF))
                             {
                                 hasData = true;
                                 goUpdate.DynamicFlags = (update.Value.UInt32Value & 0x0000FFFF);
+                            }
+                            if (((obj.GameObjectData.DynamicFlags & 0xFFFF0000) >> 16) != ((update.Value.UInt32Value & 0xFFFF0000) >> 16))
+                            {
+                                hasData = true;
+                                goUpdate.PathProgress = ((update.Value.UInt32Value & 0xFFFF0000) >> 16);
                             }
                         }
                     }
