@@ -320,10 +320,11 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         [Parser(Opcode.SMSG_SPELL_CHANNEL_START, ClientVersionBuild.V7_2_0_23826)]
         public static void HandleSpellChannelStart(Packet packet)
         {
-            packet.ReadPackedGuid128("CasterGUID");
-            packet.ReadInt32<SpellId>("SpellID");
-            ReadSpellCastVisual(out var _, packet, "Visual");
-            packet.ReadInt32("ChannelDuration");
+            SpellChannelStart channel = new SpellChannelStart();
+            channel.Guid = packet.ReadPackedGuid128("CasterGUID");
+            channel.SpellId = (uint)packet.ReadInt32<SpellId>("SpellID");
+            ReadSpellCastVisual(out channel.VisualId, packet, "Visual");
+            channel.Duration = packet.ReadInt32("ChannelDuration");
 
             var hasInterruptImmunities = packet.ReadBit("HasInterruptImmunities");
             var hasHealPrediction = packet.ReadBit("HasHealPrediction");
@@ -333,20 +334,29 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
 
             if (hasHealPrediction)
                 V6_0_2_19033.Parsers.SpellHandler.ReadSpellTargetedHealPrediction(packet, "HealPrediction");
+
+            channel.Time = packet.Time;
+            Storage.SpellChannelStart.Add(channel);
         }
 
         [Parser(Opcode.SMSG_PLAY_SPELL_VISUAL_KIT)]
         public static void HandleCastVisualKit(Packet packet)
         {
+            PlaySpellVisualKit visualKitData = new PlaySpellVisualKit();
             var playSpellVisualKit = packet.Holder.PlaySpellVisualKit = new();
             var guid = packet.ReadPackedGuid128("Unit");
+            visualKitData.Guid = guid;
             playSpellVisualKit.Unit = guid;
             var kitId = packet.ReadInt32("KitRecID");
+            visualKitData.KitId = (uint)kitId;
             playSpellVisualKit.KitRecId = kitId;
             var kitType = packet.ReadInt32("KitType");
+            visualKitData.KitType = (uint)kitType;
             playSpellVisualKit.KitType = kitType;
-            playSpellVisualKit.Duration = packet.ReadUInt32("Duration");
+            visualKitData.Duration = playSpellVisualKit.Duration = packet.ReadUInt32("Duration");
             packet.ReadBit("MountedVisual");
+            visualKitData.Time = packet.Time;
+            Storage.SpellPlayVisualKit.Add(visualKitData);
         }
 
         [Parser(Opcode.CMSG_UPDATE_SPELL_VISUAL)]
