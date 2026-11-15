@@ -861,11 +861,10 @@ namespace WowPacketParser.Parsing.Parsers
                 Storage.SpellClicks.Add(spellClick, packet.TimeSpan);
             }
 
+            packet.AddSniffData(StoreNameType.Spell, (int)spellId, "CAST");
+
             if (isSpellGo)
-            {
-                packet.AddSniffData(StoreNameType.Spell, (int)spellId, "SPELL_GO");
                 Storage.StoreSpellCastData(dbdata, Storage.SpellCastGo, packet);
-            }
             else
                 Storage.StoreSpellCastData(dbdata, Storage.SpellCastStart, packet);
         }
