@@ -6,6 +6,8 @@ using WowPacketParser.Enums;
 using WowPacketParser.Misc;
 using WowPacketParser.Parsing;
 using WoWPacketParser.Proto;
+using WowPacketParser.Store;
+using WowPacketParser.Store.Objects;
 using WowPacketParserModule.V7_0_3_22248.Enums;
 using CoreParsers = WowPacketParser.Parsing.Parsers;
 using MovementFlag = WowPacketParserModule.V6_0_2_19033.Enums.MovementFlag;
@@ -70,7 +72,7 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             packet.ReadBits("Type", 2, idx);
         }
 
-        public static void ReadMovementMonsterSpline(Packet packet, Vector3 pos, params object[] indexes)
+        public static float ReadMovementMonsterSpline(Packet packet, Vector3 pos, params object[] indexes)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove;
             monsterMove.Id = packet.ReadUInt32("Id", indexes);
@@ -81,7 +83,7 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             packet.ReadBit("CrzTeleport", indexes);
             packet.ReadBits("StopDistanceTolerance", 3, indexes);
 
-            ReadMovementSpline(packet, pos, indexes, "MovementSpline");
+            return ReadMovementSpline(packet, pos, indexes, "MovementSpline");
         }
 
         public static void ReadMonsterSplineFilter(Packet packet, params object[] indexes)
@@ -115,8 +117,9 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             return Math.Sqrt(Math.Pow((start.X - end.X), 2) + Math.Pow((start.Y - end.Y), 2) + Math.Pow((start.Z - end.Z), 2));
         }
 
-        public static void ReadMovementSpline(Packet packet, Vector3 pos, params object[] indexes)
+        public static float ReadMovementSpline(Packet packet, Vector3 pos, params object[] indexes)
         {
+            float orientation = 100;
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove;
             SplineJump jump = monsterMove.Jump = new();
             monsterMove.Flags = packet.ReadInt32E<SplineFlag>("Flags", indexes).ToUniversal();
@@ -147,15 +150,16 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             switch (type)
             {
                 case SplineFacingType.Spot:
-                    monsterMove.LookPosition = packet.ReadVector3("FaceSpot", indexes);
+                    var faceSpot = monsterMove.LookPosition = packet.ReadVector3("FaceSpot", indexes);
+                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineFacingType.Target:
                     SplineLookTarget lookTarget = monsterMove.LookTarget = new();
-                    lookTarget.Orientation = packet.ReadSingle("FaceDirection", indexes);
+                    orientation = lookTarget.Orientation = packet.ReadSingle("FaceDirection", indexes);
                     lookTarget.Target = packet.ReadPackedGuid128("FacingGUID", indexes);
                     break;
                 case SplineFacingType.Angle:
-                    monsterMove.LookOrientation = packet.ReadSingle("FaceDirection", indexes);
+                    orientation = monsterMove.LookOrientation = packet.ReadSingle("FaceDirection", indexes);
                     break;
             }
 
@@ -223,16 +227,36 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 packet.WriteLine("(MovementMonsterSpline) Distance: " + distance.ToString());
                 packet.WriteLine("(MovementMonsterSpline) Speed: " + (distance / moveTime * 1000).ToString());
             }
+
+            return orientation;
         }
 
         [Parser(Opcode.SMSG_ON_MONSTER_MOVE)]
         public static void HandleOnMonsterMove(Packet packet)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove = new();
-            monsterMove.Mover = packet.ReadPackedGuid128("MoverGUID");
+            WowGuid guid = monsterMove.Mover = packet.ReadPackedGuid128("MoverGUID");
             Vector3 pos = monsterMove.Position =  packet.ReadVector3("Position");
 
-            ReadMovementMonsterSpline(packet, pos, "MovementMonsterSpline");
+            float orientation = ReadMovementMonsterSpline(packet, pos, "MovementMonsterSpline");
+
+            if (guid.GetHighType() == HighGuidType.Creature && Storage.Objects != null && Storage.Objects.ContainsKey(guid))
+            {
+                var obj = Storage.Objects[guid].Item1 as Unit;
+                if (obj.UpdateFields != null)
+                {
+                    if ((obj.UnitData.Flags & (uint)UnitFlags.IsInCombat) == 0) // movement could be because of aggro so ignore that
+                    {
+                        CreatureMovement movementData = new CreatureMovement();
+                        movementData.Point = (uint)obj.Waypoints.Count;
+                        movementData.PositionX = pos.X;
+                        movementData.PositionY = pos.Y;
+                        movementData.PositionZ = pos.Z;
+                        movementData.Orientation = orientation;
+                        obj.Waypoints.Add(movementData);
+                    }
+                }
+            }
         }
 
         [Parser(Opcode.CMSG_MOVE_CHANGE_TRANSPORT)]
