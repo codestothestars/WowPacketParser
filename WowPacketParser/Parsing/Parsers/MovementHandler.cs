@@ -240,15 +240,15 @@ namespace WowPacketParser.Parsing.Parsers
             monsterMove.Mover = guid;
             monsterMove.TransportGuid = new WowGuid64(0);
             Unit obj = null;
-            CreatureMovement movementData = null;
-            if (guid.GetObjectType() == ObjectType.Unit && Storage.Objects != null && Storage.Objects.ContainsKey(guid))
+            ServerSideMovement movementData = null;
+            if (Storage.Objects != null && Storage.Objects.ContainsKey(guid))
             {
                 obj = Storage.Objects[guid].Item1 as Unit;
                 if (obj.UpdateFields != null)
                 {
                     obj.Movement.HasWpsOrRandMov = true;
                     if (packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_ON_MONSTER_MOVE, Direction.ServerToClient))
-                        movementData = new CreatureMovement();
+                        movementData = new ServerSideMovement();
                 }   
             }
 
@@ -1396,7 +1396,7 @@ namespace WowPacketParser.Parsing.Parsers
 
             MovementInfo movementInfo = ReadMovementInfo(packet, guid);
 
-            if (Settings.SqlTables.character_movement)
+            if (Settings.SqlTables.character_movement_client || Settings.SqlTables.creature_movement_client)
             {
                 PlayerMovement moveData = new PlayerMovement();
                 moveData.guid = guid;

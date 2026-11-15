@@ -52,7 +52,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             if (hasFall)
                 ReadFallData(packet, idx, "FallData");
 
-            if (Settings.SqlTables.character_movement)
+            if (Settings.SqlTables.character_movement_client || Settings.SqlTables.creature_movement_client)
             {
                 moveData.Map = WowPacketParser.Parsing.Parsers.MovementHandler.CurrentMapId;
                 moveData.Opcode = packet.Opcode;
@@ -266,7 +266,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadBits("FilterFlags", 2, indexes);
         }
 
-        public static void ReadMovementSpline(CreatureMovement savedata, Packet packet, Vector3 pos, params object[] indexes)
+        public static void ReadMovementSpline(ServerSideMovement savedata, Packet packet, Vector3 pos, params object[] indexes)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove;
             SplineJump jump = monsterMove.Jump = new();
@@ -371,7 +371,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             }
         }
 
-        public static void ReadMovementMonsterSpline(CreatureMovement savedata, Packet packet, Vector3 pos, params object[] indexes)
+        public static void ReadMovementMonsterSpline(ServerSideMovement savedata, Packet packet, Vector3 pos, params object[] indexes)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove;
             monsterMove.Id = packet.ReadUInt32("Id", indexes);
@@ -394,14 +394,14 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             Vector3 pos = monsterMove.Position = packet.ReadVector3("Position");
 
             Unit obj = null;
-            CreatureMovement movementData = null;
+            ServerSideMovement movementData = null;
             if (guid.GetHighType() == HighGuidType.Creature && Storage.Objects != null && Storage.Objects.ContainsKey(guid))
             {
                 obj = Storage.Objects[guid].Item1 as Unit;
                 if (obj.UpdateFields != null)
                 {
                     obj.Movement.HasWpsOrRandMov = true;
-                    movementData = new CreatureMovement();
+                    movementData = new ServerSideMovement();
                 }
             }
 
