@@ -495,8 +495,6 @@ namespace WowPacketParser.SQL.Builders
         class CreatureTemplateNonWdbExport
         {
             public uint Entry = 0;
-            // Only first seen value is saved in packet handler, since that must be default
-            public uint GossipMenuId = 0;
             // Count how many times each value has been seen
             public Dictionary<uint, uint> Factions = new Dictionary<uint, uint>();
             public Dictionary<uint, uint> NpcFlags1 = new Dictionary<uint, uint>();
@@ -568,7 +566,6 @@ namespace WowPacketParser.SQL.Builders
                 {
                     CreatureTemplateNonWdbExport data = new CreatureTemplateNonWdbExport();
                     data.Entry = unit.Key.GetEntry();
-                    data.GossipMenuId = npc.GossipId;
                     data.Factions.Add((uint)npc.UnitData.FactionTemplate, 1);
                     data.NpcFlags1.Add(npc.UnitData.NpcFlags[0], 1);
                     data.NpcFlags2.Add(npc.UnitData.NpcFlags[1], 1);
@@ -590,9 +587,6 @@ namespace WowPacketParser.SQL.Builders
                 else
                 {
                     CreatureTemplateNonWdbExport data = creatureExportData[unit.Key.GetEntry()];
-
-                    if (data.GossipMenuId == 0 && npc.GossipId != 0)
-                        data.GossipMenuId = npc.GossipId;
 
                     if (data.Factions.ContainsKey((uint)npc.UnitData.FactionTemplate))
                         data.Factions[(uint)npc.UnitData.FactionTemplate]++;
@@ -861,7 +855,7 @@ namespace WowPacketParser.SQL.Builders
                 var template = new CreatureTemplateNonWDB
                 {
                     Entry = npc.Value.Entry,
-                    GossipMenuId = npc.Value.GossipMenuId,
+                    GossipMenuId = Storage.CreatureDefaultGossips.ContainsKey(npc.Value.Entry) ? Storage.CreatureDefaultGossips[npc.Value.Entry] : 0,
                     MinLevel = minMaxLevel.MinLevel,
                     MaxLevel = minMaxLevel.MaxLevel,
                     Faction = mostCommonFaction,
