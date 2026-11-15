@@ -1710,4 +1710,6 @@ namespace WowPacketParser.Enums.Version.V1_13_2_31446
 
         private static readonly BiDictionary<Opcode, int> MiscOpcodes = new BiDictionary<Opcode, int>();
     }
+
+
 }
