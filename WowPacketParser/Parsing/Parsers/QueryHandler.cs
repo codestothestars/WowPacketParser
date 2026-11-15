@@ -16,7 +16,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleTimeQueryResponse(Packet packet)
         {
             packet.ReadTime("Current Time");
-            packet.ReadInt32("Daily Quest Reset");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                packet.ReadInt32("Daily Quest Reset");
         }
 
         [Parser(Opcode.CMSG_NAME_QUERY)]
@@ -70,11 +71,14 @@ namespace WowPacketParser.Parsing.Parsers
                 response.Class = (uint)packet.ReadInt32E<Class>("Class");
             }
 
-            if (!packet.ReadBool("Name Declined"))
-                return;
-
-            for (var i = 0; i < 5; i++)
-                packet.ReadCString("Declined Name", i);
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+            {
+                if (packet.ReadBool("Name Declined"))
+                {
+                    for (var i = 0; i < 5; i++)
+                        packet.ReadCString("Declined Name", i);
+                }
+            }
 
             var objectName = new ObjectName
             {
@@ -129,7 +133,8 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V5_0_5_16048))
                 creature.TitleAlt = response.TitleAlt = packet.ReadCString("TitleAlt");
 
-            creature.IconName = response.IconName = packet.ReadCString("Icon Name");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                creature.IconName = response.IconName = packet.ReadCString("Icon Name");
 
             creature.TypeFlags = packet.ReadUInt32E<CreatureTypeFlag>("Type Flags");
             response.TypeFlags = (uint?)creature.TypeFlags ?? 0;
@@ -162,15 +167,28 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             creature.ModelIDs = new uint?[4];
-            for (int i = 0; i < 4; i++)
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
             {
-                creature.ModelIDs[i] = packet.ReadUInt32("Model ID", i);
-                response.Models.Add(creature.ModelIDs[i] ?? 0);
+                for (int i = 0; i < 4; i++)
+                {
+                    creature.ModelIDs[i] = packet.ReadUInt32("Display ID", i);
+                    response.Models.Add(creature.ModelIDs[i] ?? 0);
+                }
+            }
+            else
+            {
+                creature.ModelIDs[0] = packet.ReadUInt32("Display ID");
+                response.Models.Add(creature.ModelIDs[0] ?? 0);
             }
 
-            creature.HealthMultiplier = response.HpMod = packet.ReadSingle("Modifier 1");
-            creature.ManaMultiplier = response.ManaMod = packet.ReadSingle("Modifier 2");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+            {
+                creature.HealthMultiplier = response.HpMod = packet.ReadSingle("Modifier 1");
+                creature.ManaMultiplier = response.ManaMod = packet.ReadSingle("Modifier 2");
+            }
 
+            if (ClientVersion.RemovedInVersion(ClientType.TheBurningCrusade))
+                creature.RacialLeader = packet.ReadBool("Civillian");
             creature.RacialLeader = response.Leader = packet.ReadBool("Racial Leader");
 
             int qItemCount = ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ? 6 : 4;
