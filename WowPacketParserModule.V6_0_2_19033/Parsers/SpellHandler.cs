@@ -201,6 +201,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 var aura = new Aura();
 
                 var slot = packet.ReadByte("Slot", i);
+                aura.Slot = slot;
                 auraEntry.Slot = slot;
 
                 packet.ResetBitReader();
@@ -210,11 +211,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 {
                     aura.SpellId = auraEntry.Spell = (uint)packet.ReadInt32<SpellId>("SpellID", i);
                     if (ClientVersion.AddedInVersion(ClientVersionBuild.V6_2_0_20173))
-                        packet.ReadUInt32("SpellXSpellVisualID", i);
+                        aura.VisualId = packet.ReadUInt32("SpellXSpellVisualID", i);
                     var flags = packet.ReadByteE<AuraFlagMoP>("Flags", i);
                     aura.AuraFlags = flags;
                     auraEntry.Flags = flags.ToUniversal();
-                    packet.ReadInt32("ActiveFlags", i);
+                    aura.ActiveFlags = packet.ReadUInt32("ActiveFlags", i);
                     aura.Level = packet.ReadUInt16("CastLevel", i);
                     aura.Charges = packet.ReadByte("Applications", i);
 
@@ -235,6 +236,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                     if (hasCasterGUID)
                     {
                         var casterGuid = packet.ReadPackedGuid128("CastUnit", i);
+                        aura.CasterGuid = casterGuid;
                         auraEntry.CasterUnit = casterGuid;
                     }
 
