@@ -37,10 +37,19 @@ namespace WowPacketParserModule.V5_4_2_17658.Parsers
                         break;
                     }
                     case "CreateObject1":
+                    {
+                        var guid = packet.ReadPackedGuid("GUID", i);
+                        Storage.StoreObjectCreate1Time(guid, packet.Time);
+                        var createObject = new CreateObject() { Guid = guid, Values = new()};
+                        ReadCreateObjectBlock(packet, createObject, guid, map, i);
+                        updateObject.Created.Add(createObject);
+                        break;
+                    }
                     case "CreateObject2": // Might != CreateObject1 on Cata
                     {
                         var guid = packet.ReadPackedGuid("GUID", i);
                         var createObject = new CreateObject() { Guid = guid, Values = new()};
+                        Storage.StoreObjectCreate2Time(guid, packet.Time);
                         ReadCreateObjectBlock(packet, createObject, guid, map, i);
                         updateObject.Created.Add(createObject);
                         break;
