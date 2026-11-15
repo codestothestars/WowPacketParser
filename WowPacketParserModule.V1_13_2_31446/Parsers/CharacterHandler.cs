@@ -59,7 +59,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             packet.ReadInt32("InterfaceVersion", idx);
             packet.ReadUInt32("Flags4", idx);
 
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_13_7_38386))
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V1_13_7_38363))
                 packet.ReadBool("ExpansionChosen", idx);
 
             packet.ResetBitReader();
