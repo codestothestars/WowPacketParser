@@ -189,7 +189,19 @@ namespace WowPacketParser.Parsing.Parsers
                 CreatureUpdate creatureUpdate = new CreatureUpdate();
                 foreach (var update in updates)
                 {
-                    if (update.Key == UpdateFields.GetUpdateField(UnitField.UNIT_FIELD_DISPLAYID))
+                    if (update.Key == UpdateFields.GetUpdateField(ObjectField.OBJECT_FIELD_ENTRY))
+                    {
+                        if (Storage.Objects.ContainsKey(guid))
+                        {
+                            var obj = Storage.Objects[guid].Item1 as Unit;
+                            if (obj.UnitData.Entry != update.Value.UInt32Value)
+                            {
+                                hasData = true;
+                                creatureUpdate.Entry = update.Value.UInt32Value;
+                            }
+                        }
+                    }
+                    else if (update.Key == UpdateFields.GetUpdateField(UnitField.UNIT_FIELD_DISPLAYID))
                     {
                         if (Storage.Objects.ContainsKey(guid))
                         {
@@ -253,7 +265,7 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (hasData)
                 {
-                    creatureUpdate.Time = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                    creatureUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
                     Storage.StoreCreatureUpdate(guid, creatureUpdate);
                 }
             }
@@ -282,7 +294,7 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (hasData)
                 {
-                    goUpdate.Time = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                    goUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
                     Storage.StoreGameObjectUpdate(guid, goUpdate);
                 }
             }
