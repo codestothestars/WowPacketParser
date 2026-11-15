@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using WowPacketParser.Enums;
 using WowPacketParser.Misc;
 using WowPacketParser.Parsing;
@@ -125,14 +126,16 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
 
             var moves = ReadMovementUpdateBlock(packet, createObject, guid, obj, index);
             Storage.StoreObjectCreateTime(guid, map, moves, packet.Time, type);
-            var updates = CoreParsers.UpdateHandler.ReadValuesUpdateBlockOnCreate(packet, createObject.Values, objType, index);
+
+            BitArray updateMaskArray = null;
+            var updates = CoreParsers.UpdateHandler.ReadValuesUpdateBlockOnCreate(packet, createObject.Values, objType, index, out updateMaskArray);
             var dynamicUpdates = CoreParsers.UpdateHandler.ReadDynamicValuesUpdateBlockOnCreate(packet, objType, index);
 
             // If this is the second time we see the same object (same guid,
             // same position) update its phasemask
             if (Storage.Objects.ContainsKey(guid))
             {
-                CoreParsers.UpdateHandler.ProcessExistingObject(ref obj, guid, packet, updates, dynamicUpdates, moves);
+                CoreParsers.UpdateHandler.ProcessExistingObject(ref obj, guid, packet, updateMaskArray, updates, dynamicUpdates, moves);
             }
             else
             {
