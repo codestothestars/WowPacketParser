@@ -71,6 +71,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             gameObject.RequiredLevel = query.RequiredLevel = packet.ReadInt32("RequiredLevel");
 
+            packet.AddSniffData(StoreNameType.GameObject, entry.Key, "QUERY_RESPONSE");
+
             Storage.GameObjectTemplates.Add(gameObject, packet.TimeSpan);
 
             ObjectName objectName = new ObjectName
@@ -98,6 +100,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             WowGuid guid = packet.ReadPackedGuid128("GameObjectGUID");
             Storage.StoreGameObjectUse(guid, packet.Time);
+            packet.AddSniffData(StoreNameType.GameObject, (int)guid.GetEntry(), "USE");
         }
 
         [Parser(Opcode.SMSG_PAGE_TEXT)]
