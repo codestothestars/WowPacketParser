@@ -84,7 +84,9 @@ namespace WowPacketParserModule.V5_3_0_16981.Parsers
             if (hasReceiver)
                 text.ReceiverName = packet.ReadWoWString("Receiver Name", receiverLen);
 
-            text.Type = (ChatMessageType)packet.ReadByteE<ChatMessageTypeNew>("Chat type");
+            ChatMessageTypeNew chatType = packet.ReadByteE<ChatMessageTypeNew>("Chat type");
+            text.TypeOriginal = (uint)chatType;
+            text.TypeNormalized = (ChatMessageType)chatType;
             if (hasText)
                 text.Text = packet.ReadWoWString("Text", textLen);
 
@@ -109,7 +111,7 @@ namespace WowPacketParserModule.V5_3_0_16981.Parsers
             chatPacket.Sender = text.SenderGUID.ToUniversalGuid();
             chatPacket.Target = text.ReceiverGUID.ToUniversalGuid();
             chatPacket.Language = (int?) text.Language ?? 0;
-            chatPacket.Type = (int?) text.Type ?? 0;
+            chatPacket.Type = (int?) text.TypeOriginal ?? 0;
         }
 
         [Parser(Opcode.CMSG_SEND_TEXT_EMOTE)]
