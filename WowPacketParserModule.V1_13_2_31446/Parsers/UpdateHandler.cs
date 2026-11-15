@@ -234,7 +234,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
 
                 movementUpdate.WalkSpeed = moveInfo.WalkSpeed = packet.ReadSingle("WalkSpeed", index);
                 movementUpdate.RunSpeed = moveInfo.RunSpeed = packet.ReadSingle("RunSpeed", index);
-                moveInfo.RunBackSpeed = moveInfo.RunSpeed = packet.ReadSingle("RunBackSpeed", index);
+                moveInfo.RunBackSpeed = packet.ReadSingle("RunBackSpeed", index);
                 moveInfo.SwimSpeed = packet.ReadSingle("SwimSpeed", index);
                 moveInfo.SwimBackSpeed = packet.ReadSingle("SwimBackSpeed", index);
                 moveInfo.FlightSpeed = packet.ReadSingle("FlightSpeed", index);
