@@ -166,29 +166,22 @@ namespace WowPacketParser.Parsing.Parsers
                 creature.PetSpellDataID = packet.ReadUInt32("Pet Spell Data Id");
             }
 
-            creature.DisplayIDs = new uint?[4];
-            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+            int displayIdCount = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? 4 : 1;
+            creature.DisplayIDs = new uint?[displayIdCount];
+            for (int i = 0; i < displayIdCount; i++)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    creature.DisplayIDs[i] = packet.ReadUInt32("Display ID", i);
-                    response.Models.Add(creature.DisplayIDs[i] ?? 0);
-                }
-            }
-            else
-            {
-                creature.DisplayIDs[0] = packet.ReadUInt32("Display ID");
-                response.Models.Add(creature.DisplayIDs[0] ?? 0);
+                creature.DisplayIDs[i] = packet.ReadUInt32("Display ID", i);
+                response.Models.Add(creature.DisplayIDs[i] ?? 0);
             }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
             {
-                creature.HealthMultiplier = response.HpMod = packet.ReadSingle("Modifier 1");
-                creature.ManaMultiplier = response.ManaMod = packet.ReadSingle("Modifier 2");
+                creature.HealthMultiplier = response.HpMod = packet.ReadSingle("HealthMultiplier");
+                creature.ManaMultiplier = response.ManaMod = packet.ReadSingle("ManaMultiplier");
             }
 
             if (ClientVersion.RemovedInVersion(ClientType.TheBurningCrusade))
-                creature.RacialLeader = packet.ReadBool("Civillian");
+                creature.Civilian = packet.ReadBool("Civillian");
             creature.RacialLeader = response.Leader = packet.ReadBool("Racial Leader");
 
             int questItems = ClientVersion.AddedInVersion(ClientVersionBuild.V3_2_0_10192) ? 6 : 4;

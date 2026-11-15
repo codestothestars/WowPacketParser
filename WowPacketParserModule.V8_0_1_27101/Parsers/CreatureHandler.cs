@@ -75,10 +75,10 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
                 response.KillCredits.Add(creature.KillCredits[i] ?? 0);
             }
 
-            var displayIdCount = packet.ReadUInt32("DisplayIdCount");
-            packet.ReadSingle("TotalProbability");
+            creature.DisplayTotalCount = packet.ReadUInt32("DisplayIdCount");
+            creature.DisplayTotalProbability = packet.ReadSingle("TotalProbability");
 
-            for (var i = 0; i < displayIdCount; ++i)
+            for (var i = 0; i < creature.DisplayTotalCount; ++i)
             {
                 CreatureTemplateModel model = new CreatureTemplateModel
                 {
