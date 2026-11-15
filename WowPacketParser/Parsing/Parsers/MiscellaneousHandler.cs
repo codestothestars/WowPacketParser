@@ -448,7 +448,7 @@ namespace WowPacketParser.Parsing.Parsers
             PlayMusic musicEntry = new PlayMusic
             {
                 Music = sound,
-                UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+                UnixTimeMs = (ulong)Utilities.GetUnixTimeMsFromDateTime(packet.Time)
             };
             Storage.Music.Add(musicEntry, packet.TimeSpan);
         }
@@ -1207,7 +1207,7 @@ namespace WowPacketParser.Parsing.Parsers
         {
             Storage.ClientReleaseSpiritTimes.Add(new WowPacketParser.Store.Objects.ClientReleaseSpirit
             {
-                UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+                UnixTimeMs = (ulong)Utilities.GetUnixTimeMsFromDateTime(packet.Time)
             }, packet.TimeSpan);
         }
     }
