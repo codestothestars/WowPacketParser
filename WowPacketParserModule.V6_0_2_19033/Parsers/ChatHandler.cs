@@ -144,9 +144,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             PacketEmote packetEmote = packet.Holder.Emote = new PacketEmote();
             var guid = packet.ReadPackedGuid128("GUID");
             var emote = packet.ReadInt32E<EmoteType>("Emote ID");
-
-            if (guid.GetObjectType() == ObjectType.Unit)
-                Storage.StoreCreatureEmote(guid, emote, packet.Time);
+            Storage.StoreUnitEmote(guid, emote, packet.Time);
 
             packetEmote.Emote = (int) emote;
             packetEmote.Sender = guid.ToUniversalGuid();

@@ -43,9 +43,7 @@ namespace WowPacketParser.Parsing.Parsers
             PacketEmote packetEmote = packet.Holder.Emote = new PacketEmote();
             var emote = packet.ReadInt32E<EmoteType>("Emote ID");
             var guid = packet.ReadGuid("GUID");
-
-            if (guid.GetObjectType() == ObjectType.Unit)
-                Storage.StoreCreatureEmote(guid, emote, packet.Time);
+            Storage.StoreUnitEmote(guid, emote, packet.Time);
 
             packetEmote.Emote = (int) emote;
             packetEmote.Sender = guid.ToUniversalGuid();
