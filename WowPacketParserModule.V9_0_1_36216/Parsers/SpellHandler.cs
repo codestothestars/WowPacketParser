@@ -142,7 +142,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             SpellCastData castData = new SpellCastData();
             PacketSpellStart packetSpellStart = packet.Holder.SpellStart = new();
             packetSpellStart.Data = ReadSpellCastData(castData, packet, "Cast");
-            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastStart, packet);
+            Storage.StoreSpellCastData(castData, Storage.SpellCastStart, packet);
         }
 
         [Parser(Opcode.SMSG_SPELL_GO)]
@@ -158,7 +158,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             if (hasLogData)
                 V8_0_1_27101.Parsers.SpellHandler.ReadSpellCastLogData(packet, "LogData");
 
-            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastGo, packet);
+            Storage.StoreSpellCastData(castData, Storage.SpellCastGo, packet);
         }
 
         [HasSniffData]
