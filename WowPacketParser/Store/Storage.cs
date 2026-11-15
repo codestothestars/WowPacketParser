@@ -17,6 +17,15 @@ namespace WowPacketParser.Store
 
         // Units, GameObjects, Players, Items
         public static readonly StoreDictionary<WowGuid, WoWObject> Objects = new StoreDictionary<WowGuid, WoWObject>(new List<SQLOutput>());
+        public static void StoreNewObject(WowGuid guid, WoWObject obj, Packet packet)
+        {
+            obj.OriginalMovement = obj.Movement != null ? obj.Movement.CopyFromMe() : null;
+            obj.OriginalUpdateFields = obj.UpdateFields != null ? new Dictionary<int, UpdateField>(obj.UpdateFields) : null;
+            if (!string.IsNullOrWhiteSpace(Settings.SQLFileName) && Settings.DumpFormatWithSQL())
+                obj.SourceSniffId = Program.sniffFileNames.IndexOf(packet.FileName);
+            Storage.Objects.Add(guid, obj, packet.TimeSpan);
+        }
+
         public static readonly Dictionary<WowGuid, List<DateTime>> ObjectDestroyTimes = new Dictionary<WowGuid, List<DateTime>>();
         public static void StoreObjectDestroyTime(WowGuid guid, DateTime time)
         {
@@ -333,26 +342,39 @@ namespace WowPacketParser.Store
             SniffData.Clear();
 
             Objects.Clear();
+            ObjectDestroyTimes.Clear();
+            ObjectCreate1Times.Clear();
+            ObjectCreate2Times.Clear();
 
             AreaTriggerTemplates.Clear();
             AreaTriggerTemplatesVertices.Clear();
+
             ConversationActors.Clear();
             ConversationActorTemplates.Clear();
             ConversationLineTemplates.Clear();
             ConversationTemplates.Clear();
+
+            GameObjectLoot.Clear();
             GameObjectTemplates.Clear();
             GameObjectTemplateQuestItems.Clear();
+            GameObjectUpdates.Clear();
+
             ItemTemplates.Clear();
+
             QuestTemplates.Clear();
             QuestObjectives.Clear();
             QuestVisualEffects.Clear();
             QuestRewardDisplaySpells.Clear();
+
+            CreatureLoot.Clear();
+            CreatureStats.Clear();
             CreatureTemplates.Clear();
             CreatureTemplatesClassic.Clear();
             CreatureTemplatesNonWDB.Clear();
             CreatureTemplateQuestItems.Clear();
             CreatureTemplateScalings.Clear();
             CreatureTemplateModels.Clear();
+            CreatureUpdates.Clear();
 
             NpcTrainers.Clear();
             NpcVendors.Clear();
@@ -378,6 +400,7 @@ namespace WowPacketParser.Store
             StartActions.Clear();
             StartPositions.Clear();
 
+            CreatureDefaultGossips.Clear();
             CreatureGossips.Clear();
             Gossips.Clear();
             GossipMenuOptions.Clear();
@@ -387,6 +410,10 @@ namespace WowPacketParser.Store
             QuestPOIs.Clear();
             QuestPOIPoints.Clear();
 
+            QuestStarters.Clear();
+            QuestEnders.Clear();
+            QuestClientAcceptTimes.Clear();
+            QuestClientCompleteTimes.Clear();
             QuestGreetings.Clear();
             QuestDetails.Clear();
             QuestRequestItems.Clear();

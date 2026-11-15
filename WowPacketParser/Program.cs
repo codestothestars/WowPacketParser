@@ -13,12 +13,14 @@ using WowPacketParser.SQL;
 using WowPacketParser.DBC;
 using WowPacketParser.PacketStructures;
 using WoWPacketParser.Proto;
+using System.Collections.Generic;
 
 namespace WowPacketParser
 {
     public static class Program
     {
         public static string currentSniffFile = "";
+        public static List<string> sniffFileNames = new List<string>();
         private static void Main(string[] args)
         {
             SetUpConsole();
@@ -72,7 +74,8 @@ namespace WowPacketParser
 
                 try
                 {
-                    currentSniffFile = file;
+                    currentSniffFile = Path.GetFileName(file);
+                    sniffFileNames.Add(currentSniffFile);
                     var sf = new SniffFile(file, Settings.DumpFormat, Tuple.Create(++count, files.Count));
                     sf.ProcessFile();
                 }
@@ -80,11 +83,29 @@ namespace WowPacketParser
                 {
                     Console.WriteLine($"Can't process {file}. Skipping. Message: {ex.Message}");
                 }
-
             }
 
             if (!string.IsNullOrWhiteSpace(Settings.SQLFileName) && Settings.DumpFormatWithSQL())
+            {
                 Builder.DumpSQL("Dumping global sql", Settings.SQLFileName, SniffFile.GetHeader("multi"));
+
+                if (File.Exists(Settings.SQLFileName))
+                {
+                    using (StreamWriter sw = File.AppendText(Settings.SQLFileName))
+                    {
+                        string query = "INSERT INTO `sniff_file` (`id`, `name`) VALUES\n";
+                        for (int i = 0; i < sniffFileNames.Count; i++)
+                        {
+                            if (i != 0)
+                                query += ",\n";
+                            query += "(" + i + ", '" + MySql.Data.MySqlClient.MySqlHelper.EscapeString(sniffFileNames[i]) + "')";
+                        }
+                        query += ";\n";
+                        sw.WriteLine(query);
+                    }
+                }
+            }
+                
 
             SQLConnector.Disconnect();
             SSHTunnel.Disconnect();

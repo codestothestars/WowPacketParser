@@ -9,12 +9,14 @@ namespace WowPacketParser.Store.Objects
     public sealed class GameObject : WoWObject, IDataModel
     {
         public IGameObjectData GameObjectData;
+        public IGameObjectData GameObjectDataOriginal;
         public uint? WorldEffectID;
         public uint? AIAnimKitID;
 
         public GameObject() : base()
         {
             GameObjectData = new GameObjectData(this);
+            GameObjectDataOriginal = new OriginalGameObjectData(this);
         }
 
         public override bool IsTemporarySpawn()
