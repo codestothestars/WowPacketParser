@@ -183,7 +183,7 @@ namespace WowPacketParser.Parsing.Parsers
             if (id <= 0)
             {
                 entry.Remove = true;
-                return null;
+                return aura;
             }
             
             aura.SpellId = entry.Spell = (uint)id;
@@ -194,7 +194,7 @@ namespace WowPacketParser.Parsing.Parsers
             else
                 flags = packet.ReadByteE<AuraFlag>("Flags", i);
 
-            aura.AuraFlags = flags;
+            aura.AuraFlags = (uint)flags;
             entry.Flags = flags.ToUniversal();
 
             aura.Level = packet.ReadByte("Level", i);
@@ -243,13 +243,13 @@ namespace WowPacketParser.Parsing.Parsers
             if (id <= 0)
             {
                 entry.Remove = true;
-                return null;
+                return aura;
             }
 
             aura.SpellId = entry.Spell = (uint)id;
 
             var flags = packet.ReadByteE<AuraFlagMoP>("Flags", i);
-            aura.AuraFlags = flags;
+            aura.AuraFlags = (uint)flags;
             entry.Flags = flags.ToUniversal();
 
             var mask = packet.ReadUInt32("Effect Mask", i);

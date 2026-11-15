@@ -242,7 +242,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                     aura.SpellId = auraEntry.Spell = (uint)packet.ReadInt32<SpellId>("SpellID", i);
                     aura.VisualId = (uint)packet.ReadInt32("SpellXSpellVisualID", i);
                     var flags = packet.ReadByteE<AuraFlagMoP>("Flags", i);
-                    aura.AuraFlags = flags;
+                    aura.AuraFlags = (uint)flags;
                     auraEntry.Flags = flags.ToUniversal();
                     aura.ActiveFlags = packet.ReadUInt32("ActiveFlags", i);
                     aura.Level = packet.ReadUInt16("CastLevel", i);
@@ -290,9 +290,9 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                     for (var j = 0; j < effectCount; ++j)
                         packet.ReadSingle("EstimatedPoints", i, j);
 
-                    auras.Add(aura);
                     packet.AddSniffData(StoreNameType.Spell, (int)aura.SpellId, "AURA_UPDATE");
                 }
+                auras.Add(aura);
             }
 
             var guid = packet.ReadPackedGuid128("UnitGUID");
