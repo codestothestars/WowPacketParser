@@ -51,18 +51,12 @@ namespace WowPacketParser.Parsing.Parsers
                         break;
                     }
                     case "CreateObject1":
-                    {
-                        var guid = packet.ReadPackedGuid("GUID", i);
-                        Storage.StoreObjectCreate1Time(guid, packet.Time);
-                        ReadCreateObjectBlock(packet, guid, map, i);
-                        break;
-                    }
                     case "CreateObject2": // Might != CreateObject1 on Cata
                     {
                         var guid = packet.ReadPackedGuid("GUID", i);
+                        var createType = typeString == "CreateObject1" ? ObjectCreateType.Create1 : ObjectCreateType.Create2;
                         var createObject = new CreateObject() { Guid = guid, Values = new()};
-                        Storage.StoreObjectCreate2Time(guid, packet.Time);
-                        ReadCreateObjectBlock(packet, createObject, guid, map, i);
+                        ReadCreateObjectBlock(packet, createObject, guid, map, i, createType);
                         createObject.Text = partWriter.Text;
                         updateObject.Created.Add(createObject);
                         break;
@@ -82,10 +76,11 @@ namespace WowPacketParser.Parsing.Parsers
             }
         }
 
-        private static void ReadCreateObjectBlock(Packet packet, CreateObject createObject, WowGuid guid, uint map, object index)
+        private static void ReadCreateObjectBlock(Packet packet, CreateObject createObject, WowGuid guid, uint map, object index, ObjectCreateType type)
         {
             ObjectType objType = ObjectTypeConverter.Convert(packet.ReadByteE<ObjectTypeLegacy>("Object Type", index));
             var moves = ReadMovementUpdateBlock(packet, guid, index);
+            Storage.StoreObjectCreateTime(guid, moves, packet.Time, type);
             var updates = ReadValuesUpdateBlockOnCreate(packet, createObject.Values, objType, index);
             var dynamicUpdates = ReadDynamicValuesUpdateBlockOnCreate(packet, objType, index);
 
@@ -113,7 +108,7 @@ namespace WowPacketParser.Parsing.Parsers
             if (Storage.Objects.ContainsKey(guid))
             {
                 var existObj = Storage.Objects[guid].Item1;
-                ProcessExistingObject(ref existObj, obj, guid); // can't do "ref Storage.Objects[guid].Item1 directly
+                ProcessExistingObject(ref existObj, obj, guid, packet.Time); // can't do "ref Storage.Objects[guid].Item1 directly
             }
             else
                 Storage.StoreNewObject(guid, obj, packet);
@@ -132,7 +127,7 @@ namespace WowPacketParser.Parsing.Parsers
             return ReadDynamicValuesUpdateBlock(packet, type, index, true, null);
         }
 
-        public static void ProcessExistingObject(ref WoWObject obj, WoWObject newObj, WowGuid guid)
+        public static void ProcessExistingObject(ref WoWObject obj, WoWObject newObj, WowGuid guid, DateTime time)
         {
             obj.PhaseMask |= newObj.PhaseMask;
             if (guid.GetHighType() == HighGuidType.Creature) // skip if not an unit
@@ -142,6 +137,7 @@ namespace WowPacketParser.Parsing.Parsers
                         if (((obj as Unit).UnitData.Flags & (uint) UnitFlags.IsInCombat) == 0) // movement could be because of aggro so ignore that
                             obj.Movement.HasWpsOrRandMov = true;
             }
+            StoreObjectUpdate(time, guid, newObj.UpdateFields);
         }
 
         public static void ReadObjectsBlock(Packet packet, object index)
@@ -169,7 +165,7 @@ namespace WowPacketParser.Parsing.Parsers
             if (Storage.Objects.TryGetValue(guid, out obj))
             {
                 var updates = ReadValuesUpdateBlock(packet, updateValues, obj.Type, index, false, obj.UpdateFields);
-                StoreObjectUpdate(packet, guid, updates);
+                StoreObjectUpdate(packet.Time, guid, updates);
                 var dynamicUpdates = ReadDynamicValuesUpdateBlock(packet, obj.Type, index, false, obj.DynamicUpdateFields);
                 ApplyUpdateFieldsChange(obj, updates, dynamicUpdates);
             }
@@ -180,7 +176,7 @@ namespace WowPacketParser.Parsing.Parsers
             }
         }
 
-        public static void StoreObjectUpdate(Packet packet, WowGuid guid, Dictionary<int, UpdateField> updates)
+        public static void StoreObjectUpdate(DateTime time, WowGuid guid, Dictionary<int, UpdateField> updates)
         {
             if (guid.GetObjectType() == ObjectType.Unit &&
                 guid.GetHighType() != HighGuidType.Pet)
@@ -277,7 +273,7 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (hasData)
                 {
-                    creatureUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                    creatureUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(time);
                     Storage.StoreCreatureUpdate(guid, creatureUpdate);
                 }
             }
@@ -318,7 +314,7 @@ namespace WowPacketParser.Parsing.Parsers
 
                 if (hasData)
                 {
-                    goUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
+                    goUpdate.UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(time);
                     Storage.StoreGameObjectUpdate(guid, goUpdate);
                 }
             }

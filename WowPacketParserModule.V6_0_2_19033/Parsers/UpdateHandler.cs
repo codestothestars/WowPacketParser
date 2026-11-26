@@ -64,9 +64,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                     case "CreateObject1":
                     {
                         var guid = packet.ReadPackedGuid128("Object Guid", i);
-                        Storage.StoreObjectCreate1Time(guid, packet.Time);
                         var createObject = new CreateObject() { Guid = guid, Values = new()};
-                        ReadCreateObjectBlock(packet, createObject, guid, map, i);
+                        ReadCreateObjectBlock(packet, createObject, guid, map, i, ObjectCreateType.Create1);
                         updateObject.Created.Add(createObject);
                         break;
                     }
@@ -74,8 +73,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                     {
                         var guid = packet.ReadPackedGuid128("Object Guid", i);
                         var createObject = new CreateObject() { Guid = guid, Values = new()};
-                        Storage.StoreObjectCreate2Time(guid, packet.Time);
-                        ReadCreateObjectBlock(packet, createObject, guid, map, i);
+                        ReadCreateObjectBlock(packet, createObject, guid, map, i, ObjectCreateType.Create2);
                         createObject.Text = partWriter.Text;
                         updateObject.Created.Add(createObject);
                         break;
@@ -84,10 +82,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             }
         }
 
-        private static void ReadCreateObjectBlock(Packet packet, CreateObject createObject, WowGuid guid, uint map, object index)
+        private static void ReadCreateObjectBlock(Packet packet, CreateObject createObject, WowGuid guid, uint map, object index, ObjectCreateType type)
         {
             ObjectType objType = ObjectTypeConverter.Convert(packet.ReadByteE<ObjectTypeLegacy>("Object Type", index));
             var moves = ReadMovementUpdateBlock(packet, createObject, guid, index);
+            Storage.StoreObjectCreateTime(guid, moves, packet.Time, type);
             var updates = CoreParsers.UpdateHandler.ReadValuesUpdateBlockOnCreate(packet, createObject.Values, objType, index);
             var dynamicUpdates = CoreParsers.UpdateHandler.ReadDynamicValuesUpdateBlockOnCreate(packet, objType, index);
 
@@ -124,7 +123,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             if (Storage.Objects.ContainsKey(guid))
             {
                 var existObj = Storage.Objects[guid].Item1;
-                CoreParsers.UpdateHandler.ProcessExistingObject(ref existObj, obj, guid); // can't do "ref Storage.Objects[guid].Item1 directly
+                CoreParsers.UpdateHandler.ProcessExistingObject(ref existObj, obj, guid, packet.Time); // can't do "ref Storage.Objects[guid].Item1 directly
             }
             else
                 Storage.StoreNewObject(guid, obj, packet);
