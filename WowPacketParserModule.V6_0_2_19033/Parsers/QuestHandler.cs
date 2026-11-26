@@ -124,6 +124,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 };
                 Storage.QuestClientCompleteTimes.Add(questComplete, packet.TimeSpan);
             }
+
+            packet.AddSniffData(StoreNameType.Quest, (int)id, "COMPLETE");
         }
 
         [Parser(Opcode.CMSG_QUEST_GIVER_ACCEPT_QUEST)]
@@ -151,6 +153,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 };
                 Storage.QuestClientAcceptTimes.Add(questAccept, packet.TimeSpan);
             }
+
+            packet.AddSniffData(StoreNameType.Quest, (int)id, "ACCEPT");
         }
 
         [Parser(Opcode.CMSG_QUEST_GIVER_REQUEST_REWARD)]
