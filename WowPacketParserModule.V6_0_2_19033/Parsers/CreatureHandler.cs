@@ -82,11 +82,11 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 response.KillCredits.Add(creature.KillCredits[i] ?? 0);
             }
 
-            creature.ModelIDs = new uint?[4];
+            creature.DisplayIDs = new uint?[4];
             for (var i = 0; i < 4; ++i)
             {
-                creature.ModelIDs[i] = packet.ReadUInt32("CreatureDisplayID", i);
-                response.Models.Add(creature.ModelIDs[i] ?? 0);
+                creature.DisplayIDs[i] = packet.ReadUInt32("CreatureDisplayID", i);
+                response.Models.Add(creature.DisplayIDs[i] ?? 0);
             }
 
             creature.HealthMultiplier = response.HpMod = packet.ReadSingle("HpMulti");
@@ -123,7 +123,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             packet.AddSniffData(StoreNameType.Unit, entry.Key, "QUERY_RESPONSE");
 
-            Storage.CreatureTemplates.Add(creature.Entry.Value, creature, packet.TimeSpan);
+            Storage.CreatureTemplates.Add(creature, packet.TimeSpan);
 
             if (ClientLocale.PacketLocale != LocaleConstant.enUS)
             {
