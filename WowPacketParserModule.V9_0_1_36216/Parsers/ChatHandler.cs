@@ -13,9 +13,11 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         public static void HandleServerChatMessage(Packet packet)
         {
             PacketChat chatPacket = packet.Holder.Chat = new PacketChat();
+            ChatMessageTypeNew chatType = packet.ReadByteE<ChatMessageTypeNew>("SlashCmd");
             var text = new ChatPacketData
             {
-                Type = (ChatMessageType)packet.ReadByteE<ChatMessageTypeNew>("SlashCmd"),
+                TypeNormalized = (ChatMessageType)chatType,
+                TypeOriginal = (uint)chatType,
                 Language = packet.ReadUInt32E<Language>("Language"),
                 SenderGUID = packet.ReadPackedGuid128("SenderGUID")
             };
@@ -52,7 +54,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             chatPacket.Sender = text.SenderGUID.ToUniversalGuid();
             chatPacket.Target = text.ReceiverGUID.ToUniversalGuid();
             chatPacket.Language = (int) text.Language;
-            chatPacket.Type = (int) text.Type;
+            chatPacket.Type = (int) text.TypeOriginal;
             chatPacket.Flags = flags;
 
             if (unk801bit)

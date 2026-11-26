@@ -172,7 +172,10 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
 
             packet.ParseBitStream(senderGUIDBytes, 4, 7, 1, 5, 0, 6, 2, 3);
 
-            text.Type = (ChatMessageType)packet.ReadByteE<ChatMessageTypeNew>("SlashCmd");
+            ChatMessageTypeNew chatType = packet.ReadByteE<ChatMessageTypeNew>("SlashCmd");
+            text.TypeNormalized = (ChatMessageType)chatType;
+            text.TypeOriginal = (uint)chatType;
+
             if (hasAchi)
                 packet.ReadInt32<AchievementId>("Achievement Id");
             packet.ParseBitStream(groupGUIDBytes, 1, 3, 4, 6, 0, 2, 5, 7);
@@ -199,7 +202,7 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
             chatPacket.Sender = text.SenderGUID.ToUniversalGuid();
             chatPacket.Target = text.ReceiverGUID.ToUniversalGuid();
             chatPacket.Language = (int?) text.Language ?? 0;
-            chatPacket.Type = (int) text.Type;
+            chatPacket.Type = (int) text.TypeOriginal;
             
             Storage.StoreText(text, packet);
         }

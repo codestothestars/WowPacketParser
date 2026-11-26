@@ -28,10 +28,12 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         [Parser(Opcode.SMSG_CHAT)]
         public static void HandleServerChatMessage(Packet packet)
         {
+            ChatMessageTypeNew chatType = packet.ReadByteE<ChatMessageTypeNew>("SlashCmd");
             PacketChat chatPacket = packet.Holder.Chat = new PacketChat();
             var text = new ChatPacketData
             {
-                Type = (ChatMessageType)packet.ReadByteE<ChatMessageTypeNew>("SlashCmd"),
+                TypeNormalized = (ChatMessageType)chatType,
+                TypeOriginal = (uint)chatType,
                 Language = packet.ReadUInt32E<Language>("Language"),
                 SenderGUID = packet.ReadPackedGuid128("SenderGUID")
             };
@@ -69,7 +71,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             chatPacket.Sender = text.SenderGUID.ToUniversalGuid();
             chatPacket.Target = text.ReceiverGUID.ToUniversalGuid();
             chatPacket.Language = (int) text.Language;
-            chatPacket.Type = (int) text.Type;
+            chatPacket.Type = (int) text.TypeOriginal;
             chatPacket.Flags = flags;
 
             if (unk801bit)
