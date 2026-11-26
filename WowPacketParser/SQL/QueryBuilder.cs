@@ -540,8 +540,9 @@ namespace WowPacketParser.SQL
                         query.Append(SQLUtil.ToSQLValue(blob));
                         query.Append(SQLUtil.CommaSeparator);
                     }
-                    else if (value is Array arr)
+                    else if (value is Array)
                     {
+                        Array arr = value as Array;
                         foreach (object v in arr)
                         {
                             if (v == null)
