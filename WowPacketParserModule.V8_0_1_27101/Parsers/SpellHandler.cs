@@ -30,8 +30,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             var nameLength = packet.ReadBits(7);
 
             var targetUnit = packet.ReadPackedGuid128("Unit", idx);
-            dbdata.MainTargetID = targetUnit.GetEntry();
-            dbdata.MainTargetType = targetUnit.GetObjectType().ToString();
+            dbdata.MainTargetGuid = targetUnit;
             if (packetSpellData != null)
                 packetSpellData.TargetUnit = targetUnit;
             packet.ReadPackedGuid128("Item", idx);
@@ -123,12 +122,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         public static PacketSpellData ReadSpellCastData(SpellCastData dbdata, Packet packet, params object[] idx)
         {
             var packetSpellData = new PacketSpellData();
-            WowGuid casterGuid = packet.ReadPackedGuid128("CasterGUID", idx);
-            dbdata.CasterID = casterGuid.GetEntry();
-            if (casterGuid.GetHighType() == HighGuidType.Pet)
-                dbdata.CasterType = "Pet";
-            else
-                dbdata.CasterType = casterGuid.GetObjectType().ToString();
+            dbdata.CasterGuid = packet.ReadPackedGuid128("CasterGUID", idx);
 
             var guid = packet.ReadPackedGuid128("CasterUnit", idx);
             packetSpellData.Caster = guid;
@@ -244,7 +238,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             SpellCastData castData = new SpellCastData();
             PacketSpellStart packetSpellStart = packet.Holder.SpellStart = new();
             packetSpellStart.Data = ReadSpellCastData(castData, packet, "Cast");
-            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastStart, packet);
+            Storage.StoreSpellCastData(castData, Storage.SpellCastStart, packet);
         }
 
         [Parser(Opcode.SMSG_SPELL_GO)]
@@ -260,7 +254,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             if (hasLogData)
                 ReadSpellCastLogData(packet, "LogData");
 
-            Storage.AddSpellCastDataIfShould(castData, Storage.SpellCastGo, packet);
+            Storage.StoreSpellCastData(castData, Storage.SpellCastGo, packet);
         }
 
         public static void ReadContentTuningParams(Packet packet, params object[] idx)
