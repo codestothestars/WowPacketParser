@@ -115,13 +115,14 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             dbdata.CasterGuid = packet.ReadPackedGuid128("CasterGUID", idx);
 
             var guid = packet.ReadPackedGuid128("CasterUnit", idx);
+            dbdata.CasterUnitGuid = guid;
             packetSpellData.Caster = guid;
 
             packetSpellData.CastGuid = packet.ReadPackedGuid128("CastID", idx);
             packet.ReadPackedGuid128("OriginalCastID", idx);
 
             dbdata.SpellID = packetSpellData.Spell = packet.ReadUInt32<SpellId>("SpellID", idx);
-            packet.ReadUInt32("SpellXSpellVisualID", idx);
+            dbdata.VisualID = packet.ReadUInt32("SpellXSpellVisualID", idx);
 
             dbdata.CastFlags = packetSpellData.Flags = packet.ReadUInt32("CastFlags", idx);
             dbdata.CastFlagsEx = packetSpellData.Flags2 = packet.ReadUInt32("CastFlagsEx", idx);
@@ -178,10 +179,11 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                 packetSpellData.TargetPoints.Add(V6_0_2_19033.Parsers.SpellHandler.ReadLocation(packet, idx, "TargetPoints", i));
 
             if (hasAmmoDisplayId)
-                packetSpellData.AmmoDisplayId = packet.ReadInt32("AmmoDisplayId", idx);
+                dbdata.AmmoDisplayId = packetSpellData.AmmoDisplayId = packet.ReadInt32("AmmoDisplayId", idx);
 
             if (hasAmmoInventoryType)
-                packetSpellData.AmmoInventoryType = (uint)packet.ReadInt32E<InventoryType>("AmmoInventoryType", idx);
+                dbdata.AmmoInventoryType = (int)packet.ReadInt32E<InventoryType>("AmmoInventoryType", idx);
+                packetSpellData.AmmoInventoryType = (uint)dbdata.AmmoInventoryType;
 
             return packetSpellData;
         }
