@@ -98,16 +98,16 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("gossip_menu_id")]
         public uint? GossipMenuId;
 
-        [DBFieldName("minlevel")]
+        [DBFieldName("level_min")]
         public int? MinLevel;
 
-        [DBFieldName("maxlevel")]
+        [DBFieldName("level_max")]
         public int? MaxLevel;
 
         [DBFieldName("faction")]
         public uint? Faction;
 
-        [DBFieldName("npcflag")]
+        [DBFieldName("npc_flags")]
         public NPCFlags? NpcFlag;
 
         [DBFieldName("speed_walk")]
@@ -116,10 +116,13 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("speed_run")]
         public float? SpeedRun;
 
-        [DBFieldName("BaseAttackTime")]
+        [DBFieldName("scale")]
+        public float? Scale;
+
+        [DBFieldName("base_attack_time")]
         public uint? BaseAttackTime;
 
-        [DBFieldName("RangeAttackTime")]
+        [DBFieldName("ranged_attack_time")]
         public uint? RangedAttackTime;
 
         [DBFieldName("unit_class", TargetedDatabase.Zero, TargetedDatabase.BattleForAzeroth)]
@@ -134,16 +137,16 @@ namespace WowPacketParser.Store.Objects
         [DBFieldName("unit_flags3", TargetedDatabase.Legion)]
         public UnitFlags3? UnitFlags3;
 
-        [DBFieldName("dynamicflags", TargetedDatabase.Zero, TargetedDatabase.WarlordsOfDraenor)]
+        [DBFieldName("dynamic_flags", TargetedDatabase.Zero, TargetedDatabase.WarlordsOfDraenor)]
         public UnitDynamicFlags? DynamicFlags;
 
-        [DBFieldName("dynamicflags", TargetedDatabase.WarlordsOfDraenor)]
+        [DBFieldName("dynamic_flags", TargetedDatabase.WarlordsOfDraenor)]
         public UnitDynamicFlagsWOD? DynamicFlagsWod;
 
-        [DBFieldName("VehicleId")]
+        [DBFieldName("vehicle_id")]
         public uint? VehicleID;
 
-        [DBFieldName("HoverHeight")]
+        [DBFieldName("hover_height")]
         public float? HoverHeight;
 
     }
