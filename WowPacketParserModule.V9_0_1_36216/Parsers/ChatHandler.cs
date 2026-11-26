@@ -78,8 +78,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
                     packet.ReadUInt32("SpellVisualKitID", i);
             }
 
-            if (guid.GetObjectType() == ObjectType.Unit)
-                Storage.Emotes.Add(guid, emote, packet.TimeSpan);
+            Storage.StoreUnitEmote(guid, emote, packet.Time);
 
             packetEmote.Emote = (int) emote;
             packetEmote.Sender = guid.ToUniversalGuid();
