@@ -135,6 +135,7 @@ namespace WowPacketParser.Enums
     {
         [UpdateField(UpdateFieldType.Int)]
         UNIT_CHANNEL_SPELL,
+        UNIT_CHANNEL_SPELL_X_SPELL_VISUAL,
         [UpdateField(UpdateFieldType.Int)]
         UNIT_CREATED_BY_SPELL,
         [UpdateField(UpdateFieldType.Int)]
