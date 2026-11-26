@@ -191,7 +191,7 @@
         PLAYER_BYTES_2                                                    = UnitField.UNIT_END + 0x0012,      // Size: 1, Flags: (PUBLIC) Nested: (PvpTitle, ArenaFaction, PvpRank)
         PLAYER_DUEL_TEAM                                                  = UnitField.UNIT_END + 0x0013,      // Size: 1, Flags: (PUBLIC)
         PLAYER_GUILD_TIMESTAMP                                            = UnitField.UNIT_END + 0x0014,      // Size: 1, Flags: (PUBLIC)
-        PLAYER_QUEST_LOG                                                  = UnitField.UNIT_END + 0x0015,      // Size: 320, Flags: (Party)
+        PLAYER_QUEST_LOG                                                  = UnitField.UNIT_END + 0x0015,      // Size: 320, Flags: (GROUP_ONLY)
         PLAYER_VISIBLE_ITEM                                               = UnitField.UNIT_END + 0x01A5,      // Size: 38, Flags: (PUBLIC)
         PLAYER_CHOSEN_TITLE                                               = UnitField.UNIT_END + 0x01CB,      // Size: 1, Flags: (PUBLIC)
         PLAYER_FAKE_INEBRIATION                                           = UnitField.UNIT_END + 0x01CC,      // Size: 1, Flags: (PUBLIC)
