@@ -755,7 +755,8 @@ namespace WowPacketParser.Parsing.Parsers
                 if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_0_8_9464))
                     packet.ReadPackedGuid("Destination Transport GUID");
 
-                dbdata.DstPosition = packetSpellData.DstLocation = packet.ReadVector3("Destination Position");
+                dbdata.DstPosition = packet.ReadVector3("Destination Position");
+                packetSpellData.DstLocation = dbdata.DstPosition;
             }
 
             if (targetFlags.HasAnyFlag(TargetFlag.NameString))

@@ -368,14 +368,14 @@ namespace WowPacketParser.Parsing.Parsers
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V5_1_0_16309))
             {
                 // Not the best way
-                ReadSplineMovement510(packet, pos);
+                ReadSplineMovement510(packet, (Vector3)pos);
                 return;
             }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_2_2_14545))
             {
                 // Not the best way
-                ReadSplineMovement422(packet, pos);
+                ReadSplineMovement422(packet, (Vector3)pos);
                 return;
             }
 
@@ -423,7 +423,7 @@ namespace WowPacketParser.Parsing.Parsers
             {
                 var newpos = packet.ReadVector3("Waypoint Endpoint");
 
-                Vector3 mid = (pos + newpos) * 0.5f;
+                Vector3 mid = ((Vector3)pos + newpos) * 0.5f;
 
                 for (var i = 1; i < waypoints; i++)
                 {
@@ -446,7 +446,7 @@ namespace WowPacketParser.Parsing.Parsers
             }
 
             if (movementData != null)
-                obj.AddWaypoint(movementData, pos, packet.Time);
+                obj.AddWaypoint(movementData, (Vector3)pos, packet.Time);
         }
 
         private static void ReadSplineMovement510(Packet packet, Vector3 pos)

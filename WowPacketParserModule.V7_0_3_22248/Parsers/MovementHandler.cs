@@ -268,7 +268,8 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove = new();
             WowGuid guid = packet.ReadPackedGuid128("MoverGUID");
             monsterMove.Mover = guid;
-            Vector3 pos = monsterMove.Position =  packet.ReadVector3("Position");
+            Vector3 pos = packet.ReadVector3("Position");
+            monsterMove.Position = pos;
 
             Unit obj = null;
             ServerSideMovement movementData = null;
