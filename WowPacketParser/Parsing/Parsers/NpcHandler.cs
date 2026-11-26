@@ -88,7 +88,7 @@ namespace WowPacketParser.Parsing.Parsers
             }
             else
             {
-                gossipPOI.ID = "@PID+" + LastGossipPOIEntry.ToString();
+                gossipPOI.ID = "@POIID+" + LastGossipPOIEntry.ToString();
                 ++LastGossipPOIEntry;
             }
 
