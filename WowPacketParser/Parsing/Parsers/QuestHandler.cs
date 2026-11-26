@@ -837,7 +837,7 @@ namespace WowPacketParser.Parsing.Parsers
                     ObjectId = objectId,
                     ObjectType = objectType,
                     QuestId = id,
-                    UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+                    UnixTimeMs = (ulong)Utilities.GetUnixTimeMsFromDateTime(packet.Time)
                 };
                 Storage.QuestClientAcceptTimes.Add(questAccept, packet.TimeSpan);
             }
@@ -857,7 +857,7 @@ namespace WowPacketParser.Parsing.Parsers
                 objectType = "Creature";
             QuestStarter questStarter = new QuestStarter
             {
-                ObjectId = guid.GetEntry(),
+                ObjectId = Storage.GetObjectEntry(guid),
                 ObjectType = objectType,
                 QuestId = (uint)id
             };
@@ -947,7 +947,7 @@ namespace WowPacketParser.Parsing.Parsers
                 objectType = "Creature";
             QuestStarter questStarter = new QuestStarter
             {
-                ObjectId = guid.GetEntry(),
+                ObjectId = Storage.GetObjectEntry(guid),
                 ObjectType = objectType,
                 QuestId = (uint)id
             };
@@ -1292,7 +1292,7 @@ namespace WowPacketParser.Parsing.Parsers
                     ObjectId = objectId,
                     ObjectType = objectType,
                     QuestId = id,
-                    UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+                    UnixTimeMs = (ulong)Utilities.GetUnixTimeMsFromDateTime(packet.Time)
                 };
                 Storage.QuestClientCompleteTimes.Add(questComplete, packet.TimeSpan);
             }
