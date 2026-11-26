@@ -1571,7 +1571,8 @@ namespace WowPacketParser.Parsing.Parsers
             WowGuid guid = packet.ReadPackedGuid("Guid");
             packet.ReadUInt32("Movement Counter");
 
-            packet.ReadByte("Unk Byte");
+            if (ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180))
+                packet.ReadByte("Unk Byte");
 
             CreatureSpeedUpdate speedUpdate = new CreatureSpeedUpdate();
             speedUpdate.SpeedType = SpeedType.Run;
