@@ -13,7 +13,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
         public static void HandleServerChatMessage(Packet packet)
         {
             PacketChat chatPacket = packet.Holder.Chat = new PacketChat();
-            var text = new CreatureTextTemplate
+            var text = new ChatPacketData
             {
                 Type = (ChatMessageType)packet.ReadByteE<ChatMessageTypeNew>("SlashCmd"),
                 Language = packet.ReadUInt32E<Language>("Language"),
@@ -46,7 +46,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             text.SenderName = packet.ReadWoWString("Sender Name", senderNameLen);
             text.ReceiverName = packet.ReadWoWString("Receiver Name", receiverNameLen);
             packet.ReadWoWString("Addon Message Prefix", prefixLen);
-            packet.ReadWoWString("Channel Name", channelLen);
+            text.ChannelName = packet.ReadWoWString("Channel Name", channelLen);
             
             chatPacket.Text = text.Text = packet.ReadWoWString("Text", textLen);
             chatPacket.Sender = text.SenderGUID.ToUniversalGuid();
@@ -61,27 +61,7 @@ namespace WowPacketParserModule.V9_0_1_36216.Parsers
             if (hasChannelGuid)
                 packet.ReadPackedGuid128("ChannelGUID");
 
-            uint entry = 0;
-            if (text.SenderGUID.GetObjectType() == ObjectType.Unit)
-                entry = text.SenderGUID.GetEntry();
-            else if (text.ReceiverGUID.GetObjectType() == ObjectType.Unit)
-                entry = text.ReceiverGUID.GetEntry();
-
-            if (entry != 0)
-            {
-                text.Time = packet.Time;
-                Storage.CreatureTextTemplates.Add(entry, text, packet.TimeSpan);
-                CreatureText textEntry = new CreatureText();
-                textEntry.Entry = entry;
-                textEntry.Text = text.Text;
-                textEntry.UnixTimeMs = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time);
-                if (Storage.Objects.ContainsKey(text.SenderGUID))
-                {
-                    var obj = Storage.Objects[text.SenderGUID].Item1 as Unit;
-                    textEntry.HealthPercent = obj.UnitData.HealthPercent;
-                }
-                Storage.CreatureTexts.Add(textEntry);
-            }
+            Storage.StoreText(text, packet);
         }
 
         [Parser(Opcode.SMSG_EMOTE)]
