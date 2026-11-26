@@ -155,6 +155,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             var hitTargetsCount = packet.ReadBits("HitTargetsCount", 16, idx);
             dbdata.HitTargetsCount = hitTargetsCount;
             var missTargetsCount = packet.ReadBits("MissTargetsCount", 16, idx);
+            dbdata.MissTargetsCount = missTargetsCount;
             uint hitStatusCount = 0;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V8_1_0_28724))
                 hitStatusCount = packet.ReadBits("HitStatusCount", 16, idx);
@@ -173,28 +174,15 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             {
                 WowGuid hitTarget = packet.ReadPackedGuid128("HitTarget", idx, i);
                 packetSpellData.HitTargets.Add(hitTarget);
-                for (uint j = 0; j < SpellCastData.MAX_SPELL_HIT_TARGETS_DB; j++)
-                {
-                    if (hitTarget.GetObjectType() == ObjectType.Player &&
-                        dbdata.HitTargetType[j].Contains("Player"))
-                        break;
-
-                    if (dbdata.HitTargetID[j] == hitTarget.GetEntry() &&
-                        dbdata.HitTargetType[j] == hitTarget.GetObjectType().ToString())
-                        break;
-
-                    if (dbdata.HitTargetID[j] == 0 &&
-                        dbdata.HitTargetType[j] == "")
-                    {
-                        dbdata.HitTargetID[j] = hitTarget.GetEntry();
-                        dbdata.HitTargetType[j] = hitTarget.GetObjectType().ToString();
-                        break;
-                    }
-                }
+                dbdata.AddHitTarget(hitTarget);
             }
 
             for (var i = 0; i < missTargetsCount; ++i)
-                packetSpellData.MissedTargets.Add(packet.ReadPackedGuid128("MissTarget", idx, i));
+            {
+                WowGuid missTarget = packet.ReadPackedGuid128("MissTarget", idx, i);
+                dbdata.AddMissTarget(missTarget);
+                packetSpellData.MissedTargets.Add(missTarget);
+            }
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V8_1_0_28724))
                 for (var i = 0; i < hitStatusCount; ++i)
