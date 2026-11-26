@@ -143,6 +143,7 @@ namespace WowPacketParser.Enums
         UNIT_END,
         [UpdateField(UpdateFieldType.Int)]
         UNIT_FIELD_ATTACK_POWER,
+        [UpdateField(UpdateFieldType.Short)]
         UNIT_FIELD_ATTACK_POWER_MODS,
         UNIT_FIELD_ATTACK_POWER_MOD_NEG,
         UNIT_FIELD_ATTACK_POWER_MOD_POS,
@@ -298,6 +299,7 @@ namespace WowPacketParser.Enums
         UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER,
         UNIT_FIELD_RANGEDATTACKTIME,
         UNIT_FIELD_RANGED_ATTACK_POWER,
+        [UpdateField(UpdateFieldType.Short)]
         UNIT_FIELD_RANGED_ATTACK_POWER_MODS,
         UNIT_FIELD_RANGED_ATTACK_POWER_MOD_NEG,
         UNIT_FIELD_RANGED_ATTACK_POWER_MOD_POS,
