@@ -78,7 +78,8 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             }
 
             uint displayIdCount = packet.ReadUInt32("DisplayIdCount");
-            packet.ReadSingle("TotalProbability");
+            creature.DisplayTotalCount = displayIdCount;
+            creature.DisplayTotalProbability = packet.ReadSingle("TotalProbability");
 
             uint?[] displayIds = new uint?[displayIdCount];
             for (uint i = 0; i < displayIdCount; ++i)
@@ -93,7 +94,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                 if (i == 1)
                 {
                     creature.DisplayScale2 = packet.ReadSingle("DisplayScale2", i);
-                    creature.DisplayProbability3 = packet.ReadSingle("DisplayProbability2", i);
+                    creature.DisplayProbability2 = packet.ReadSingle("DisplayProbability2", i);
                 }
 
                 if (i == 2)
@@ -107,7 +108,6 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                     creature.DisplayScale4 = packet.ReadSingle("DisplayScale4", i);
                     creature.DisplayProbability4 = packet.ReadSingle("DisplayProbability4", i);
                 }
-
             }
 
             creature.DisplayId = displayIds.Concat(new uint?[] { 0, 0, 0, 0 }).Take(4).ToArray();
