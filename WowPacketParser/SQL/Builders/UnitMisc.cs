@@ -1031,7 +1031,7 @@ namespace WowPacketParser.SQL.Builders
                 }
             }
 
-            string result = SQLUtil.Compare(Storage.CreatureStats, SQLDatabase.Get(Storage.CreatureStats),
+            string result = SQLUtil.Compare(Storage.CreatureStats, null,
                              t => StoreGetters.GetName(StoreNameType.Unit, (int)t.Entry));
 
             return result;
@@ -1119,7 +1119,7 @@ namespace WowPacketParser.SQL.Builders
 
             var result = "";
 
-            result += SQLUtil.Compare(Storage.CreatureDamageSchools, SQLDatabase.Get(Storage.CreatureDamageSchools), StoreNameType.Unit);
+            result += SQLUtil.Compare(Storage.CreatureDamageSchools, null, StoreNameType.Unit);
 
             return result;
         }
@@ -1764,7 +1764,7 @@ namespace WowPacketParser.SQL.Builders
                     }
                 }
 
-                result += SQLUtil.Compare(Storage.CreatureTexts, SQLDatabase.Get(Storage.CreatureTexts),
+                result += SQLUtil.Compare(Storage.CreatureTexts, null,
                     t => t.Entry.ToString(), false);
             }
 
@@ -1799,7 +1799,7 @@ namespace WowPacketParser.SQL.Builders
 
             var result = "";
 
-            result += SQLUtil.Compare(Storage.Music, SQLDatabase.Get(Storage.Music),
+            result += SQLUtil.Compare(Storage.Music, null,
                 t => t.Music.ToString());
 
             return result;
