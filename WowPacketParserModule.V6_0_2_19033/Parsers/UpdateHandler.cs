@@ -31,12 +31,14 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 {
                     var partWriter = new StringBuilderProtoPart(packet.Writer);
                     var guid = packet.ReadPackedGuid128("ObjectGUID", "Destroyed", i);
+                    Storage.StoreObjectDestroyTime(guid, packet.Time);
                     updateObject.Destroyed.Add(new DestroyedObject(){Guid = guid, Text = partWriter.Text });
                 }
                 for (var i = 0; i < outOfRangeObjCount; i++)
                 {
                     var partWriter = new StringBuilderProtoPart(packet.Writer);
                     var guid = packet.ReadPackedGuid128("ObjectGUID", "OutOfRange", i);
+                    Storage.StoreObjectDestroyTime(guid, packet.Time);
                     updateObject.OutOfRange.Add(new DestroyedObject(){Guid = guid, Text = partWriter.Text });
                 }
             }
@@ -60,10 +62,19 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                         break;
                     }
                     case "CreateObject1":
+                    {
+                        var guid = packet.ReadPackedGuid128("Object Guid", i);
+                        Storage.StoreObjectCreate1Time(guid, packet.Time);
+                        var createObject = new CreateObject() { Guid = guid, Values = new()};
+                        ReadCreateObjectBlock(packet, createObject, guid, map, i);
+                        updateObject.Created.Add(createObject);
+                        break;
+                    }
                     case "CreateObject2": // Might != CreateObject1 on Cata
                     {
                         var guid = packet.ReadPackedGuid128("Object Guid", i);
                         var createObject = new CreateObject() { Guid = guid, Values = new()};
+                        Storage.StoreObjectCreate2Time(guid, packet.Time);
                         ReadCreateObjectBlock(packet, createObject, guid, map, i);
                         createObject.Text = partWriter.Text;
                         updateObject.Created.Add(createObject);
