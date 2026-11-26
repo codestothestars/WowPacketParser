@@ -124,7 +124,7 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
             }
 
             var moves = ReadMovementUpdateBlock(packet, createObject, guid, obj, index);
-            Storage.StoreObjectCreateTime(guid, moves, packet.Time, type);
+            Storage.StoreObjectCreateTime(guid, map, moves, packet.Time, type);
             var updates = CoreParsers.UpdateHandler.ReadValuesUpdateBlockOnCreate(packet, createObject.Values, objType, index);
             var dynamicUpdates = CoreParsers.UpdateHandler.ReadDynamicValuesUpdateBlockOnCreate(packet, objType, index);
 
