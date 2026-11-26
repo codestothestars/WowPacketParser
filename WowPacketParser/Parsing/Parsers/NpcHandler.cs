@@ -474,23 +474,23 @@ namespace WowPacketParser.Parsing.Parsers
             PacketGossipSelect packetGossip = packet.Holder.GossipSelect = new();
 
             packetGossip.GossipUnit = packet.ReadGuid("GUID");
-            var menuEntry = packetGossip.MenuId = packet.ReadUInt32("Menu Id");
-            var gossipId = packetGossip.OptionId = packet.ReadUInt32("GossipMenu Id");
+            var menuEntry = packetGossip.MenuId = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? packet.ReadUInt32("Menu Id") : 0;
+            var optionIndex = packetGossip.OptionId = packet.ReadUInt32("Option Index");
 
             if (packet.CanRead()) // if ( byte_F3777C[v3] & 1 )
                 packet.ReadCString("Box Text");
 
-            Storage.GossipSelects.Add(Tuple.Create(menuEntry, gossipId), null, packet.TimeSpan);
+            Storage.GossipSelects.Add(Tuple.Create(menuEntry, optionIndex), null, packet.TimeSpan);
 
             LastGossipOption.MenuId = menuEntry;
-            LastGossipOption.OptionIndex = gossipId;
+            LastGossipOption.OptionIndex = optionIndex;
             LastGossipOption.ActionMenuId = null;
             LastGossipOption.ActionPoiId = null;
             LastGossipOption.TimeSpan = packet.TimeSpan;
 
             TempGossipOptionPOI.Guid = LastGossipOption.Guid;
             TempGossipOptionPOI.MenuId = menuEntry;
-            TempGossipOptionPOI.OptionIndex = gossipId;
+            TempGossipOptionPOI.OptionIndex = optionIndex;
             TempGossipOptionPOI.ActionMenuId = null;
             TempGossipOptionPOI.ActionPoiId = null;
             TempGossipOptionPOI.TimeSpan = packet.TimeSpan;

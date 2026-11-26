@@ -46,7 +46,6 @@ namespace WowPacketParser.Misc
                     var obj = Storage.Objects[this].Item1;
                     return obj.Type;
                 }
-
             }
 
             switch (GetHighType())

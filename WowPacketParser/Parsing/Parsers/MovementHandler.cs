@@ -594,7 +594,24 @@ namespace WowPacketParser.Parsing.Parsers
                 Handler.Parse(newpacket, true);
         }
 
-        [Parser(Opcode.MSG_MOVE_TELEPORT_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
+        [Parser(Opcode.MSG_MOVE_TELEPORT_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V2_0_1_6180)]
+        public static void HandleTeleportAckVanilla(Packet packet)
+        {
+            if (packet.Direction == Direction.ServerToClient)
+            {
+                var guid = packet.ReadPackedGuid("Guid");
+                packet.ReadInt32("Movement Counter");
+                ReadMovementInfo(packet, guid);
+            }
+            else
+            {
+                packet.ReadGuid("Guid");
+                packet.ReadInt32("Movement Counter");
+                packet.ReadUInt32("Time");
+            }
+        }
+
+        [Parser(Opcode.MSG_MOVE_TELEPORT_ACK, ClientVersionBuild.V2_0_1_6180, ClientVersionBuild.V4_3_4_15595)]
         public static void HandleTeleportAck(Packet packet)
         {
             var guid = packet.ReadPackedGuid("Guid");
@@ -1669,7 +1686,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_FORCE_PITCH_RATE_CHANGE_ACK)]
         public static void HandleSpeedChangeMessage(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("Guid");
+            var guid = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? packet.ReadPackedGuid("Guid") : packet.ReadGuid("Guid");
             packet.ReadInt32("Movement Counter");
 
             ReadMovementInfo(packet, guid);
@@ -1735,7 +1752,7 @@ namespace WowPacketParser.Parsing.Parsers
         [Parser(Opcode.CMSG_MOVE_SET_CAN_TRANSITION_BETWEEN_SWIM_AND_FLY_ACK, ClientVersionBuild.Zero, ClientVersionBuild.V4_3_4_15595)]
         public static void HandleSpecialMoveAckMessages(Packet packet)
         {
-            var guid = packet.ReadPackedGuid("Guid");
+            var guid = ClientVersion.AddedInVersion(ClientVersionBuild.V2_0_1_6180) ? packet.ReadPackedGuid("Guid") : packet.ReadGuid("Guid");
             packet.ReadInt32("Movement Counter");
             ReadMovementInfo(packet, guid);
             packet.ReadSingle("Unk float");
