@@ -75,6 +75,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
 
             WowGuid transportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
             monsterMove.TransportGuid = transportGuid;
+            if (savedata != null)
+                savedata.TransportGuid = transportGuid;
             monsterMove.VehicleSeat = packet.ReadSByte("VehicleSeat", indexes);
 
             packet.ResetBitReader();
@@ -232,7 +234,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
 
             ReadMovementMonsterSpline(movementData, packet, pos, "MovementMonsterSpline");
 
-            if (movementData != null)
+            if (movementData != null && (Settings.SaveTransports || (movementData.TransportGuid == null || movementData.TransportGuid.IsEmpty())))
                 obj.AddWaypoint(movementData, pos, packet.Time);
         }
 

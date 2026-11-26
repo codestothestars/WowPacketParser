@@ -34,7 +34,7 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
                 if (obj.UpdateFields != null)
                 {
                     obj.Movement.HasWpsOrRandMov = true;
-                    if (packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_ON_MONSTER_MOVE, Direction.ServerToClient))
+                    if (Settings.SaveTransports || packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_ON_MONSTER_MOVE, Direction.ServerToClient))
                         movementData = new ServerSideMovement();
                 }
             }
@@ -43,6 +43,9 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             {
                 WowGuid transportGuid = packet.ReadPackedGuid("TransportGUID");
                 monsterMove.TransportGuid = transportGuid;
+                if (movementData != null)
+                    movementData.TransportGuid = transportGuid;
+
                 monsterMove.VehicleSeat = packet.ReadSByte("VehicleSeat");
             }
 
@@ -148,8 +151,8 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
                     }
                 }
 
-                //if (movementData != null)
-                //    movementData.SplinePoints.Add(newpos);
+                if (movementData != null)
+                    movementData.SplinePoints.Add(newpos);
             }
 
             if (movementData != null)
