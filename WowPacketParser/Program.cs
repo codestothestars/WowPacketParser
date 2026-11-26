@@ -21,6 +21,7 @@ namespace WowPacketParser
     {
         public static string currentSniffFile = "";
         public static List<string> sniffFileNames = new List<string>();
+        public static List<int> sniffFileBuilds = new List<int>();
         private static void Main(string[] args)
         {
             SetUpConsole();
@@ -72,10 +73,12 @@ namespace WowPacketParser
                 if (Settings.ClientBuild != Enums.ClientVersionBuild.Zero)
                     ClientVersion.SetVersion(Settings.ClientBuild);
 
+                // needs to be before processing
+                currentSniffFile = Path.GetFileName(file);
+                sniffFileNames.Add(currentSniffFile);
+
                 try
                 {
-                    currentSniffFile = Path.GetFileName(file);
-                    sniffFileNames.Add(currentSniffFile);
                     var sf = new SniffFile(file, Settings.DumpFormat, Tuple.Create(++count, files.Count));
                     sf.ProcessFile();
                 }
@@ -83,6 +86,9 @@ namespace WowPacketParser
                 {
                     Console.WriteLine($"Can't process {file}. Skipping. Message: {ex.Message}");
                 }
+
+                // needs to be after processing
+                sniffFileBuilds.Add(ClientVersion.BuildInt);
             }
 
             if (!string.IsNullOrWhiteSpace(Settings.SQLFileName) && Settings.DumpFormatWithSQL())
@@ -93,12 +99,12 @@ namespace WowPacketParser
                 {
                     using (StreamWriter sw = File.AppendText(Settings.SQLFileName))
                     {
-                        string query = "INSERT INTO `sniff_file` (`id`, `name`) VALUES\n";
+                        string query = "INSERT INTO `sniff_file` (`id`, `build`, `name`) VALUES\n";
                         for (int i = 0; i < sniffFileNames.Count; i++)
                         {
                             if (i != 0)
                                 query += ",\n";
-                            query += "(" + i + ", '" + MySql.Data.MySqlClient.MySqlHelper.EscapeString(sniffFileNames[i]) + "')";
+                            query += "(" + i + ", " + sniffFileBuilds[i].ToString() + ", '" + MySql.Data.MySqlClient.MySqlHelper.EscapeString(sniffFileNames[i]) + "')";
                         }
                         query += ";\n";
                         sw.WriteLine(query);
