@@ -105,7 +105,7 @@ namespace WowPacketParserModule.V5_4_0_17359.Parsers
             if (lenS5 > 1)
                 creature.TitleAlt = packet.ReadCString("TitleAlt");
 
-            creature.ManaModifier = packet.ReadSingle("Modifier 2");
+            creature.ManaMultiplier = packet.ReadSingle("Modifier 2");
             creature.ModelIDs[0] = packet.ReadUInt32("Display ID 0");
 
             if (lenS4 > 1)
@@ -120,7 +120,7 @@ namespace WowPacketParserModule.V5_4_0_17359.Parsers
             creature.TypeFlags = packet.ReadUInt32E<CreatureTypeFlag>("Type Flags");
             creature.TypeFlags2 = packet.ReadUInt32("Creature Type Flags 2"); // Missing enum
 
-            creature.HealthModifier = packet.ReadSingle("Modifier 1");
+            creature.HealthMultiplier = packet.ReadSingle("Modifier 1");
             creature.Family = packet.ReadInt32E<CreatureFamily>("Family");
             creature.Rank = packet.ReadInt32E<CreatureRank>("Rank");
             creature.MovementID = packet.ReadUInt32("Movement ID");
@@ -165,8 +165,8 @@ namespace WowPacketParserModule.V5_4_0_17359.Parsers
             response.Type = (int?)creature.Type ?? 0;
             response.Family = (int?)creature.Family ?? 0;
             response.Rank = (int?)creature.Rank ?? 0;
-            response.HpMod = creature.HealthModifier ?? 1.0f;
-            response.ManaMod = creature.ManaModifier ?? 1.0f;
+            response.HpMod = creature.HealthMultiplier ?? 1.0f;
+            response.ManaMod = creature.ManaMultiplier ?? 1.0f;
             response.Leader = creature.RacialLeader ?? false;
             response.Expansion = (uint?) creature.RequiredExpansion ?? 0;
             response.MovementId = creature.MovementID ?? 0;

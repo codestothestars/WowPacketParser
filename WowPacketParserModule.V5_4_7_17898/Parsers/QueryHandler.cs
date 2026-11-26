@@ -56,7 +56,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             uint bits24 = packet.ReadBits(11);
             uint bits1C = packet.ReadBits(11);
 
-            creature.ManaModifier = packet.ReadSingle("Modifier 2");
+            creature.ManaMultiplier = packet.ReadSingle("Modifier 2");
 
             var name = new string[4];
             var femaleName = new string[4];
@@ -71,7 +71,7 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             creature.Name = name[0];
             creature.FemaleName = femaleName[0];
 
-            creature.HealthModifier = packet.ReadSingle("Modifier 1");
+            creature.HealthMultiplier = packet.ReadSingle("Modifier 1");
 
             creature.KillCredits[1] = packet.ReadUInt32();
             creature.ModelIDs[2] = packet.ReadUInt32();
@@ -151,8 +151,8 @@ namespace WowPacketParserModule.V5_4_7_17898.Parsers
             response.Type = (int?)creature.Type ?? 0;
             response.Family = (int?)creature.Family ?? 0;
             response.Rank = (int?)creature.Rank ?? 0;
-            response.HpMod = creature.HealthModifier ?? 1.0f;
-            response.ManaMod = creature.ManaModifier ?? 1.0f;
+            response.HpMod = creature.HealthMultiplier ?? 1.0f;
+            response.ManaMod = creature.ManaMultiplier ?? 1.0f;
             response.Leader = creature.RacialLeader ?? false;
             response.Expansion = (uint?) creature.RequiredExpansion ?? 0;
             response.MovementId = creature.MovementID ?? 0;
