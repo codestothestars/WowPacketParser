@@ -188,6 +188,8 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                 dbdata.AmmoInventoryType = (int)packet.ReadInt32E<InventoryType>("AmmoInventoryType", idx);
                 packetSpellData.AmmoInventoryType = (uint)dbdata.AmmoInventoryType;
 
+            packet.AddSniffData(StoreNameType.Spell, (int)dbdata.SpellID, "CAST");
+
             return packetSpellData;
         }
 

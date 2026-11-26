@@ -109,7 +109,7 @@ namespace WowPacketParser.Misc
 
             SniffData item = new SniffData
             {
-                SniffName = FileName,
+                SniffId = "@SNIFFID+" + Program.sniffFileNames.IndexOf(FileName),
                 ObjectType = type,
                 Id = id,
                 Data = data

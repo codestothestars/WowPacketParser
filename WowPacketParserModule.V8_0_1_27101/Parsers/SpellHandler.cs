@@ -199,6 +199,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             for (var i = 0; i < targetPointsCount; ++i)
                 packetSpellData.TargetPoints.Add(V6_0_2_19033.Parsers.SpellHandler.ReadLocation(packet, idx, "TargetPoints", i));
 
+            packet.AddSniffData(StoreNameType.Spell, (int)dbdata.SpellID, "CAST");
+
             return packetSpellData;
         }
 
