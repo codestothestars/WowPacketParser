@@ -2,6 +2,7 @@ using System;
 using WowPacketParser.Enums;
 using WowPacketParser.PacketStructures;
 using WoWPacketParser.Proto;
+using WowPacketParser.Store;
 
 namespace WowPacketParser.Misc
 {
@@ -38,6 +39,16 @@ namespace WowPacketParser.Misc
 
         public ObjectType GetObjectType()
         {
+            if (ClientVersion.Expansion == ClientType.WorldOfWarcraft)
+            {
+                if (Storage.Objects.ContainsKey(this))
+                {
+                    var obj = Storage.Objects[this].Item1;
+                    return obj.Type;
+                }
+
+            }
+
             switch (GetHighType())
             {
                 case HighGuidType.Player:
