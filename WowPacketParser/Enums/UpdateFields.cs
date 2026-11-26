@@ -999,6 +999,7 @@ namespace WowPacketParser.Enums
         GAMEOBJECT_DISPLAYID,
         [UpdateField(UpdateFieldType.Short)]
         GAMEOBJECT_DYNAMIC,
+        GAMEOBJECT_DYN_FLAGS,
         GAMEOBJECT_END,
         [UpdateField(UpdateFieldType.Int)]
         GAMEOBJECT_FACTION,
