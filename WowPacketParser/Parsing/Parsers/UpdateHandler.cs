@@ -207,8 +207,9 @@ namespace WowPacketParser.Parsing.Parsers
         }
         public static void StoreObjectSpeedUpdate(DateTime time, WowGuid guid, MovementInfo moveInfo)
         {
-            if ((guid.GetObjectType() == ObjectType.Unit && guid.GetHighType() != HighGuidType.Pet) ||
-                (guid.GetObjectType() == ObjectType.Player || guid.GetObjectType() == ObjectType.ActivePlayer))
+            if ((guid.GetObjectType() == ObjectType.Unit) ||
+                (guid.GetObjectType() == ObjectType.Player) || 
+                (guid.GetObjectType() == ObjectType.ActivePlayer))
             {
                 if (Storage.Objects.ContainsKey(guid))
                 {
@@ -297,8 +298,9 @@ namespace WowPacketParser.Parsing.Parsers
 
         public static void StoreObjectUpdate(DateTime time, WowGuid guid, Dictionary<int, UpdateField> updates)
         {
-            if ((guid.GetObjectType() == ObjectType.Unit && guid.GetHighType() != HighGuidType.Pet) ||
-                (guid.GetObjectType() == ObjectType.Player || guid.GetObjectType() == ObjectType.ActivePlayer))
+            if ((guid.GetObjectType() == ObjectType.Unit) ||
+                (guid.GetObjectType() == ObjectType.Player) ||
+                (guid.GetObjectType() == ObjectType.ActivePlayer))
             {
                 bool hasData = false;
                 CreatureValuesUpdate creatureUpdate = new CreatureValuesUpdate();

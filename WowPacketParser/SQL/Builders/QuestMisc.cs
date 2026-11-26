@@ -177,7 +177,7 @@ namespace WowPacketParser.SQL.Builders
         [BuilderMethod]
         public static string QuestCompleteTimes()
         {
-            if (!Settings.SqlTables.quest_complete_time)
+            if (!Settings.SqlTables.quest_update_complete)
                 return string.Empty;
 
             if (Storage.QuestCompleteTimes.IsEmpty())
@@ -191,7 +191,7 @@ namespace WowPacketParser.SQL.Builders
         [BuilderMethod]
         public static string QuestFailTimes()
         {
-            if (!Settings.SqlTables.quest_fail_time)
+            if (!Settings.SqlTables.quest_update_failed)
                 return string.Empty;
 
             if (Storage.QuestFailTimes.IsEmpty())
