@@ -150,6 +150,10 @@ namespace WowPacketParser.Enums
         [UpdateField(UpdateFieldType.Float)]
         UNIT_FIELD_ATTACK_POWER_MULTIPLIER,
         UNIT_FIELD_ATTACK_SPEED_AURA,
+        UNIT_FIELD_AURA,
+        UNIT_FIELD_AURAFLAGS,
+        UNIT_FIELD_AURALEVELS,
+        UNIT_FIELD_AURAAPPLICATIONS,
         [UpdateField(UpdateFieldType.Int)]
         UNIT_FIELD_AURASTATE,
         [UpdateField(UpdateFieldType.Int)]
