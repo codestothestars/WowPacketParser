@@ -99,14 +99,13 @@ namespace WowPacketParserModule.V1_13_2_31446.Parsers
                 response.KillCredits.Add(creature.KillCredits[i] ?? 0);
             }
 
-            uint displayIdCount = packet.ReadUInt32("DisplayIdCount");
-            creature.DisplayTotalCount = displayIdCount;
+            creature.DisplayTotalCount = packet.ReadUInt32("DisplayIdCount");
             creature.DisplayTotalProbability = packet.ReadSingle("TotalProbability");
 
-            uint?[] displayIds = new uint?[displayIdCount];
+            uint?[] displayIds = new uint?[creature.DisplayTotalCount];
             for (uint i = 0; i < 4; ++i)
                 displayIds[i] = 0;
-            for (uint i = 0; i < displayIdCount; ++i)
+            for (uint i = 0; i < creature.DisplayTotalCount; ++i)
             {
                 displayIds[i] = (uint)packet.ReadInt32("DisplayId", i);
                 response.Models.Add(creature.DisplayIDs[i] ?? 0);
