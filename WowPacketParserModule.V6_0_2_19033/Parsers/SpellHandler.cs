@@ -199,7 +199,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                 packetAuraUpdate.Updates.Add(auraEntry);
                 var aura = new Aura();
 
-                auraEntry.Slot = packet.ReadByte("Slot", i);
+                var slot = packet.ReadByte("Slot", i);
+                auraEntry.Slot = slot;
 
                 packet.ResetBitReader();
                 var hasAura = packet.ReadBit("HasAura", i);
@@ -231,7 +232,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
                     var hasMaxDuration = packet.ReadBit("HasRemaining", i);
 
                     if (hasCasterGUID)
-                        auraEntry.CasterUnit = packet.ReadPackedGuid128("CastUnit", i);
+                    {
+                        var casterGuid = packet.ReadPackedGuid128("CastUnit", i);
+                        auraEntry.CasterUnit = casterGuid;
+                    }
 
                     aura.Duration = hasDuration ? packet.ReadInt32("Duration", i) : 0;
                     aura.MaxDuration = hasMaxDuration ? packet.ReadInt32("Remaining", i) : 0;
@@ -374,7 +378,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             var packetSpellData = new PacketSpellData();
             packet.ReadPackedGuid128("CasterGUID", idx);
-            packetSpellData.Caster = packet.ReadPackedGuid128("CasterUnit", idx);
+            var guid = packet.ReadPackedGuid128("CasterUnit", idx);
+            packetSpellData.Caster = guid;
 
             packetSpellData.CastId = packet.ReadByte("CastID", idx);
 
@@ -539,7 +544,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleCastVisualKit(Packet packet)
         {
             var playSpellVisualKit = packet.Holder.PlaySpellVisualKit = new();
-            playSpellVisualKit.Unit = packet.ReadPackedGuid128("Unit");
+            var guid = packet.ReadPackedGuid128("Unit");
+            playSpellVisualKit.Unit = guid;
             playSpellVisualKit.KitRecId = packet.ReadInt32("KitRecID");
             playSpellVisualKit.KitType = packet.ReadInt32("KitType");
             playSpellVisualKit.Duration = packet.ReadUInt32("Duration");

@@ -132,7 +132,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             CoreParsers.NpcHandler.LastGossipOption.Reset();
             CoreParsers.NpcHandler.TempGossipOptionPOI.Reset();
-            var guid = CoreParsers.NpcHandler.LastGossipOption.Guid = packet.ReadPackedGuid128("Guid");
+            var guid = packet.ReadPackedGuid128("Guid");
+            CoreParsers.NpcHandler.LastGossipOption.Guid = guid;
 
             if (packet.Opcode == Opcodes.GetOpcode(Opcode.CMSG_TALK_TO_GOSSIP, Direction.ClientToServer))
                 packet.Holder.GossipHello = new PacketGossipHello { GossipSource = guid };

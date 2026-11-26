@@ -802,7 +802,8 @@ namespace WowPacketParser.Parsing.Parsers
         public static void HandleQuestgiverAcceptQuest(Packet packet)
         {
             var questGiverAcceptQuest = packet.Holder.QuestGiverAcceptQuest = new();
-            questGiverAcceptQuest.QuestGiver = packet.ReadGuid("GUID");
+            WowGuid guid = packet.ReadGuid("GUID");
+            questGiverAcceptQuest.QuestGiver = guid;
             questGiverAcceptQuest.QuestId = packet.ReadUInt32<QuestId>("Quest ID");
 
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V3_1_2_9901))

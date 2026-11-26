@@ -55,7 +55,8 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
             else
                 dbdata.CasterType = casterGuid.GetObjectType().ToString();
 
-            packetSpellData.Caster = packet.ReadPackedGuid128("CasterUnit", idx);
+            var guid = packet.ReadPackedGuid128("CasterUnit", idx);
+            packetSpellData.Caster = guid;
 
             packetSpellData.CastGuid = packet.ReadPackedGuid128("CastID", idx);
             packet.ReadPackedGuid128("OriginalCastID", idx);
@@ -337,7 +338,8 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                 packetAuraUpdate.Updates.Add(auraEntry);
                 var aura = new Aura();
 
-                auraEntry.Slot = packet.ReadByte("Slot", i);
+                var slot = packet.ReadByte("Slot", i);
+                auraEntry.Slot = slot;
 
                 packet.ResetBitReader();
                 var hasAura = packet.ReadBit("HasAura", i);
@@ -374,7 +376,10 @@ namespace WowPacketParserModule.V7_0_3_22248.Parsers
                     }
 
                     if (hasCastUnit)
-                        auraEntry.CasterUnit = packet.ReadPackedGuid128("CastUnit", i);
+                    {
+                        var casterGuid = packet.ReadPackedGuid128("CastUnit", i);
+                        auraEntry.CasterUnit = casterGuid;
+                    }
 
                     aura.Duration = hasDuration ? (int)packet.ReadUInt32("Duration", i) : 0;
                     aura.MaxDuration = hasRemaining ? (int)packet.ReadUInt32("Remaining", i) : 0;

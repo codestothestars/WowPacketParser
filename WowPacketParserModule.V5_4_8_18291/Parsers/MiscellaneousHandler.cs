@@ -290,7 +290,7 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
             packet.ParseBitStream(guid, 3, 2, 4, 7, 5, 0, 6, 1);
             packetPlaySound.Source = packet.WriteGuid("Guid", guid).ToUniversalGuid();
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            //Storage.Sounds.Add(sound, packet.TimeSpan);
         }
 
         [Parser(Opcode.SMSG_PLAY_OBJECT_SOUND)]
@@ -331,7 +331,7 @@ namespace WowPacketParserModule.V5_4_8_18291.Parsers
             packetSound.Source = packet.WriteGuid("Guid 1", guid1);
             packetSound.Target = packet.WriteGuid("Guid 2", guid2);
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            //Storage.Sounds.Add(sound, packet.TimeSpan);
         }
 
         [Parser(Opcode.SMSG_ACTIVATE_TAXI_REPLY)]

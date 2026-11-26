@@ -44,7 +44,8 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
 
             if (packet.Opcode == Opcodes.GetOpcode(Opcode.SMSG_MONSTER_MOVE_TRANSPORT, Direction.ServerToClient))
             {
-                monsterMove.TransportGuid = packet.ReadPackedGuid("TransportGUID");
+                WowGuid transportGuid = packet.ReadPackedGuid("TransportGUID");
+                monsterMove.TransportGuid = transportGuid;
                 monsterMove.VehicleSeat = packet.ReadSByte("VehicleSeat");
             }
 
@@ -71,7 +72,7 @@ namespace WowPacketParserModule.V4_3_4_15595.Parsers
             {
                 case SplineType.FacingSpot:
                     var faceSpot = monsterMove.LookPosition = packet.ReadVector3("FaceSpot", indexes);
-                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
+                    orientation = Utilities.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineType.FacingTarget:
                     monsterMove.LookTarget = new() { Target = packet.ReadGuid("FacingGUID", indexes) };

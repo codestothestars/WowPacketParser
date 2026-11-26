@@ -238,7 +238,7 @@ namespace WowPacketParser.Parsing.Parsers
                 case SplineType.FacingSpot:
                 {
                     var faceSpot = monsterMove.LookPosition = packet.ReadVector3("Facing Spot");
-                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
+                    orientation = Utilities.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 }
                 case SplineType.FacingTarget:

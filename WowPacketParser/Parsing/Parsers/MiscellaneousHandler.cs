@@ -403,10 +403,14 @@ namespace WowPacketParser.Parsing.Parsers
             uint sound = packetPlaySound.Sound = packet.ReadUInt32("Sound Id");
             packetPlaySound.Source = new UniversalGuid() {Guid64 = new UniversalGuid64()};
 
+            WowGuid guid1 = WowGuid.Empty;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_0_15005))
-                packetPlaySound.Source = packet.ReadGuid("GUID").ToUniversalGuid();
+            {
+                guid1 = packet.ReadGuid("GUID");
+                packetPlaySound.Source = guid1.ToUniversalGuid();
+            }
             
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid1));
         }
 
         [Parser(Opcode.SMSG_PLAY_OBJECT_SOUND)]
@@ -417,10 +421,14 @@ namespace WowPacketParser.Parsing.Parsers
 
             packetSound.Source = packet.ReadGuid("GUID");
 
+            WowGuid guid2 = WowGuid.Empty;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_0_15005))
-                packetSound.Target = packet.ReadGuid("GUID 2");
+            {
+                guid2 = packet.ReadGuid("GUID 2");
+                packetSound.Target = guid2;
+            }
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid2));
         }
 
         [Parser(Opcode.SMSG_PLAY_MUSIC)]
@@ -429,10 +437,20 @@ namespace WowPacketParser.Parsing.Parsers
             PacketPlayMusic packetMusic = packet.Holder.PlayMusic = new PacketPlayMusic();
             uint sound = packetMusic.Music = packet.ReadUInt32("Sound Id");
 
+            WowGuid guid = WowGuid.Empty;
             if (ClientVersion.AddedInVersion(ClientVersionBuild.V4_3_0_15005))
-                packetMusic.Target = packet.ReadGuid("GUID").ToUniversalGuid();
+            {
+                guid = packet.ReadGuid("GUID");
+                packetMusic.Target = guid.ToUniversalGuid();
+            }
             
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid));
+            PlayMusic musicEntry = new PlayMusic
+            {
+                Music = sound,
+                UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+            };
+            Storage.Music.Add(musicEntry, packet.TimeSpan);
         }
 
         [Parser(Opcode.SMSG_WEATHER)]

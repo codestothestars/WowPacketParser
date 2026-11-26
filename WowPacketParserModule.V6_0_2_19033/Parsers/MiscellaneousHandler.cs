@@ -473,9 +473,10 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             PacketPlaySound packetPlaySound = packet.Holder.PlaySound = new PacketPlaySound();
             uint sound = packetPlaySound.Sound = packet.ReadUInt32<SoundId>("SoundKitID");
-            packetPlaySound.Source = packet.ReadPackedGuid128("SourceObjectGUID").ToUniversalGuid();
+            WowGuid guid = packet.ReadPackedGuid128("SourceObjectGUID");
+            packetPlaySound.Source = guid.ToUniversalGuid();
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid));
         }
 
         [Parser(Opcode.SMSG_PLAY_MUSIC)]
@@ -484,7 +485,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             PacketPlayMusic packetMusic = packet.Holder.PlayMusic = new PacketPlayMusic();
             uint sound = packetMusic.Music = packet.ReadUInt32<SoundId>("SoundKitID");
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            PlayMusic musicEntry = new PlayMusic
+            {
+                Music = sound,
+                UnixTime = (uint)Utilities.GetUnixTimeFromDateTime(packet.Time)
+            };
+            Storage.Music.Add(musicEntry, packet.TimeSpan);
         }
 
         [Parser(Opcode.SMSG_ZONE_UNDER_ATTACK)]
@@ -742,11 +748,12 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         {
             PacketPlayObjectSound packetSound = packet.Holder.PlayObjectSound = new PacketPlayObjectSound();
             uint sound = packetSound.Sound = packet.ReadUInt32<SoundId>("SoundId");
-            packetSound.Source = packet.ReadPackedGuid128("SourceObjectGUID");
+            WowGuid guid = packet.ReadPackedGuid128("SourceObjectGUID");
+            packetSound.Source = guid;
             packetSound.Target = packet.ReadPackedGuid128("TargetObjectGUID");
             packet.ReadVector3("Position");
 
-            Storage.Sounds.Add(sound, packet.TimeSpan);
+            Storage.Sounds.Add(new ObjectSound(sound, packet.Time, guid));
         }
 
         [Parser(Opcode.SMSG_PLAY_SPEAKERBOT_SOUND)]

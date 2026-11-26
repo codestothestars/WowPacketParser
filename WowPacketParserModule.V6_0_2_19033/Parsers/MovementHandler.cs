@@ -281,7 +281,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             packet.ReadByte("Mode", indexes);
             packet.ReadByte("VehicleExitVoluntary", indexes);
 
-            monsterMove.TransportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
+            WowGuid transportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
+            monsterMove.TransportGuid = transportGuid;
             monsterMove.VehicleSeat = packet.ReadSByte("VehicleSeat", indexes);
 
             var packedDeltasCount = packet.ReadInt32("PackedDeltasCount", indexes);
@@ -321,7 +322,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             {
                 case SplineFacingType.Spot:
                     var faceSpot = monsterMove.LookPosition = packet.ReadVector3("FaceSpot", indexes);
-                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
+                    orientation = Utilities.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineFacingType.Target:
                     SplineLookTarget lookTarget = monsterMove.LookTarget = new();
@@ -377,7 +378,8 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
         public static void HandleOnMonsterMove(Packet packet)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove = new();
-            WowGuid guid = monsterMove.Mover = packet.ReadPackedGuid128("MoverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("MoverGUID");
+            monsterMove.Mover = guid;
             Vector3 pos = monsterMove.Position = packet.ReadVector3("Position");
 
             Unit obj = null;

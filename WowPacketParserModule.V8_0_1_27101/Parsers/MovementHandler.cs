@@ -73,7 +73,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             if (ClientVersion.RemovedInVersion(ClientType.Shadowlands))
                 packet.ReadByte("VehicleExitVoluntary", indexes);
 
-            monsterMove.TransportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
+            WowGuid transportGuid = packet.ReadPackedGuid128("TransportGUID", indexes);
+            monsterMove.TransportGuid = transportGuid;
             monsterMove.VehicleSeat = packet.ReadSByte("VehicleSeat", indexes);
 
             packet.ResetBitReader();
@@ -105,7 +106,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             {
                 case SplineFacingType.Spot:
                     var faceSpot = monsterMove.LookPosition = packet.ReadVector3("FaceSpot", indexes);
-                    orientation = CreatureMovement.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
+                    orientation = Utilities.GetAngle(pos.X, pos.Y, faceSpot.X, faceSpot.Y);
                     break;
                 case SplineFacingType.Target:
                     SplineLookTarget lookTarget = monsterMove.LookTarget = new();
@@ -216,7 +217,8 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         public static void HandleOnMonsterMove(Packet packet)
         {
             PacketMonsterMove monsterMove = packet.Holder.MonsterMove = new();
-            monsterMove.Mover = packet.ReadPackedGuid128("MoverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("MoverGUID");
+            monsterMove.Mover = guid;
             Vector3 pos = monsterMove.Position = packet.ReadVector3("Position");
 
             Unit obj = null;
