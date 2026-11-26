@@ -3816,7 +3816,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_5_37862
         {
             var data = new DynamicObjectData();
             data.Caster = packet.ReadPackedGuid128("Caster", indexes);
-            data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
+            data.SpellVisual = ReadCreateSpellCastVisual(packet, indexes, "SpellVisual");
             data.SpellID = packet.ReadInt32("SpellID", indexes);
             data.Radius = packet.ReadSingle("Radius", indexes);
             data.CastTime = packet.ReadUInt32("CastTime", indexes);
@@ -3842,7 +3842,7 @@ namespace WowPacketParserModule.V9_0_1_36216.UpdateFields.V9_0_5_37862
                 }
                 if (changesMask[2])
                 {
-                    data.SpellXSpellVisualID = packet.ReadInt32("SpellXSpellVisualID", indexes);
+                    data.SpellVisual = ReadUpdateSpellCastVisual(packet, data.SpellVisual as SpellCastVisual, indexes, "SpellVisual");
                 }
                 if (changesMask[3])
                 {

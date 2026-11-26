@@ -28,9 +28,8 @@ namespace WowPacketParser.Store.Objects.UpdateFields
         int ScalingLevelMax { get; }
         int ScalingLevelDelta { get; }
         int FactionTemplate { get; }
-        long CurHealth { get; }
         uint HealthPercent { get; }
-        int CurMana { get; }
+        int Mana { get; }
         int MaxMana { get; }
         int[] Stats { get; }
         int[] StatPosBuff { get; }
