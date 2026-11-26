@@ -370,7 +370,8 @@ namespace WowPacketParser.Enums
         [UpdateField(UpdateFieldType.Uint)]
         UNIT_NPC_FLAGS,
         [UpdateField(UpdateFieldType.Uint)]
-        UNIT_VIRTUAL_ITEM_SLOT_ID
+        UNIT_VIRTUAL_ITEM_SLOT_ID,
+        UNIT_VIRTUAL_ITEM_SLOT_DISPLAY
     }
 
     public enum UnitDynamicField
@@ -810,6 +811,7 @@ namespace WowPacketParser.Enums
         PLAYER_TRIAL_XP,
         PLAYER_VERSATILITY,
         PLAYER_VERSATILITY_BONUS,
+        PLAYER_VISIBLE_ITEM_1_0,
         PLAYER_VISIBLE_ITEM,
         PLAYER_VISIBLE_ITEM_10_ENCHANTMENT,
         PLAYER_VISIBLE_ITEM_10_ENTRYID,
