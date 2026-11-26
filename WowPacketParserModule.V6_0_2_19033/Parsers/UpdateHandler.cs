@@ -172,7 +172,7 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             if (hasMovementUpdate) // 392
             {
                 var movementUpdate = createObject.Movement = new();
-                moveInfo = ReadMovementStatusData(packet, movementUpdate, index);
+                ReadMovementStatusData(moveInfo, packet, movementUpdate, index);
 
                 movementUpdate.WalkSpeed = moveInfo.WalkSpeed = packet.ReadSingle("WalkSpeed", index);
                 movementUpdate.RunSpeed = moveInfo.RunSpeed = packet.ReadSingle("RunSpeed", index);
@@ -464,23 +464,22 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
             return moveInfo;
         }
 
-        private static MovementInfo ReadMovementStatusData(Packet packet, MovementUpdate movementUpdate, object index)
+        private static void ReadMovementStatusData(MovementInfo moveInfo, Packet packet, MovementUpdate movementUpdate, object index)
         {
-            var moveInfo = new MovementInfo();
-
             movementUpdate.Mover = packet.ReadPackedGuid128("MoverGUID", index);
 
+            moveInfo.MoveTime = packet.ReadUInt32("MoveTime", index);
             movementUpdate.MoveIndex = (int)packet.ReadUInt32("MoveIndex", index);
             movementUpdate.Position = moveInfo.Position = packet.ReadVector3("Position", index);
             movementUpdate.Orientation = moveInfo.Orientation = packet.ReadSingle("Orientation", index);
 
-            movementUpdate.Pitch = packet.ReadSingle("Pitch", index);
+            movementUpdate.Pitch = moveInfo.SwimPitch = packet.ReadSingle("Pitch", index);
             movementUpdate.StepUpStartElevation = packet.ReadSingle("StepUpStartElevation", index);
 
-            var int152 = packet.ReadInt32("Int152", index);
-            packet.ReadInt32("Int168", index);
+            var removeForcesIDsCount = packet.ReadInt32();
+            packet.ReadInt32("MoveIndex", index);
 
-            for (var i = 0; i < int152; i++)
+            for (var i = 0; i < removeForcesIDsCount; i++)
                 packet.ReadPackedGuid128("RemoveForcesIDs", index, i);
 
             packet.ResetBitReader();
@@ -516,19 +515,20 @@ namespace WowPacketParserModule.V6_0_2_19033.Parsers
 
             if (hasFall)
             {
+                moveInfo.FallTime = packet.ReadUInt32("Jump Fall Time", index);
                 movementUpdate.FallTime = packet.ReadUInt32("Fall Time", index);
+                moveInfo.JumpVerticalSpeed = packet.ReadSingle("Jump Vertical Speed", index);
                 movementUpdate.JumpVelocity = packet.ReadSingle("JumpVelocity", index);
 
                 packet.ResetBitReader();
                 var bit20 = packet.ReadBit("Has Fall Direction", index);
                 if (bit20)
                 {
-                    packet.ReadVector2("Fall", index);
-                    packet.ReadSingle("Horizontal Speed", index);
+                    moveInfo.JumpSinAngle = packet.ReadSingle("Jump Sin Angle", index);
+                    moveInfo.JumpCosAngle = packet.ReadSingle("Jump Cos Angle", index);
+                    moveInfo.JumpHorizontalSpeed = packet.ReadSingle("Jump Horizontal Speed", index);
                 }
             }
-
-            return moveInfo;
         }
 
         [Parser(Opcode.SMSG_DESTROY_ARENA_UNIT)]
