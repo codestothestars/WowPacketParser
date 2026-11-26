@@ -86,7 +86,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         [Parser(Opcode.SMSG_QUEST_GIVER_QUEST_DETAILS)]
         public static void HandleQuestGiverQuestDetails(Packet packet)
         {
-            packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
             packet.ReadPackedGuid128("InformUnit");
 
             int id = packet.ReadInt32("QuestID");
@@ -159,6 +159,16 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             packet.ReadWoWString("PortraitTurnInText", portraitTurnInTextLen);
             packet.ReadWoWString("PortraitTurnInName", portraitTurnInNameLen);
 
+            string objectType = guid.GetObjectType().ToString();
+            if (objectType == "Unit")
+                objectType = "Creature";
+            QuestStarter questStarter = new QuestStarter
+            {
+                ObjectId = guid.GetEntry(),
+                ObjectType = objectType,
+                QuestId = (uint)id
+            };
+            Storage.QuestStarters.Add(questStarter, packet.TimeSpan);
             Storage.QuestDetails.Add(questDetails, packet.TimeSpan);
         }
 
@@ -530,7 +540,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         [Parser(Opcode.SMSG_QUEST_GIVER_OFFER_REWARD_MESSAGE)]
         public static void QuestGiverOfferReward(Packet packet)
         {
-            packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
 
             packet.ReadInt32("QuestGiverCreatureID");
             int id = packet.ReadInt32("QuestID");
@@ -601,6 +611,16 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             packet.ReadWoWString("PortraitTurnInText", portraitTurnInTextLen);
             packet.ReadWoWString("PortraitTurnInName", portraitTurnInNameLen);
 
+            string objectType = guid.GetObjectType().ToString();
+            if (objectType == "Unit")
+                objectType = "Creature";
+            QuestEnder questEnder = new QuestEnder
+            {
+                ObjectId = guid.GetEntry(),
+                ObjectType = objectType,
+                QuestId = (uint)id
+            };
+            Storage.QuestEnders.Add(questEnder, packet.TimeSpan);
             Storage.QuestOfferRewards.Add(questOfferReward, packet.TimeSpan);
         }
 
@@ -738,7 +758,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
         [Parser(Opcode.SMSG_QUEST_GIVER_REQUEST_ITEMS, ClientVersionBuild.V8_1_0_28724)]
         public static void HandleQuestGiverRequestItems(Packet packet)
         {
-            packet.ReadPackedGuid128("QuestGiverGUID");
+            WowGuid guid = packet.ReadPackedGuid128("QuestGiverGUID");
             packet.ReadInt32("QuestGiverCreatureID");
 
             int id = packet.ReadInt32("QuestID");
@@ -791,7 +811,7 @@ namespace WowPacketParserModule.V8_0_1_27101.Parsers
             packet.ReadWoWString("QuestTitle", questTitleLen);
             string completionText = packet.ReadWoWString("CompletionText", completionTextLen);
 
-            CoreParsers.QuestHandler.QuestRequestItemHelper(id, completionText, delay, emote, isComplete, packet, noRequestOnComplete);
+            CoreParsers.QuestHandler.QuestRequestItemHelper(id, completionText, delay, emote, isComplete, packet, guid, noRequestOnComplete);
 
             if (ClientLocale.PacketLocale != LocaleConstant.enUS && completionText != string.Empty)
             {
